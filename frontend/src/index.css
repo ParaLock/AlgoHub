@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.treeview > .toggle {
+  pointer-events: all;
+  cursor: pointer;
+}
+.treeview > .toggle:hover {
+  color: #63b1de;
+  fill: #63b1de;
+}

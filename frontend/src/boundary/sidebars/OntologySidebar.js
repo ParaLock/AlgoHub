@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import OntologyViewer from './panels/OntologyViewer';
+import OntologyViewer from '../panels/OntologyViewer';
 import IconButton from '@mui/material/IconButton';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';

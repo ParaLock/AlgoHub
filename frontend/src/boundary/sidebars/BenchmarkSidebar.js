@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import OntologyViewer from './panels/OntologyViewer';
+import OntologyViewer from '../panels/OntologyViewer';
 
 const OntologySidebarWrapper = styled.div`
     user-select: none;

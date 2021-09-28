@@ -23,7 +23,26 @@ const OntologySidebarWrapper = styled.div`
 
 `;
 
+  
+const ontologyData = [
+
+    { id: 1, content: "Algorithms", parentId: 0},
+    { id: 2, content: "Sorting", parentId: 1},
+    { id: 3, content: "Computational Geometry", parentId: 1},
+    { id: 4, content: "Nearest Neighbor", parentId: 3},
+    { id: 5, content: "Convex Hull", parentId: 3},
+    { id: 6, content: "Graph Algorithms", parentId: 1},
+    { id: 7, content: "Search", parentId: 6},
+    { id: 8, content: "Breadth-First Search", parentId: 7},
+    { id: 9, content: "Depth-First Search", parentId: 7},
+    { id: 10, content: "C++", parentId: 9},
+    { id: 11, content: "Java", parentId: 9}
+
+]
+
 export default function OntologySidebar(props) {
+
+    const [selected, setSelected] = useState("");
 
     return (
 
@@ -37,7 +56,11 @@ export default function OntologySidebar(props) {
             <IconButton color="inherit" size="large">
                 <FindInPageRoundedIcon />
             </IconButton>
-            <OntologyViewer />
+            <OntologyViewer 
+                            onSelect={(item)=> { setSelected(item)}} 
+                            selected={selected} 
+                            ontologyData={ontologyData}
+            />
         </OntologySidebarWrapper>
     )
 }

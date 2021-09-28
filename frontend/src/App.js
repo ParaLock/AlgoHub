@@ -3,8 +3,8 @@ import './App.css';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Header from './boundary/Header';
-import OntologySidebar from './boundary/OntologySidebar';
-import BenchmarkSidebar from './boundary/BenchmarkSidebar';
+import OntologySidebar from './boundary/sidebars/OntologySidebar';
+import BenchmarkSidebar from './boundary/sidebars/BenchmarkSidebar';
 
 import AlgorithmPanel from './boundary/panels/AlgorithmPanel';
 import ProblemInstancePanel from './boundary/panels/ProblemInstancePanel';

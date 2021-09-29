@@ -12,6 +12,9 @@ import ProblemInstancePanel from './boundary/panels/ProblemInstancePanel';
 import ClassificationForm from './boundary/forms/ClassificationForm';
 import ClassificationMergeForm from './boundary/forms/ClassificationMergeForm';
 import AlgorithmRankingPanel from './boundary/panels/AlgorithmRankingPanel';
+import BenchmarkForm from './boundary/forms/BenchmarkForm';
+import AlgorithmForm from './boundary/forms/AlgorithmForm';
+import ImplementationForm from './boundary/forms/ImplementationForm';
 
 const Wrapper = styled.div`
       
@@ -61,8 +64,10 @@ function App() {
 
           <OntologySidebar  
                           open={isOntologyMenuOpen}
-                          onOntologyAdd={() => setOpenForm("classification")}
+                          onClassificationAdd={() => setOpenForm("classification_form")}
                           onOntologyMerge={() => setOpenForm("classification_merge")}
+                          onAlgorithmAdd={() => setOpenForm("algorithm_form")}
+                          onImplementationAdd={() => setOpenForm("implementation_form")}
                           onOntologyReport={() => setOpenForm("algorithm_ranking_panel")}
           />
             <InnerContentWrapper>
@@ -71,12 +76,15 @@ function App() {
               <ProblemInstancePanel/>
 
             </InnerContentWrapper>
-          <BenchmarkSidebar open={isBenchmarkMenuOpen}/>
+          <BenchmarkSidebar 
+                          open={isBenchmarkMenuOpen}
+                          onBenchmarkAdd={() => setOpenForm("benchmark_form")}
+          />
 
       </ContentWrapper>
 
       <ClassificationForm 
-                          open={openForm == "classification"}
+                          open={openForm == "classification_form"}
                           onClose={() => setOpenForm("")}
       />
 
@@ -90,6 +98,20 @@ function App() {
                           onClose={() => setOpenForm("")}
       />
 
+      <BenchmarkForm 
+                          open={openForm == "benchmark_form"} 
+                          onClose={() => setOpenForm("")}
+      />
+
+      <AlgorithmForm 
+                          open={openForm == "algorithm_form"} 
+                          onClose={() => setOpenForm("")}
+      />
+
+      <ImplementationForm 
+                          open={openForm == "implementation_form"} 
+                          onClose={() => setOpenForm("")}
+      />
 
     </Wrapper>
   );

@@ -10,7 +10,6 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import TextField from '@mui/material/TextField';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -45,7 +44,7 @@ const BootstrapDialogTitle = (props) => {
     );
 };
 
-export default function ClassificationForm(props) {
+export default function BenchmarkForm(props) {
 
     return (
         <div>
@@ -55,7 +54,7 @@ export default function ClassificationForm(props) {
                 open={props.open}
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => props.onClose()}>
-                    Classification Form
+                    Benchmark Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <Typography gutterBottom>

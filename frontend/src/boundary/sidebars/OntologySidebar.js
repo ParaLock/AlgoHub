@@ -6,8 +6,14 @@ import IconButton from '@mui/material/IconButton';
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import MergeTypeIcon from '@mui/icons-material/MergeType';
-import FindInPageRoundedIcon from '@mui/icons-material/FindInPageRounded';
 import StarsIcon from '@mui/icons-material/Stars';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import CategoryIcon from '@mui/icons-material/Category';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+
 const OntologySidebarWrapper = styled.div`
     user-select: none;
     width: 20%;
@@ -25,7 +31,7 @@ const OntologySidebarWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    justify-content: center;
+    justify-content: right;
     display: flex;
     width: 99%;
     height: 4%;
@@ -34,6 +40,16 @@ const ButtonWrapper = styled.div`
     margin-bottom: 10px;
 `;
 
+const AddButtonContainer = styled.div`
+    justify-content: right;
+    display: flex;
+    width: 99%;
+    height: 4%;
+    padding-top: 8px;
+    padding-right: 8px;
+    
+    margin-bottom: 10px;
+`;
   
 const ontologyData = [
 
@@ -58,16 +74,48 @@ export default function OntologySidebar(props) {
     return (
 
         <OntologySidebarWrapper open={props.open}>
+
             <ButtonWrapper>
-                <IconButton color="inherit" size="large" onClick={() => props.onOntologyAdd()}>
-                    <AddCircleOutlineIcon />
-                </IconButton>
+
                 <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
                     <MergeTypeIcon />
                 </IconButton>
                 <IconButton color="inherit" size="large" onClick={() => props.onOntologyReport()}>
                     <StarsIcon />
                 </IconButton>
+
+
+            <AddButtonContainer>
+            <SpeedDial
+                    ariaLabel="SpeedDial playground example"
+                    direction="down"
+                    sx="sm"
+                    FabProps={{sx: {width: "40px"}}}
+                    icon={<SpeedDialIcon />}
+                >
+                    <SpeedDialAction
+                        key={"action_1"}
+                        icon={<CategoryIcon/>}
+                        tooltipTitle={"Add Classification"}
+                        onClickCapture={() => props.onClassificationAdd()}
+                    />
+                    <SpeedDialAction
+                        key={"action_2"}
+                        icon={<FileCopyIcon/>}
+                        tooltipTitle={"Add Algorithm"}
+                        onClickCapture={() => props.onAlgorithmAdd()}
+                    />
+                    <SpeedDialAction
+                        key={"action_3"}
+                        icon={<PlayCircleOutlineIcon/>}
+                        tooltipTitle={"Add Implementation"}
+                        onClickCapture={() => props.onImplementationAdd()}
+                    />
+                </SpeedDial>
+            </AddButtonContainer>
+
+
+
             </ButtonWrapper>
             <OntologyViewer 
                             onSelect={(item)=> { setSelected(item)}} 

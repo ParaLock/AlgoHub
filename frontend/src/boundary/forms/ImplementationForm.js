@@ -45,7 +45,7 @@ const BootstrapDialogTitle = (props) => {
     );
 };
 
-export default function ClassificationForm(props) {
+export default function ImplementationForm(props) {
 
     return (
         <div>
@@ -55,7 +55,7 @@ export default function ClassificationForm(props) {
                 open={props.open}
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => props.onClose()}>
-                    Classification Form
+                    Implementation Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <Typography gutterBottom>

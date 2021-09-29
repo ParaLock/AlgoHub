@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import IconButton from '@mui/material/IconButton';
+import BenchmarkEntry from '../common/BenchmarkEntry';
 
 const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
@@ -39,6 +40,10 @@ export default function BenchmarkSidebar(props) {
                     <AddCircleOutlineIcon />
                 </IconButton>
             </ButtonWrapper>
+            <BenchmarkEntry/>
+            <BenchmarkEntry/>
+            <BenchmarkEntry/>
+            <BenchmarkEntry/>
         </BenchmarkSidebarWrapper>
     )
 }

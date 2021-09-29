@@ -8,7 +8,7 @@ const treeStyles = {
 
     color: 'black',
     fill: 'black',
-    fontSize: "15pt",
+    fontSize: "13pt",
     width: '100%',
     marginLeft: "15px"
   }

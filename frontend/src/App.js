@@ -190,6 +190,8 @@ function App() {
 
   const [toggleableItems, setToggleableItems] = useState([]);
   const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
+  const [expandedOntologyItems, setExpandedOntologyItems] = useState({});
+  
 
   var removeItemFromArray = (array, item) => {
     var index = array.indexOf(item);
@@ -251,6 +253,8 @@ function App() {
 
             toggleableItems={toggleableItems}
             toggleItem={(item, state) => toggleItem(item, state)}
+
+            expandedOntologyItems={expandedOntologyItems}
 
           />
         </Route>

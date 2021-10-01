@@ -97,6 +97,7 @@ export default function MainPage(props) {
                     selectedOntologyItem={props.selectedOntologyItem}
                     onOntologyItemSelected={(item) => props.setSelectedOntologyItem(item)}
                     ontologyData={props.ontologyData}
+                    expandedOntologyItems={props.expandedOntologyItems}
                 />
                 <InnerContentWrapper>
 

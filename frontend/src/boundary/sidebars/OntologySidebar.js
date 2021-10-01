@@ -58,7 +58,6 @@ export default function OntologySidebar(props) {
         <OntologySidebarWrapper open={props.open}>
 
             <ButtonWrapper>
-
                 <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
                     <MergeTypeIcon />
                 </IconButton>
@@ -101,9 +100,10 @@ export default function OntologySidebar(props) {
 
             </ButtonWrapper>
             <OntologyViewer 
-                            onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
-                            selected={props.selectedOntologyItem} 
-                            ontologyData={props.ontologyData}
+                        onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
+                        selected={props.selectedOntologyItem} 
+                        ontologyData={props.ontologyData}
+                        expandedOntologyItems={props.expandedOntologyItems}
             />
         </OntologySidebarWrapper>
     )

@@ -53,12 +53,17 @@ export default class Tree extends React.PureComponent {
 
   constructor(props) {
     super(props)
-    this.state = { open: props.open, visible: props.visible, immediate: false }
+    this.state = { visible: props.visible, immediate: false }
   }
 
-  toggle = () =>
-    this.props.children &&
-    this.setState(state => ({ open: !state.open, immediate: false }))
+  toggle = () => {
+
+    var result = (this.props.children && this.setState(state => ({ immediate: false })))
+
+    this.props.expandedOntologyItems[this.props.item.id] = !this.props.expandedOntologyItems[this.props.item.id];
+
+    this.forceUpdate();
+  }
 
   toggleVisibility = () => {
     this.setState(
@@ -78,8 +83,15 @@ export default class Tree extends React.PureComponent {
   }
 
   render() {
-    const { open, visible, immediate } = this.state
-    const { item, children, content, type, style, canHide, springConfig } = this.props
+    const {  visible, immediate } = this.state
+    const { expandedOntologyItems, item, children, content, type, style, canHide, springConfig } = this.props
+
+    if(!(item.id in expandedOntologyItems)) {
+
+      expandedOntologyItems[item.id] = false; 
+    }
+
+    var open = expandedOntologyItems[item.id];
 
     const Icon =
       Icons[`${children ? (open ? 'Minus' : 'Plus') : 'Close'}SquareO`]

@@ -245,7 +245,9 @@ function App() {
             ontologyData={ontologyData}
             benchmarkData={benchmarkData}
 
-            selectedOntologyItem={(item) => setSelectedOntologyItem(item)}
+            setSelectedOntologyItem={(item) => setSelectedOntologyItem(item)}
+
+            selectedOntologyItem={selectedOntologyItem}
 
             toggleableItems={toggleableItems}
             toggleItem={(item, state) => toggleItem(item, state)}

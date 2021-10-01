@@ -10,22 +10,20 @@ import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
 
 
+import BasicHeader from '../BasicHeader';
+
 const Wrapper = styled.div`
 
-    height: 60%;
-    border-radius: 25px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    margin-top: 50px;
-    margin: 5px;
+    width: 100%;
+    height: 100%;
 `;
 
-export default function ProblemInstancePanel(props) {
-    return (
-  
-        <Wrapper>
-            TEST
-        </Wrapper>
-    );
-  }
-  
-  
+export default function SignInPage(props) {
+  return (
+
+      <Wrapper>
+          <BasicHeader title="Sign In"/>
+      </Wrapper>
+  );
+}
+

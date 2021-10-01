@@ -1,0 +1,14 @@
+class Model {
+
+    constructor() {
+
+    }
+
+    getAlgorithms() {
+
+
+    }
+
+
+
+}

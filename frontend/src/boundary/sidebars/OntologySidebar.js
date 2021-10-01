@@ -13,6 +13,7 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
 import CategoryIcon from '@mui/icons-material/Category';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 const OntologySidebarWrapper = styled.div`
     user-select: none;
@@ -33,7 +34,6 @@ const OntologySidebarWrapper = styled.div`
 const ButtonWrapper = styled.div`
     justify-content: right;
     display: flex;
-    width: 99%;
     height: 4%;
     border-radius: 0px 10px 10px 5px;
     border: 1px solid #1976d2;
@@ -50,26 +50,8 @@ const AddButtonContainer = styled.div`
     
     margin-bottom: 10px;
 `;
-  
-const ontologyData = [
-
-    { id: 1, content: "Algorithms", parentId: 0},
-    { id: 2, content: "Sorting", parentId: 1},
-    { id: 3, content: "Computational Geometry", parentId: 1},
-    { id: 4, content: "Nearest Neighbor", parentId: 3},
-    { id: 5, content: "Convex Hull", parentId: 3},
-    { id: 6, content: "Graph Algorithms", parentId: 1},
-    { id: 7, content: "Search", parentId: 6},
-    { id: 8, content: "Breadth-First Search", parentId: 7},
-    { id: 9, content: "Depth-First Search", parentId: 7},
-    { id: 10, content: "C++", parentId: 9},
-    { id: 11, content: "Java", parentId: 9}
-
-]
 
 export default function OntologySidebar(props) {
-
-    const [selected, setSelected] = useState("");
 
     return (
 
@@ -80,11 +62,12 @@ export default function OntologySidebar(props) {
                 <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
                     <MergeTypeIcon />
                 </IconButton>
+                <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
+                    <DriveFileMoveIcon />
+                </IconButton>
                 <IconButton color="inherit" size="large" onClick={() => props.onOntologyReport()}>
                     <StarsIcon />
                 </IconButton>
-
-
             <AddButtonContainer>
             <SpeedDial
                     ariaLabel="SpeedDial playground example"
@@ -118,9 +101,9 @@ export default function OntologySidebar(props) {
 
             </ButtonWrapper>
             <OntologyViewer 
-                            onSelect={(item)=> { setSelected(item)}} 
-                            selected={selected} 
-                            ontologyData={ontologyData}
+                            onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
+                            selected={props.selectedOntologyItem} 
+                            ontologyData={props.ontologyData}
             />
         </OntologySidebarWrapper>
     )

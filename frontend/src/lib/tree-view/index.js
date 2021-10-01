@@ -79,7 +79,7 @@ export default class Tree extends React.PureComponent {
 
   render() {
     const { open, visible, immediate } = this.state
-    const { uniqueId, children, content, type, style, canHide, springConfig } = this.props
+    const { item, children, content, type, style, canHide, springConfig } = this.props
 
     const Icon =
       Icons[`${children ? (open ? 'Minus' : 'Plus') : 'Close'}SquareO`]
@@ -102,8 +102,8 @@ export default class Tree extends React.PureComponent {
           />
         )}
         <ContentWrapper 
-                        onClick={() => this.props.onSelect(uniqueId)} 
-                        selected={this.props.selected == uniqueId}
+                        onClick={() => this.props.onSelect(item)} 
+                        selected={this.props.selected.id == item.id}
         >
           {content}
         

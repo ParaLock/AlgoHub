@@ -31,29 +31,30 @@ const items = treeData
 if (!items.length) return null;
 return (
     <>
-        {items.map((item) => {
+        {items.map((item, idx) => {
 
             var style = treeStyles;
 
-            var key = level + item.parentId + item.content;
+            var key = level + item.parentId + "." + item.id;
 
             if(item.hasChildren) {
+
                 return <Tree 
                             selected={selected} 
                             content={item.content} 
                             style={{...style, color:"#6652ff"}} 
                             key={key}
-                            uniqueId={key}
-                            onSelect={(id) => onSelect(id)}
+                            item={item}
+                            onSelect={(i) => onSelect(i)}
                         >
-                            <TreeWrapper onSelect={(id) => onSelect(id)} selected={selected} treeData={treeData} parentId={item.id} level={level + 1} />
+                            <TreeWrapper onSelect={(i) => onSelect(i)} selected={selected} treeData={treeData} parentId={item.id} level={level + 1} />
                     </Tree>
 
             } else {
                 
                 return <Tree 
-                                onSelect={(id) => onSelect(id)} 
-                                uniqueId={key}
+                                onSelect={(i) => onSelect(i)} 
+                                item={item}
                                 selected={selected} 
                                 content={item.content} 
                                 style={style} 
@@ -70,7 +71,7 @@ export default function OntologyViewer(props) {
 
     return (
         <div>
-            <TreeWrapper onSelect={(id) => props.onSelect(id)} selected={props.selected} treeData={getOntology(props.ontologyData)}/>
+            <TreeWrapper onSelect={(item) => props.onSelect(item)} selected={props.selected} treeData={getOntology(props.ontologyData)}/>
         </div>
     );
 }

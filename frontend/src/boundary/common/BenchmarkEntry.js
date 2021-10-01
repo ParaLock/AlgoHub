@@ -15,10 +15,9 @@ const Wrapper = styled.div`
     width: 99.5%;
     height: 10%;
     border-radius: 25px;
-    border-style: solid;
-    border-width: 1px;
     margin: 5px;
     text-align: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 `;
 
 export default function BenchmarkEntry(props) {

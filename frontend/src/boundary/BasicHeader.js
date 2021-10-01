@@ -8,14 +8,8 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
-
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-
-import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 import { useHistory } from 'react-router-dom';
 
@@ -36,28 +30,13 @@ export default function Header(props) {
     <Box sx={{ flexGrow: 1 }}>
       <Wrapper>
       <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={props.onClickOntologyMenu}
-          >
-            <AccountTreeIcon />
+      <IconButton onClick={() => history.push('/')} color="inherit">
+           <ArrowBackIcon/>
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            AlgoHub
+            {props.title}
           </Typography>
-          <IconButton onClick={props.onClickBenchmarkMenu} color="inherit">
-           <AccessTimeIcon/>
-          </IconButton>
-          <IconButton onClick={() => history.push('/accounts')} color="inherit">
-           <VisibilityIcon/>
-          </IconButton>
-          <IconButton onClick={() => history.push('/signin')}  color="inherit">
-           <VpnKeyIcon/>
-          </IconButton>
+
           
         </Toolbar>
       </Wrapper>

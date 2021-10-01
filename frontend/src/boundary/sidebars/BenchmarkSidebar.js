@@ -22,7 +22,6 @@ const BenchmarkSidebarWrapper = styled.div`
 const ButtonWrapper = styled.div`
     justify-content: center;
     display: flex;
-    width: 99%;
     height: 4%;
     border-radius: 0px 10px 10px 5px;
     border: 1px solid #1976d2;

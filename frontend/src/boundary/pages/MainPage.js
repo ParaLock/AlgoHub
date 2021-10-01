@@ -18,175 +18,6 @@ import BenchmarkForm from '../forms/BenchmarkForm';
 import AlgorithmForm from '../forms/AlgorithmForm';
 import ImplementationForm from "../forms/ImplementationForm"
 
-  
-const ontologyData = [
-
-    { id: 1, content: "Algorithms", parentId: 0, type: "classification"},
-    { id: 2, content: "Sorting", parentId: 1, type: "classification"},
-    { id: 3, content: "Computational Geometry", parentId: 1, type: "classification"},
-    { id: 4, content: "Nearest Neighbor", parentId: 3, type: "algorithm"},
-    { id: 5, content: "Convex Hull", parentId: 3, type: "algorithm"},
-    { id: 6, content: "Graph Algorithms", parentId: 1, type: "classification"},
-    { id: 7, content: "Search", parentId: 6, type: "classification"},
-    { id: 8, content: "Breadth-First Search", parentId: 7, type: "algorithm"},
-    { id: 9, content: "Depth-First Search", parentId: 7, type: "algorithm"},
-    { id: 10, content: "C++", parentId: 9, type: "implementation"},
-    { id: 11, content: "Java", parentId: 9, type: "implementation"}
-
-]
-
-const BenchmarkData = [
-    {
-        parent: "Depth-First Search.C++",
-        id: 1,
-        machine: {
-            CPU: "Intel core i7",
-            Memory: "8GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "10mb",
-        executionTime: "5min",
-        inputSize: 32,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.C++",
-        id: 2,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "15mb",
-        executionTime: "3min",
-        inputSize: 32 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.C++",
-        id: 3,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "15mb",
-        executionTime: "3min",
-        inputSize: 128 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.Java",
-        id: 4,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "150mb",
-        executionTime: "20min",
-        inputSize: 256 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.Java",
-        id: 5,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "150mb",
-        executionTime: "20min",
-        inputSize: 256 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.Java",
-        id: 6,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "150mb",
-        executionTime: "20min",
-        inputSize: 256 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.Java",
-        id: 7,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "150mb",
-        executionTime: "20min",
-        inputSize: 256 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.Java",
-        id: 8,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "150mb",
-        executionTime: "20min",
-        inputSize: 256 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.Java",
-        id: 9,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "150mb",
-        executionTime: "20min",
-        inputSize: 256 ,
-        problemInstance: "Worst Case"
-    },
-    {
-        parent: "Depth-First Search.Java",
-        id: 10,
-        machine: {
-            CPU: "Intel core i9",
-            Memory: "16GB",
-            L1: "1kb",
-            L2: "5kb",
-            L3: "10kb"
-        },
-        memoryUsage: "150mb",
-        executionTime: "20min",
-        inputSize: 256 ,
-        problemInstance: "Worst Case"
-    }
-]
 
 
 const Wrapper = styled.div`
@@ -226,31 +57,22 @@ const PanelTitle = styled.div`
     
 `;
 
-export default function MainPage() {
+export default function MainPage(props) {
 
-    const [isOntologyMenuOpen, setIsOntologyMenuOpen] = useState(false);
-    const [isBenchmarkMenuOpen, setIsBenchmarkMenuOpen] = useState(false);
-  
-    const [openForm, setOpenForm] = useState("");
-
-    const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
-    
-    var parent = ontologyData[selectedOntologyItem.parentId - 1];
+    var parent = props.ontologyData[props.selectedOntologyItem.parentId - 1];
     var title = "";
 
     if(parent) {
         title = parent.content;
     }
 
-    if(selectedOntologyItem.content) {
-        title += "." + selectedOntologyItem.content;
+    if(props.selectedOntologyItem.content) {
+        title += "." + props.selectedOntologyItem.content;
     } else {
         title = "Welcome to AMA"   
     }
 
-    var benchmarks = BenchmarkData.filter((item) => item.parent == title);
-
-    console.log(benchmarks);
+    var benchmarks = props.benchmarkData.filter((item) => item.parent == title);
 
     return (
 
@@ -258,23 +80,23 @@ export default function MainPage() {
         <Wrapper>
 
             <Header
-                onClickOntologyMenu={() => { setIsOntologyMenuOpen(!isOntologyMenuOpen) }}
-                onClickBenchmarkMenu={() => { setIsBenchmarkMenuOpen(!isBenchmarkMenuOpen) }}
+                onClickOntologyMenu={() => { props.toggleItem("ontology_menu") }}
+                onClickBenchmarkMenu={() => { props.toggleItem("benchmark_menu") }}
             />
 
             <ContentWrapper>
 
                 <OntologySidebar
-                    open={isOntologyMenuOpen}
-                    onClassificationAdd={() => setOpenForm("classification_form")}
-                    onOntologyMerge={() => setOpenForm("classification_merge")}
-                    onAlgorithmAdd={() => setOpenForm("algorithm_form")}
-                    onImplementationAdd={() => setOpenForm("implementation_form")}
-                    onOntologyReport={() => setOpenForm("algorithm_ranking_panel")}
-                    onAlgorithmReclassify={() => setOpenForm("algorithm_reclassify_form")}
-                    selectedOntologyItem={selectedOntologyItem}
-                    onOntologyItemSelected={(item) => setSelectedOntologyItem(item)}
-                    ontologyData={ontologyData}
+                    open={props.toggleableItems.includes("ontology_menu")}
+                    onClassificationAdd={() => props.toggleItem("classification_form")}
+                    onOntologyMerge={() => props.toggleItem("classification_merge")}
+                    onAlgorithmAdd={() => props.toggleItem("algorithm_form")}
+                    onImplementationAdd={() => props.toggleItem("implementation_form")}
+                    onOntologyReport={() => props.toggleItem("algorithm_ranking_panel")}
+                    onAlgorithmReclassify={() => props.toggleItem("algorithm_reclassify_form")}
+                    selectedOntologyItem={props.selectedOntologyItem}
+                    onOntologyItemSelected={(item) => props.setSelectedOntologyItem(item)}
+                    ontologyData={props.ontologyData}
                 />
                 <InnerContentWrapper>
 
@@ -282,63 +104,60 @@ export default function MainPage() {
                         {title}
                     </PanelTitle> 
 
-                    { selectedOntologyItem.type == "algorithm" && <AlgorithmPanel 
-                                                                                    selectedAlgorithm={selectedOntologyItem} 
-                                                                                    title={selectedOntologyItem.content}
+                    { props.selectedOntologyItem.type == "algorithm" && <AlgorithmPanel 
+                                                                                    selectedAlgorithm={props.selectedOntologyItem} 
                                                                     /> }
-                    { selectedOntologyItem.type == "classification" && <AlgorithmPanel 
-                                                                                    selectedAlgorithm={selectedOntologyItem} 
-                                                                                    title={selectedOntologyItem.content}
+                    { props.selectedOntologyItem.type == "classification" && <AlgorithmPanel 
+                                                                                    selectedAlgorithm={props.selectedOntologyItem} 
                                                                     /> }
-                    { selectedOntologyItem.type == "implementation" && <ImplementationPanel 
-                                                                                    selectedAlgorithm={selectedOntologyItem} 
-                                                                                    title={selectedOntologyItem.content}
+                    { props.selectedOntologyItem.type == "implementation" && <ImplementationPanel 
+                                                                                    selectedAlgorithm={props.selectedOntologyItem} 
                                                                         /> }
 
                     <ProblemInstancePanel />
 
                 </InnerContentWrapper>
                 <BenchmarkSidebar
-                    open={isBenchmarkMenuOpen}
-                    onBenchmarkAdd={() => setOpenForm("benchmark_form")}
+                    open={props.toggleableItems.includes("benchmark_menu")}
+                    onBenchmarkAdd={() => props.toggleItem("benchmark_add_form", true)}
                     benchmarks={benchmarks}
                 />
 
             </ContentWrapper>
 
             <ClassificationForm
-                open={openForm == "classification_form"}
-                onClose={() => setOpenForm("")}
+                open={props.toggleableItems.includes("classification_form")}
+                onClose={() => props.toggleItem("classification_form", false)}
             />
 
             <ClassificationMergeForm
-                open={openForm == "classification_merge"}
-                onClose={() => setOpenForm("")}
+                open={props.toggleableItems.includes("classification_merge")}
+                onClose={() => props.toggleItem("classification_merge", false)}
             />
 
             <AlgorithmRankingPanel
-                open={openForm == "algorithm_ranking_panel"}
-                onClose={() => setOpenForm("")}
+                open={props.toggleableItems.includes("algorithm_ranking_panel")}
+                onClose={() => props.toggleItem("algorithm_ranking_panel", false)}
             />
 
             <BenchmarkForm
-                open={openForm == "benchmark_form"}
-                onClose={() => setOpenForm("")}
+                open={props.toggleableItems.includes("benchmark_add_form")}
+                onClose={() => props.toggleItem("benchmark_add_form", false)}
             />
 
             <AlgorithmForm
-                open={openForm == "algorithm_form"}
-                onClose={() => setOpenForm("")}
+                open={props.toggleableItems.includes("algorithm_form")}
+                onClose={() => props.toggleItem("algorithm_form", false)}
             />
 
             <ImplementationForm
-                open={openForm == "implementation_form"}
-                onClose={() => setOpenForm("")}
+                open={props.toggleableItems.includes("implementation_form")}
+                onClose={() => props.toggleItem("implementation_form", false)}
             />
 
             <AlgorithmReclassifyForm
-                open={openForm == "algorithm_reclassify_form"}
-                onClose={() => setOpenForm("")}
+                open={props.toggleableItems.includes("algorithm_reclassify_form")}
+                onClose={() => props.toggleItem("algorithm_reclassify_form", false)}
             />
 
         </Wrapper>

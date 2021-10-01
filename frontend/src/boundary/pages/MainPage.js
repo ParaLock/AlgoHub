@@ -35,6 +35,158 @@ const ontologyData = [
 
 ]
 
+const BenchmarkData = [
+    {
+        parent: "Depth-First Search.C++",
+        id: 1,
+        machine: {
+            CPU: "Intel core i7",
+            Memory: "8GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "10mb",
+        executionTime: "5min",
+        inputSize: 32,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.C++",
+        id: 2,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "15mb",
+        executionTime: "3min",
+        inputSize: 32 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.C++",
+        id: 3,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "15mb",
+        executionTime: "3min",
+        inputSize: 128 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.Java",
+        id: 4,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "150mb",
+        executionTime: "20min",
+        inputSize: 256 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.Java",
+        id: 5,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "150mb",
+        executionTime: "20min",
+        inputSize: 256 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.Java",
+        id: 6,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "150mb",
+        executionTime: "20min",
+        inputSize: 256 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.Java",
+        id: 7,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "150mb",
+        executionTime: "20min",
+        inputSize: 256 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.Java",
+        id: 8,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "150mb",
+        executionTime: "20min",
+        inputSize: 256 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.Java",
+        id: 9,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "150mb",
+        executionTime: "20min",
+        inputSize: 256 ,
+        problemInstance: "Worst Case"
+    },
+    {
+        parent: "Depth-First Search.Java",
+        id: 10,
+        machine: {
+            CPU: "Intel core i9",
+            Memory: "16GB",
+            L1: "1kb",
+            L2: "5kb",
+            L3: "10kb"
+        },
+        memoryUsage: "150mb",
+        executionTime: "20min",
+        inputSize: 256 ,
+        problemInstance: "Worst Case"
+    }
+]
 
 
 const Wrapper = styled.div`
@@ -91,10 +243,14 @@ export default function MainPage() {
     }
 
     if(selectedOntologyItem.content) {
-        title += " - " + selectedOntologyItem.content;
+        title += "." + selectedOntologyItem.content;
     } else {
         title = "Welcome to AMA"   
     }
+
+    var benchmarks = BenchmarkData.filter((item) => item.parent == title);
+
+    console.log(benchmarks);
 
     return (
 
@@ -145,6 +301,7 @@ export default function MainPage() {
                 <BenchmarkSidebar
                     open={isBenchmarkMenuOpen}
                     onBenchmarkAdd={() => setOpenForm("benchmark_form")}
+                    benchmarks={benchmarks}
                 />
 
             </ContentWrapper>

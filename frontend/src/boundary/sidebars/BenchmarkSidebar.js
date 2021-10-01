@@ -17,6 +17,8 @@ const BenchmarkSidebarWrapper = styled.div`
     border-radius: 10px 5px 10px 5px;
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
     margin-top: 3px;
+    overflow: scroll;
+    overflow-y: auto;
 `;
 
 const ButtonWrapper = styled.div`
@@ -28,6 +30,10 @@ const ButtonWrapper = styled.div`
     margin-bottom: 10px;
 `;
 
+const MsgWrapper = styled.h3`
+
+    text-align: center;
+`;
 
 export default function BenchmarkSidebar(props) {
     
@@ -39,10 +45,11 @@ export default function BenchmarkSidebar(props) {
                     <AddCircleOutlineIcon />
                 </IconButton>
             </ButtonWrapper>
-            <BenchmarkEntry/>
-            <BenchmarkEntry/>
-            <BenchmarkEntry/>
-            <BenchmarkEntry/>
+
+            {props.benchmarks.length == 0 && <MsgWrapper>No Benchmarks</MsgWrapper>}
+
+            {props.benchmarks.map((item) => { return <BenchmarkEntry benchmark={item}/> })}
+            
         </BenchmarkSidebarWrapper>
     )
 }

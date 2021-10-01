@@ -49,7 +49,7 @@ const ContentWrapper = styled.div`
 
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 95%;
     flex-direction: row;
 
 `;
@@ -58,7 +58,7 @@ const InnerContentWrapper = styled.div`
 
     display: flex;
     height: 100%;
-    width: 99%;
+    width: 100%;
     flex-direction: column;
 `;
 
@@ -83,8 +83,19 @@ export default function MainPage() {
 
     const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
     
-    console.log(selectedOntologyItem);
-    
+    var parent = ontologyData[selectedOntologyItem.parentId - 1];
+    var title = "";
+
+    if(parent) {
+        title = parent.content;
+    }
+
+    if(selectedOntologyItem.content) {
+        title += " - " + selectedOntologyItem.content;
+    } else {
+        title = "Welcome to AMA"   
+    }
+
     return (
 
 
@@ -112,7 +123,7 @@ export default function MainPage() {
                 <InnerContentWrapper>
 
                     <PanelTitle>
-                        {selectedOntologyItem.content}
+                        {title}
                     </PanelTitle> 
 
                     { selectedOntologyItem.type == "algorithm" && <AlgorithmPanel 

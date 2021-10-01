@@ -13,7 +13,7 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
   
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    height: 90%;
+    height: 47.5%;
     border-radius: 25px;
     border-width: 1px;
     overflow-wrap: anywhere;
@@ -27,6 +27,7 @@ const Wrapper = styled.div`
 
 
 const ImplCode = styled.div`
+
     border-radius: 25px;
     border-width: 1px;
     overflow-wrap: anywhere;
@@ -44,6 +45,7 @@ const ImplCode = styled.div`
 const ButtonWrapper = styled.div`
 
     margin-left: 90%;
+    padding-bottom: 10px;
 
 `;
 

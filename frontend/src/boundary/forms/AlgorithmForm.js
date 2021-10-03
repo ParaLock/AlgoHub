@@ -77,7 +77,7 @@ export default function AlgorithmForm(props) {
                 fullWidth="true"
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => props.onClose()}>
-                    Classifcation Form
+                    Algorithm Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <GeneralInfo>

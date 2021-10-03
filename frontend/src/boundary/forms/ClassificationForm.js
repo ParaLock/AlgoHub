@@ -77,7 +77,7 @@ export default function ClassificationForm(props) {
                 fullWidth="true"
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => props.onClose()}>
-                    Classifcation Form
+                    Classification Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <GeneralInfo>

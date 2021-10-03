@@ -21,6 +21,7 @@ const Wrapper = styled.div`
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     margin: 5px;
     padding: 5px;
+    font-size: 10pt;
     justify-content: center;
     flex-direction: column;
     overflow: scroll;

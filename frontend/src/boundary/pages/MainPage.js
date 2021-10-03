@@ -17,6 +17,7 @@ import AlgorithmReclassifyForm from '../forms/AlgorithmReclassifyForm';
 import BenchmarkForm from '../forms/BenchmarkForm';
 import AlgorithmForm from '../forms/AlgorithmForm';
 import ImplementationForm from "../forms/ImplementationForm"
+import ProblemInstanceForm from '../forms/ProblemInstanceForm';
 
 
 
@@ -73,6 +74,18 @@ export default function MainPage(props) {
     }
 
     var benchmarks = props.benchmarkData.filter((item) => item.parent == title);
+    var problemInstances = props.problemInstanceData.filter((item) => {
+        
+        if(item.parent == props.selectedOntologyItem.content) {
+            return true;
+        }
+
+        if(props.selectedOntologyItem.type == "implementation" && parent.content == item.parent) {
+
+            return true;
+        }   
+    
+    });
 
     return (
 
@@ -115,7 +128,11 @@ export default function MainPage(props) {
                                                                                     selectedAlgorithm={props.selectedOntologyItem} 
                                                                         /> }
 
-                    <ProblemInstancePanel />
+                    <ProblemInstancePanel 
+                        problemInstanceData={problemInstances}
+                        onProblemInstanceAdd={() => props.toggleItem("problem_instance_form")}
+
+                    />
 
                 </InnerContentWrapper>
                 <BenchmarkSidebar
@@ -129,36 +146,49 @@ export default function MainPage(props) {
             <ClassificationForm
                 open={props.toggleableItems.includes("classification_form")}
                 onClose={() => props.toggleItem("classification_form", false)}
+                ontologyData={props.ontologyData}
+            />
+
+            <ProblemInstanceForm
+                open={props.toggleableItems.includes("problem_instance_form")}
+                onClose={() => props.toggleItem("problem_instance_form", false)}
+                ontologyData={props.ontologyData}
             />
 
             <ClassificationMergeForm
                 open={props.toggleableItems.includes("classification_merge")}
                 onClose={() => props.toggleItem("classification_merge", false)}
+                ontologyData={props.ontologyData}
             />
 
             <AlgorithmRankingPanel
                 open={props.toggleableItems.includes("algorithm_ranking_panel")}
                 onClose={() => props.toggleItem("algorithm_ranking_panel", false)}
+                ontologyData={props.ontologyData}
             />
 
             <BenchmarkForm
                 open={props.toggleableItems.includes("benchmark_add_form")}
                 onClose={() => props.toggleItem("benchmark_add_form", false)}
+                ontologyData={props.ontologyData}
             />
 
             <AlgorithmForm
                 open={props.toggleableItems.includes("algorithm_form")}
                 onClose={() => props.toggleItem("algorithm_form", false)}
+                ontologyData={props.ontologyData}
             />
 
             <ImplementationForm
                 open={props.toggleableItems.includes("implementation_form")}
                 onClose={() => props.toggleItem("implementation_form", false)}
+                ontologyData={props.ontologyData}
             />
 
             <AlgorithmReclassifyForm
                 open={props.toggleableItems.includes("algorithm_reclassify_form")}
                 onClose={() => props.toggleItem("algorithm_reclassify_form", false)}
+                ontologyData={props.ontologyData}
             />
 
         </Wrapper>

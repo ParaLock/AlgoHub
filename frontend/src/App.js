@@ -1,8 +1,6 @@
 import './App.css';
 
 import React, { useState } from 'react';
-import styled from 'styled-components';
-
 import MainPage from './boundary/pages/MainPage'
 import AccountManagementPage from './boundary/pages/AccountManagementPage';
 import SignInPage from './boundary/pages/SignInPage';
@@ -13,7 +11,6 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import BenchmarkForm from './boundary/forms/BenchmarkForm';
 
 
 const ontologyData = [
@@ -29,6 +26,31 @@ const ontologyData = [
   { id: 9, content: "Depth-First Search", parentId: 7, type: "algorithm" },
   { id: 10, content: "C++", parentId: 9, type: "implementation" },
   { id: 11, content: "Java", parentId: 9, type: "implementation" }
+
+]
+
+const problemInstanceData = [
+
+  {
+    parent: "Convex Hull",
+    name: "Worst case",
+    inputSize: 128
+  },
+  {
+    parent: "Depth-First Search",
+    name: "Average case",
+    inputSize: 32
+  },
+  {
+    parent: "Depth-First Search",
+    name: "Worst case",
+    inputSize: 256
+  },
+  {
+    parent: "Depth-First Search",
+    name: "Best case",
+    inputSize: 16
+  }
 
 ]
 
@@ -246,6 +268,7 @@ function App() {
           <MainPage
             ontologyData={ontologyData}
             benchmarkData={benchmarkData}
+            problemInstanceData={problemInstanceData}
 
             setSelectedOntologyItem={(item) => setSelectedOntologyItem(item)}
 

@@ -65,26 +65,7 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 }));
 
-const MachineInformation = styled('div')(({ theme }) => ({
-    
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    paddingBottom: "20px"
-
-}));
-
-const ResultsInfomation = styled('div')(({ theme }) => ({
-    
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingTop: "50px"
-
-}));
-
-
-export default function BenchmarkForm(props) {
+export default function ProblemInstanceForm(props) {
 
     return (
         <div>
@@ -96,7 +77,7 @@ export default function BenchmarkForm(props) {
                 fullWidth="true"
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => props.onClose()}>
-                    Benchmark Form
+                    Problem Instance Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <GeneralInfo>
@@ -108,74 +89,13 @@ export default function BenchmarkForm(props) {
                         options={props.ontologyData.filter((item) => item.type == "algorithm")}
                         renderInput={(params) => <TextField {...params} label="Parent Algorithm Name" />}
                         />
-                        <TextField label="Implementation Name"  
-                            sx={{width: "30%"}}
-                        />
                         <TextField label="Problem Instance Name"  
                             sx={{width: "30%"}}
                         />
+                        <TextField label="Dataset Size"  
+                            sx={{width: "30%"}}
+                        />
                     </GeneralInfo>
-
-                    <MachineInformation>
-
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={[]}
-                        renderInput={(params) => <TextField {...params} label="CPU" />}
-                        />
-
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={[]}
-                        renderInput={(params) => <TextField {...params} label="Memory" />}
-                        />
-
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={[]}
-                        renderInput={(params) => <TextField {...params} label="L1 Cache" />}
-                        />
-
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={[]}
-                        renderInput={(params) => <TextField {...params} label="L2 Cache" />}
-                        />
-
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={[]}
-                        renderInput={(params) => <TextField {...params} label="L3 Cache" />}
-                        />
-
-
-                    </MachineInformation>
-
-                    <ResultsInfomation>
-
-                        <TextField label="Execution Time"  
-                            sx={{width: "30%"}}
-                        />
-                        <TextField label="Memory Usage"  
-                            sx={{width: "30%"}}
-                        />
-
-                    </ResultsInfomation>
 
 
                 </DialogContent>

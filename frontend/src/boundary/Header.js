@@ -38,7 +38,6 @@ export default function Header(props) {
   const history = useHistory();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
       <Wrapper>
       <CustomToolbar variant="dense">
 
@@ -58,7 +57,6 @@ export default function Header(props) {
         </CustomToolbar>
       </Wrapper>
 
-    </Box>
   );
 }
 

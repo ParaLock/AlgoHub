@@ -27,7 +27,6 @@ export default function Header(props) {
   const history = useHistory();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
       <Wrapper>
       <Toolbar variant="dense">
       <IconButton onClick={() => history.push('/')} color="inherit">
@@ -40,8 +39,6 @@ export default function Header(props) {
           
         </Toolbar>
       </Wrapper>
-
-    </Box>
   );
 }
 

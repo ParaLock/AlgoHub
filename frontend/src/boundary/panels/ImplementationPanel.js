@@ -44,8 +44,10 @@ const ImplCode = styled.div`
 
 const ButtonWrapper = styled.div`
 
-    margin-left: 90%;
     padding-bottom: 10px;
+    padding-right: 10px;
+    display: flex;
+    justify-content: right;
 
 `;
 
@@ -61,10 +63,8 @@ export default function ImplementationPanel(props) {
             
             <ButtonWrapper>
 
-            <Button variant="contained">DOWNLOAD</Button>
+                <Button size="small" variant="contained">DOWNLOAD</Button>
             </ButtonWrapper>
-
-          
 
       </Wrapper>
   );

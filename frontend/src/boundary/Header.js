@@ -1,6 +1,5 @@
 
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -15,6 +14,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
+import { styled as material_styled} from '@mui/material/styles';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 import { useHistory } from 'react-router-dom';
@@ -28,6 +28,11 @@ const Wrapper = styled.div`
 
 `;
 
+const CustomToolbar = material_styled(Toolbar)(({ theme }) => ({
+
+}));
+
+
 export default function Header(props) {
 
   const history = useHistory();
@@ -35,7 +40,7 @@ export default function Header(props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Wrapper>
-      <Toolbar>
+      <CustomToolbar variant="dense">
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             AlgoHub
@@ -50,7 +55,7 @@ export default function Header(props) {
            <VpnKeyIcon/>
           </IconButton>
           
-        </Toolbar>
+        </CustomToolbar>
       </Wrapper>
 
     </Box>

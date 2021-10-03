@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import OntologyViewer from '../panels/OntologyViewer';
 import IconButton from '@mui/material/IconButton';
 
+import { styled as material_styled} from '@mui/material/styles';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import MergeTypeIcon from '@mui/icons-material/MergeType';
 import StarsIcon from '@mui/icons-material/Stars';
@@ -16,6 +17,13 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import { Resizable } from "re-resizable";
 
+const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
+    '& .MuiSpeedDial-actions': {
+        zIndex: 9999,
+        position: "absolute",
+        marginTop: "0.5px"
+    }
+}));
 
 const OntologySidebarWrapper = styled.div`
     user-select: none;
@@ -33,24 +41,16 @@ const OntologySidebarWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    justify-content: right;
+
     display: flex;
-    height: 4%;
+    justify-content: space-between;
+    flex-direction: row;
     border-radius: 0px 10px 10px 5px;
     border: 1px solid #1976d2;
-    margin-bottom: 10px;
 `;
 
-const AddButtonContainer = styled.div`
-    justify-content: right;
-    display: flex;
-    width: 99%;
-    height: 4%;
-    padding-top: 8px;
-    padding-right: 8px;
-    
-    margin-bottom: 10px;
-`;
+
+
 
 export default function OntologySidebar(props) {
 
@@ -64,23 +64,25 @@ export default function OntologySidebar(props) {
         }}
         >
         <OntologySidebarWrapper open={props.open}>
-
             <ButtonWrapper>
-                <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
-                    <MergeTypeIcon />
-                </IconButton>
-                <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
-                    <DriveFileMoveIcon />
-                </IconButton>
-                <IconButton color="inherit" size="large" onClick={() => props.onOntologyReport()}>
-                    <StarsIcon />
-                </IconButton>
-            <AddButtonContainer>
-            <SpeedDial
+                <span>
+                    <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
+                        <MergeTypeIcon />
+                    </IconButton>
+                    <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
+                        <DriveFileMoveIcon />
+                    </IconButton>
+                    <IconButton color="inherit" size="large" onClick={() => props.onOntologyReport()}>
+                        <StarsIcon />
+                    </IconButton>
+                </span>
+            <span>
+            <CustomSpeedDial
                     ariaLabel="SpeedDial playground example"
                     direction="down"
                     sx="sm"
-                    FabProps={{sx: {width: "40px"}}}
+                    
+                    FabProps={{sx: {width: "40px", height: "10px", marginTop: "2px"}}}
                     icon={<SpeedDialIcon />}
                 >
                     <SpeedDialAction
@@ -101,12 +103,13 @@ export default function OntologySidebar(props) {
                         tooltipTitle={"Add Implementation"}
                         onClickCapture={() => props.onImplementationAdd()}
                     />
-                </SpeedDial>
-            </AddButtonContainer>
-
+                </CustomSpeedDial>
+            </span>
+     
 
 
             </ButtonWrapper>
+
             <OntologyViewer 
                         onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
                         selected={props.selectedOntologyItem} 

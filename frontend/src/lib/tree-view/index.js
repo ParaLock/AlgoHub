@@ -34,7 +34,7 @@ const styles = {
     willChange: 'transform, opacity, height',
     marginLeft: 6,
     marginTop: 4,
-    padding: '4px 0px 0px 14px',
+    padding: '0px 0px 0px 10px',
     borderLeft: '1px dashed black'
   },
 }

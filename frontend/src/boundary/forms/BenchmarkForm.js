@@ -22,7 +22,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         padding: theme.spacing(1),
     },
     "& .MuiPaper-root" : {
-        height: "50%"
+        height: "100%"
     }
 }));
 

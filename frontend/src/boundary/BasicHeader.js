@@ -29,7 +29,7 @@ export default function Header(props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Wrapper>
-      <Toolbar>
+      <Toolbar variant="dense">
       <IconButton onClick={() => history.push('/')} color="inherit">
            <ArrowBackIcon/>
           </IconButton>

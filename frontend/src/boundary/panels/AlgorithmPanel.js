@@ -24,11 +24,11 @@ const AlgorithmDescription = styled.div`
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     height: 100%;
     border-radius: 25px;
+    font-size: 12pt;
     border-width: 1px;
     overflow-wrap: anywhere;
     padding-left: 5px;
     padding-right: 5px;
-    margin-bottom: 0px;
     display: flex;
     justify-content: center;
     

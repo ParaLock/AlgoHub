@@ -87,7 +87,7 @@ export default function ProblemInstancePanel(props) {
                             </tr>
                             <tr>
                                 <td>
-                                    <Button variant="contained">DOWNLOAD</Button>
+                                    <Button size="small"  variant="contained">DOWNLOAD</Button>
                                 </td>
                             </tr>
                         </table>

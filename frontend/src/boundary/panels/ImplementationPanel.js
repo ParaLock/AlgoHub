@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     height: 47.5%;
-    border-radius: 25px;
+    border-radius: 5px;
     border-width: 1px;
     overflow-wrap: anywhere;
     padding-left: 5px;

@@ -17,7 +17,7 @@ import { Resizable } from "re-resizable";
 const Wrapper = styled.div`
 
     height: 47.5%;
-    border-radius: 25px;
+    border-radius: 5px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     margin: 5px;
     padding: 5px;
@@ -35,7 +35,7 @@ const Title = styled.h4`
 `;
 
 const ProblemInstanceWrapper = styled.div`
-    border-radius: 25px;
+    border-radius: 5px;
     height: 80px;
 
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);

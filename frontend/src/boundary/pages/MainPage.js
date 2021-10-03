@@ -48,7 +48,6 @@ const InnerContentWrapper = styled.div`
 
 const PanelTitle = styled.div`   
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    height: 3.5%;
     border-radius: 25px;
     padding: 5px;
     font-size: 20pt;

@@ -48,8 +48,9 @@ const InnerContentWrapper = styled.div`
 
 const PanelTitle = styled.div`   
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    height: 3%;
+    height: 3.5%;
     border-radius: 25px;
+    padding: 5px;
     font-size: 20pt;
     border-width: 1px;
     margin: 5px;
@@ -93,14 +94,13 @@ export default function MainPage(props) {
         <Wrapper>
 
             <Header
-                onClickOntologyMenu={() => { props.toggleItem("ontology_menu") }}
                 onClickBenchmarkMenu={() => { props.toggleItem("benchmark_menu") }}
             />
 
             <ContentWrapper>
 
                 <OntologySidebar
-                    open={props.toggleableItems.includes("ontology_menu")}
+                    open={true}
                     onClassificationAdd={() => props.toggleItem("classification_form")}
                     onOntologyMerge={() => props.toggleItem("classification_merge")}
                     onAlgorithmAdd={() => props.toggleItem("algorithm_form")}

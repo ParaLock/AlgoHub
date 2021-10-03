@@ -36,16 +36,7 @@ export default function Header(props) {
     <Box sx={{ flexGrow: 1 }}>
       <Wrapper>
       <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={props.onClickOntologyMenu}
-          >
-            <AccountTreeIcon />
-          </IconButton>
+
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             AlgoHub
           </Typography>

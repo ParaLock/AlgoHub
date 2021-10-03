@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import IconButton from '@mui/material/IconButton';
 import BenchmarkEntry from '../common/BenchmarkEntry';
+import { Resizable } from "re-resizable";
 
 const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
@@ -40,6 +41,7 @@ export default function BenchmarkSidebar(props) {
     return (
 
         <BenchmarkSidebarWrapper open={props.open}>
+
             <ButtonWrapper>
                 <IconButton color="inherit" size="large" onClick={() => props.onBenchmarkAdd()}>
                     <AddCircleOutlineIcon />
@@ -49,7 +51,7 @@ export default function BenchmarkSidebar(props) {
             {props.benchmarks.length == 0 && <MsgWrapper>No Benchmarks</MsgWrapper>}
 
             {props.benchmarks.map((item) => { return <BenchmarkEntry benchmark={item}/> })}
-            
+             
         </BenchmarkSidebarWrapper>
     )
 }

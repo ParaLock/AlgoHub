@@ -14,14 +14,15 @@ import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
 import CategoryIcon from '@mui/icons-material/Category';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
+import { Resizable } from "re-resizable";
+
 
 const OntologySidebarWrapper = styled.div`
     user-select: none;
-    width: 30%;
     height: 100%;
     background-color: #f0f0f0;
     flex-wrap: nowrap;
-    max-width: ${props => props.open ? "20%" : "0%"};
+    max-width: ${props => props.open ? "100%" : "0%"};
     transform: ${props => props.open ? "translateX(0%)" : "translateX(-100%)"};
     transition: transform 250ms ease-in-out, max-width 250ms;
     overflow:hidden;
@@ -55,6 +56,13 @@ export default function OntologySidebar(props) {
 
     return (
 
+        <Resizable
+        enable={{ top:false, right:true, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
+        defaultSize={{
+            width:"20%",
+            height:"100%",
+        }}
+        >
         <OntologySidebarWrapper open={props.open}>
 
             <ButtonWrapper>
@@ -105,6 +113,6 @@ export default function OntologySidebar(props) {
                         ontologyData={props.ontologyData}
                         expandedOntologyItems={props.expandedOntologyItems}
             />
-        </OntologySidebarWrapper>
+        </OntologySidebarWrapper></Resizable>
     )
 }

@@ -12,6 +12,8 @@ import styled from 'styled-components';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
+import { Resizable } from "re-resizable";
+
 const Wrapper = styled.div`
 
     height: 47.5%;
@@ -22,6 +24,7 @@ const Wrapper = styled.div`
     justify-content: center;
     flex-direction: column;
     overflow: scroll;
+    
     overflow-y: auto;
 `;
 

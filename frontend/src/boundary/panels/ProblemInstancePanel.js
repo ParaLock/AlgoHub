@@ -24,7 +24,7 @@ const Wrapper = styled.div`
     justify-content: center;
     flex-direction: column;
     overflow: scroll;
-    
+       
     overflow-y: auto;
 `;
 

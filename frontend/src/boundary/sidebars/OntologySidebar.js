@@ -28,7 +28,7 @@ const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
 const OntologySidebarWrapper = styled.div`
     user-select: none;
     height: 100%;
-    background-color: #f0f0f0;
+    background-color: #f2f3f5;
     flex-wrap: nowrap;
     max-width: ${props => props.open ? "100%" : "0%"};
     transform: ${props => props.open ? "translateX(0%)" : "translateX(-100%)"};

@@ -10,7 +10,7 @@ const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
     width: 25%;
     height: 100%;
-    background-color: #f0f0f0;
+    background-color: #f2f3f5;
     max-width: ${props => props.open ? "25%" : "0%"};
     transform: ${props => props.open ? "translateX(0%)" : "translateX(100%)"};
     transition: transform 250ms ease-in-out, max-width 250ms;

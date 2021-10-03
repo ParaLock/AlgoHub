@@ -25,7 +25,7 @@ const Wrapper = styled.div`
     overflow-y: auto;
 `;
 
-const Title = styled.h3`
+const Title = styled.h4`
 
     margin-bottom: 10px;
     text-align: center;
@@ -36,7 +36,7 @@ const ProblemInstanceWrapper = styled.div`
     height: 80px;
 
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    margin-top: 20px;
+    margin-top: 10px;
     padding: 10px;
     display:flex;
     flex-direction: row;

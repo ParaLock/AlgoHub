@@ -17,7 +17,7 @@ import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 const OntologySidebarWrapper = styled.div`
     user-select: none;
-    width: 20%;
+    width: 30%;
     height: 100%;
     background-color: #f0f0f0;
     flex-wrap: nowrap;

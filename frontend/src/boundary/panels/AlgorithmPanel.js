@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     height: 47.5%;
     border-radius: 25px;
     border-width: 1px;
-    font-size: 25pt;
+    font-size: 15pt;
     margin: 5px;
 `;
 

@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  description: AlgoHub API
+  version: 1.0.0
+  title: AlgoHub API
+  # Team developer contact info 
+  contact:
+    email: igrigolia@wpi.edu
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+
+paths:
+  /algorithms/{id}:
+    get:
+      summary: "Returns an algorithm by Id"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "The id of an algorithm to return"
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: "An algorithm object."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                
+        '400':
+          description: "The specified  ID is invalid (not a number)."
+        '404':
+          description: "An algorithm with the specified ID was not found."
+        default:
+          description: "Unexpected error"

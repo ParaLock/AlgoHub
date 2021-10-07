@@ -1,45 +1,82 @@
 openapi: 3.0.0
 info:
-  description: AlgoHub API
-  version: 1.0.0
-  title: AlgoHub API
-  # Team developer contact info 
-  contact:
-    email: igrigolia@wpi.edu
-
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-
-
+  description: "Test API"
+  version: "1.0.0"
+  title: "Test API"
+host: "4liizedywg.execute-api.us-east-1.amazonaws.com"
+basePath: "/beta"
+schemes:
+- "https"
 paths:
   /algorithms/{id}:
     get:
-      summary: "Returns an algorithm by Id"
+      operationId: "getAlgorithm"
+      summary: Gets Algorithm
+      description: "Returns algorithm"
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: "The id of an algorithm to return"
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
+       - name: id
+         in: path
+         required: true
+         description: "The id of an algorithm to return"
+         schema:
+           $ref: "#/definitions/GetalgorithmByID"
       responses:
-        '200':
-          description: "An algorithm object."
+        "200":
+          description: "200 response"
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                
-        '400':
-          description: "The specified  ID is invalid (not a number)."
-        '404':
-          description: "An algorithm with the specified ID was not found."
-        default:
-          description: "Unexpected error"
+                $ref: "#/definitions/GetAlgorithmResponse"
+        "400":
+          description: "400 response"
+  # /algorithms/add:
+  #   post:
+  #     summary: Adds a new Algorithm
+  #     parameters:
+  #     - in: "body"
+  #       name: "CalculationRequest"
+  #       required: true
+  #       schema:
+  #           $ref: "#/definitions/AddAlgorithmRequest"
+             
+  #     responses:
+  #       "200":
+  #         description: "200 response"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/definitions/GetAlgorithmResponse"
+  #       "400":
+  #         description: "400 response"
+definitions:
+  GetalgorithmByID:
+    type: integer
+    format: int64
+    
+  AddAlgorithmRequest:
+    type: "object"
+    required:
+    - "id"
+    - "name"
+    - "description"
+    - "implementations"
+    - "parent"
+    - "starRating"
+  
+  GetAlgorithmResponse:
+   type: "object"
+   required:
+   - "algorithm"
+   - "statusCode"
+   - "error"
+  properties:
+    result:
+      type:  object
+    statusCode:
+      type: integer
+    error:
+      type: string
+      
+  
+  
+  AddAlgorithmRsponse:

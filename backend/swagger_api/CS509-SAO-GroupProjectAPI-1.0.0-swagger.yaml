@@ -35,14 +35,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostAlgorithmRequest'
+              $ref: '#/components/schemas/AddAlgorithmRequest'
       responses:
         '200':
           description: CREATED
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostAlgorithmResponse'
+                $ref: '#/components/schemas/AddAlgorithmResponse'
 components:
   schemas:
     
@@ -58,14 +58,19 @@ components:
         algorithm_id:
           type: string
           
-    PostAlgorithmRequest:
+    AddAlgorithmRequest:
       type: "object"
       properties:
         name:
           type: string
+
+        description:
+          type: "string"
+        
+        parent_id: 
+          type: "string"
           
-          
-    PostAlgorithmResponse:
+    AddAlgorithmResponse:
       type: "object"
       properties:
         algorithm_id:

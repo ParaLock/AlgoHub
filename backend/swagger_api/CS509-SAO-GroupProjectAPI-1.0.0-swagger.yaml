@@ -8,6 +8,9 @@ servers:
     basePath:
       default: "/beta"
 paths:
+
+  # ------------------ ALGORITHM BEGIN ------------------------------   
+
   /algorithms/{id}:
     get:
       parameters:
@@ -27,10 +30,7 @@ paths:
   /algorithms/add:
     post:
       summary: Create Algorithm
-      description: Create new algorithm
-      operationId: PostAlgorithm
       requestBody:
-        description: Algorithm to create
         required: true
         content:
           application/json:
@@ -43,35 +43,154 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AddAlgorithmResponse'
+                
+  
+  # ------------------ ALGORITHM END ------------------------------
+  
+  # ------------------ IMPLEMENTATION BEGIN ------------------------------
+  
+  /implementations/{id}:
+    get:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          $ref: "#/components/schemas/GetImplementationByIdRequest"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetImplementationByIdResponse"
+                
+  /implementations/add:
+    post:
+      summary: Create implementation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddImplementationRequest'
+      responses:
+        '200':
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddImplementationResponse'
+                
+  /implementations/remove/{id}:
+    get:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          $ref: "#/components/schemas/RemoveImplementationRequest"
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RemoveImplementationResponse"
+                
+  # ------------------ IMPLEMENTATION END ------------------------------  
+                
 components:
   schemas:
     
+    # ------------------ ALGORITHM BEGIN ------------------------------   
+    
     GetAlgorithmByIdRequest:
-      type: "object"
+      type: object
       properties:
-        algorithm_id:
+        id:
           type: string
     
     GetAlgorithmByIdResponse:
-      type: "object"
+      type: object
       properties:
         algorithm_id:
           type: string
           
     AddAlgorithmRequest:
-      type: "object"
+      type: object
       properties:
         name:
           type: string
 
         description:
-          type: "string"
+          type: string
         
-        parent_id: 
-          type: "string"
+        parent:
+          type: string
           
     AddAlgorithmResponse:
-      type: "object"
+      type: object
       properties:
         algorithm_id:
           type: string
+          
+    # ------------------ ALGORITHM END ------------------------------ 
+    
+    # ------------------ IMPLEMENTATION BEGIN ------------------------------     
+    GetImplementationByIdRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          
+    GetImplementationByIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          
+        name:
+          type: string
+          
+        source_code: 
+          type: string
+          
+    AddImplementationRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        
+        parent_algorithm: 
+          type: string
+          
+        source_code: 
+          type: string
+          
+    AddImplementationResponse:
+      type: object
+      properties:
+        implementation_id:
+          type: string
+          
+          
+    RemoveImplementationRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          
+    RemoveImplementationResponse:
+      type: object
+      properties:
+        deleted_benchmarks:
+          type: array
+          items:
+            type: string
+          
+    
+    # ------------------ IMPLEMENTATION END ------------------------------     
+          
+          
+          

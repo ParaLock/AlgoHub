@@ -1,0 +1,1 @@
+Hey Dmitriy! If you would like, you can try and setup your Intellij environment in this folder. Just remember to import you source code from Eclipse_Workspace/Backend_Serverless/src.

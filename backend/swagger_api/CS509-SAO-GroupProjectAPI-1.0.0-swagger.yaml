@@ -1,82 +1,72 @@
-openapi: 3.0.0
+openapi: "3.0.1"
 info:
-  description: "Test API"
-  version: "1.0.0"
-  title: "Test API"
-host: "4liizedywg.execute-api.us-east-1.amazonaws.com"
-basePath: "/beta"
-schemes:
-- "https"
+  title: "ams-api"
+  version: '1'
+servers:
+- url: "https://64ou5kvx69.execute-api.us-east-1.amazonaws.com/{basePath}"
+  variables:
+    basePath:
+      default: "/beta"
 paths:
   /algorithms/{id}:
     get:
-      operationId: "getAlgorithm"
-      summary: Gets Algorithm
-      description: "Returns algorithm"
       parameters:
-       - name: id
-         in: path
-         required: true
-         description: "The id of an algorithm to return"
-         schema:
-           $ref: "#/definitions/GetalgorithmByID"
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          $ref: "#/components/schemas/GetAlgorithmByIdRequest"
       responses:
         "200":
           description: "200 response"
           content:
             application/json:
               schema:
-                $ref: "#/definitions/GetAlgorithmResponse"
-        "400":
-          description: "400 response"
-  # /algorithms/add:
-  #   post:
-  #     summary: Adds a new Algorithm
-  #     parameters:
-  #     - in: "body"
-  #       name: "CalculationRequest"
-  #       required: true
-  #       schema:
-  #           $ref: "#/definitions/AddAlgorithmRequest"
-             
-  #     responses:
-  #       "200":
-  #         description: "200 response"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/definitions/GetAlgorithmResponse"
-  #       "400":
-  #         description: "400 response"
-definitions:
-  GetalgorithmByID:
-    type: integer
-    format: int64
+                $ref: "#/components/schemas/GetAlgorithmByIdResponse"
+                
+  /algorithms/add:
+    post:
+      summary: Create Algorithm
+      description: Create new algorithm
+      operationId: PostAlgorithm
+      requestBody:
+        description: Algorithm to create
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostAlgorithmRequest'
+      responses:
+        '200':
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostAlgorithmResponse'
+components:
+  schemas:
     
-  AddAlgorithmRequest:
-    type: "object"
-    required:
-    - "id"
-    - "name"
-    - "description"
-    - "implementations"
-    - "parent"
-    - "starRating"
-  
-  GetAlgorithmResponse:
-   type: "object"
-   required:
-   - "algorithm"
-   - "statusCode"
-   - "error"
-  properties:
-    result:
-      type:  object
-    statusCode:
-      type: integer
-    error:
-      type: string
-      
-  
-  
-  AddAlgorithmRsponse:
+    GetAlgorithmByIdRequest:
+      type: "object"
+      properties:
+        algorithm_id:
+          type: string
+    
+    GetAlgorithmByIdResponse:
+      type: "object"
+      properties:
+        algorithm_id:
+          type: string
+          
+    PostAlgorithmRequest:
+      type: "object"
+      properties:
+        name:
+          type: string
+          
+          
+    PostAlgorithmResponse:
+      type: "object"
+      properties:
+        algorithm_id:
+          type: string

@@ -18,14 +18,14 @@ paths:
         in: "path"
         required: true
         schema:
-          $ref: "#/components/schemas/GetAlgorithmByIdRequest"
+          $ref: "#/components/schemas/AlgorithmRequest"
       responses:
         "200":
           description: "200 response"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetAlgorithmByIdResponse"
+                $ref: "#/components/schemas/AlgorithmResponse"
                 
   /algorithms/add:
     post:
@@ -35,14 +35,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddAlgorithmRequest'
+              $ref: '#/components/schemas/AlgorithmAddRequest'
       responses:
         '200':
           description: CREATED
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AddAlgorithmResponse'
+                $ref: '#/components/schemas/AlgorithmAddResponse'
                 
   
   # ------------------ ALGORITHM END ------------------------------
@@ -56,14 +56,14 @@ paths:
         in: "path"
         required: true
         schema:
-          $ref: "#/components/schemas/GetImplementationByIdRequest"
+          $ref: "#/components/schemas/ImplementationRequest"
       responses:
         "200":
           description: "200 response"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetImplementationByIdResponse"
+                $ref: "#/components/schemas/ImplementationResponse"
                 
   /implementations/add:
     post:
@@ -73,14 +73,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddImplementationRequest'
+              $ref: '#/components/schemas/ImplementationAddRequest'
       responses:
         '200':
           description: CREATED
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AddImplementationResponse'
+                $ref: '#/components/schemas/ImplementationAddResponse'
                 
   /implementations/remove/{id}:
     get:
@@ -89,14 +89,14 @@ paths:
         in: "path"
         required: true
         schema:
-          $ref: "#/components/schemas/RemoveImplementationRequest"
+          $ref: "#/components/schemas/ImplementationRemoveRequest"
       responses:
         "200":
           description: "200 response"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RemoveImplementationResponse"
+                $ref: "#/components/schemas/ImplementationRemoveResponse"
                 
   # ------------------ IMPLEMENTATION END ------------------------------  
                 
@@ -105,19 +105,19 @@ components:
     
     # ------------------ ALGORITHM BEGIN ------------------------------   
     
-    GetAlgorithmByIdRequest:
+    AlgorithmRequest:
       type: object
       properties:
         id:
           type: string
     
-    GetAlgorithmByIdResponse:
+    AlgorithmResponse:
       type: object
       properties:
         algorithm_id:
           type: string
           
-    AddAlgorithmRequest:
+    AlgorithmAddRequest:
       type: object
       properties:
         name:
@@ -129,7 +129,7 @@ components:
         parent:
           type: string
           
-    AddAlgorithmResponse:
+    AlgorithmAddResponse:
       type: object
       properties:
         algorithm_id:
@@ -138,13 +138,13 @@ components:
     # ------------------ ALGORITHM END ------------------------------ 
     
     # ------------------ IMPLEMENTATION BEGIN ------------------------------     
-    GetImplementationByIdRequest:
+    ImplementationRequest:
       type: object
       properties:
         id:
           type: string
           
-    GetImplementationByIdResponse:
+    ImplementationResponse:
       type: object
       properties:
         id:
@@ -156,7 +156,7 @@ components:
         source_code: 
           type: string
           
-    AddImplementationRequest:
+    ImplementationAddRequest:
       type: object
       properties:
         name:
@@ -168,20 +168,20 @@ components:
         source_code: 
           type: string
           
-    AddImplementationResponse:
+    ImplementationAddResponse:
       type: object
       properties:
         implementation_id:
           type: string
           
           
-    RemoveImplementationRequest:
+    ImplementationRemoveRequest:
       type: object
       properties:
         id:
           type: string
           
-    RemoveImplementationResponse:
+    ImplementationRemoveResponse:
       type: object
       properties:
         deleted_benchmarks:
@@ -191,6 +191,5 @@ components:
           
     
     # ------------------ IMPLEMENTATION END ------------------------------     
-          
           
           

@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: "ams-api"
-  version: '1'
+  version: 1.0.0
 schemes:
 - "https"
 paths:
@@ -10,6 +10,7 @@ paths:
 
   /algorithms/{id}:
     get:
+      summary: Get algorithm by id
       produces:
       - application/json
       parameters:
@@ -25,7 +26,7 @@ paths:
                 
   /algorithms/add:
     post:
-      summary: Create Algorithm
+      summary: Create algorithm
       produces:
       - application/json
       consumes:
@@ -42,6 +43,42 @@ paths:
           schema:
             $ref: "#/definitions/AlgorithmAddResponse"
                 
+  /algorithms/reclassify/{id}:
+    post:
+      summary: Reclassify algorithm 
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:     
+      - name: "id"
+        in: "path"
+        required: true
+        type: string 
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ReclassifyAlgorithmResponse"
+  
+    
+  /algorithms/remove/{id}:
+     post:
+      summary: Remove algorithm by id
+      produces:
+      - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/RemoveAlgorithmResponse"
+  
+  
   
   # ------------------ ALGORITHM END ------------------------------
   
@@ -81,7 +118,7 @@ paths:
           description: "200 response"
           schema:
             $ref: "#/definitions/ImplementationAddResponse"
-
+  
                 
   /implementations/remove/{id}:
     get:
@@ -99,7 +136,64 @@ paths:
             $ref: "#/definitions/ImplementationRemoveResponse"
                 
   # ------------------ IMPLEMENTATION END ------------------------------  
-                
+     
+ # ------------------ Problem Instances Begin ---------------------------
+  /problem_instances/{id}:
+     get:
+      summary: Get problem instance by id
+      produces:
+      - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ProblemInstanceResponse"
+            
+            
+  /problem_instances/add:
+    post:
+      summary: Create problem instance
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:      
+      - in: "body"        
+        name: "AddProblemInstanceRequest"        
+        required: true        
+        schema:          
+          $ref: "#/definitions/AddProblemInstanceRequest"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/AddProblemInstanceResponse"
+    
+  /problem_instances/remove/{id}:
+     post:
+      summary: Remove problem instance 
+      produces:
+      - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/RemoveProblemInstanceResponse"
+ 
+ 
+ 
+ # ------------------ Problem Instance End ------------------------------     
+             
 definitions:
     
     # ------------------ ALGORITHM BEGIN ------------------------------   
@@ -127,6 +221,27 @@ definitions:
       properties:
         algorithm_id:
           type: string
+          
+    RemoveAlgorithmResponse:
+      type: object
+      properties:
+        deleted_implementations:
+          type: array
+          items:
+            type: string
+    
+    
+    
+    ReclassifyAlgorithmResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        
+      
+    
           
     # ------------------ ALGORITHM END ------------------------------ 
     
@@ -170,3 +285,53 @@ definitions:
           
     
     # ------------------ IMPLEMENTATION END ------------------------------
+    
+    
+    # ----------------- Problem Instance Begin ----------------------------
+    ProblemInstanceResponse:
+      type: object
+      properties:
+        name:
+          type: string
+    
+    AddProblemInstanceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        
+        dataSetSize: 
+          type: string
+          
+        problem_type: 
+          type: string
+          
+        description:
+          type: string
+    
+    
+    AddProblemInstanceResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          
+    RemoveProblemInstanceResponse:
+      type: "object"
+      required:
+      - "error"
+      - "name"
+      - "statusCode"
+      properties:
+        name:
+          type: "string"
+        statusCode:
+          type: "integer"
+        error:
+          type: "string"
+    
+    
+    # ----------------- Problem Instance End ------------------------------
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /CS509-SAO/AlgoHub/1.0.0

@@ -1,48 +1,46 @@
-openapi: "3.0.1"
+swagger: '2.0'
 info:
   title: "ams-api"
   version: '1'
-servers:
-- url: "https://64ou5kvx69.execute-api.us-east-1.amazonaws.com/{basePath}"
-  variables:
-    basePath:
-      default: "/beta"
+schemes:
+- "https"
 paths:
 
   # ------------------ ALGORITHM BEGIN ------------------------------   
 
   /algorithms/{id}:
     get:
+      produces:
+      - application/json
       parameters:
       - name: "id"
         in: "path"
         required: true
-        schema:
-          $ref: "#/components/schemas/AlgorithmRequest"
+        type: string
       responses:
         "200":
           description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AlgorithmResponse"
+          schema:
+            $ref: "#/definitions/AlgorithmResponse"
                 
   /algorithms/add:
     post:
       summary: Create Algorithm
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AlgorithmAddRequest'
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:      
+      - in: "body"        
+        name: "AlgorithmAddRequest"        
+        required: true        
+        schema:          
+          $ref: "#/definitions/AlgorithmAddRequest"
       responses:
-        '200':
-          description: CREATED
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AlgorithmAddResponse'
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/AlgorithmAddResponse"
                 
   
   # ------------------ ALGORITHM END ------------------------------
@@ -51,65 +49,60 @@ paths:
   
   /implementations/{id}:
     get:
+      produces:
+      - application/json
       parameters:
       - name: "id"
         in: "path"
         required: true
-        schema:
-          $ref: "#/components/schemas/ImplementationRequest"
+        type: string
       responses:
         "200":
           description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ImplementationResponse"
+          schema:
+            $ref: "#/definitions/ImplementationResponse"
+            
                 
   /implementations/add:
     post:
-      summary: Create implementation
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ImplementationAddRequest'
+      summary: Create Implementation
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:      
+      - in: "body"        
+        name: "ImplementationAddRequest"        
+        required: true        
+        schema:          
+          $ref: "#/definitions/ImplementationAddRequest"
       responses:
-        '200':
-          description: CREATED
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImplementationAddResponse'
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/ImplementationAddResponse"
+
                 
   /implementations/remove/{id}:
     get:
+      produces:
+      - application/json
       parameters:
       - name: "id"
         in: "path"
         required: true
-        schema:
-          $ref: "#/components/schemas/ImplementationRemoveRequest"
+        type: string
       responses:
         "200":
           description: "200 response"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ImplementationRemoveResponse"
+          schema:
+            $ref: "#/definitions/ImplementationRemoveResponse"
                 
   # ------------------ IMPLEMENTATION END ------------------------------  
                 
-components:
-  schemas:
+definitions:
     
     # ------------------ ALGORITHM BEGIN ------------------------------   
-    
-    AlgorithmRequest:
-      type: object
-      properties:
-        id:
-          type: string
     
     AlgorithmResponse:
       type: object
@@ -138,21 +131,14 @@ components:
     # ------------------ ALGORITHM END ------------------------------ 
     
     # ------------------ IMPLEMENTATION BEGIN ------------------------------     
-    ImplementationRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          
+
     ImplementationResponse:
       type: object
       properties:
         id:
           type: string
-          
         name:
           type: string
-          
         source_code: 
           type: string
           
@@ -174,13 +160,6 @@ components:
         implementation_id:
           type: string
           
-          
-    ImplementationRemoveRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          
     ImplementationRemoveResponse:
       type: object
       properties:
@@ -190,6 +169,4 @@ components:
             type: string
           
     
-    # ------------------ IMPLEMENTATION END ------------------------------     
-          
-          
+    # ------------------ IMPLEMENTATION END ------------------------------

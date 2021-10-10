@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: "ams-api"
-  version: 1.0.0
+  version: '1'
 schemes:
 - "https"
 paths:
@@ -43,7 +43,7 @@ paths:
           schema:
             $ref: "#/definitions/AlgorithmAddResponse"
                 
-  /algorithms/reclassify/{id}:
+  /algorithms/reclassify:
     post:
       summary: Reclassify algorithm 
       produces:
@@ -51,15 +51,16 @@ paths:
       consumes:
       - application/json
       parameters:     
-      - name: "id"
-        in: "path"
+      - in: "body"
+        name: "AlgorithmReclassifyRequest"
         required: true
-        type: string 
+        schema:          
+          $ref: "#/definitions/AlgorithmReclassifyRequest"
       responses:
         "200":
           description: "200 response"
           schema:
-            $ref: "#/definitions/ReclassifyAlgorithmResponse"
+            $ref: "#/definitions/AlgorithmReclassifyResponse"
   
     
   /algorithms/remove/{id}:
@@ -76,13 +77,13 @@ paths:
         "200":
           description: "200 response"
           schema:
-            $ref: "#/definitions/RemoveAlgorithmResponse"
+            $ref: "#/definitions/AlgorithmRemoveResponse"
   
   
   
   # ------------------ ALGORITHM END ------------------------------
   
-  # ------------------ IMPLEMENTATION BEGIN ------------------------------
+  # ------------------ Implementations BEGIN ------------------------------
   
   /implementations/{id}:
     get:
@@ -135,8 +136,119 @@ paths:
           schema:
             $ref: "#/definitions/ImplementationRemoveResponse"
                 
-  # ------------------ IMPLEMENTATION END ------------------------------  
-     
+  # ------------------ Implementations END ------------------------------  
+  
+  # ------------------ Benchmarks BEGIN ------------------------------
+  
+  /benchmarks/{id}:
+    get:
+      produces:
+      - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/BenchmarkResponse"
+            
+                
+  /benchmarks/add:
+    post:
+      summary: Create Implementation
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:      
+      - in: "body"        
+        name: "BenchmarkAddRequest"        
+        required: true        
+        schema:          
+          $ref: "#/definitions/BenchmarkAddRequest"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/BenchmarkAddResponse"
+  
+                
+  /benchmarks/remove/{id}:
+    get:
+      produces:
+      - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/BenchmarkRemoveResponse"
+                
+  # ------------------ Benchmarks END ------------------------------  
+  
+  
+  # ------------------ Machine Configurations BEGIN ------------------------------
+  
+  /machine_configurations/{id}:
+    get:
+      produces:
+      - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/MachineConfigurationResponse"
+            
+                
+  /machine_configurations/add:
+    post:
+      summary: Create Implementation
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:      
+      - in: "body"        
+        name: "MachineConfigurationAddRequest"        
+        required: true        
+        schema:          
+          $ref: "#/definitions/MachineConfigurationAddRequest"
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/MachineConfigurationAddResponse"
+  
+                
+  /machine_configurations/remove/{id}:
+    get:
+      produces:
+      - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/MachineConfigurationRemoveResponse"
+                
+  # ------------------ Machine Configurations END ------------------------------  
+  
  # ------------------ Problem Instances Begin ---------------------------
   /problem_instances/{id}:
      get:
@@ -167,12 +279,12 @@ paths:
         name: "AddProblemInstanceRequest"        
         required: true        
         schema:          
-          $ref: "#/definitions/AddProblemInstanceRequest"
+          $ref: "#/definitions/ProblemInstanceAddRequest"
       responses:
         "200":
           description: "200 response"
           schema:
-            $ref: "#/definitions/AddProblemInstanceResponse"
+            $ref: "#/definitions/ProblemInstanceAddResponse"
     
   /problem_instances/remove/{id}:
      post:
@@ -188,7 +300,7 @@ paths:
         "200":
           description: "200 response"
           schema:
-            $ref: "#/definitions/RemoveProblemInstanceResponse"
+            $ref: "#/definitions/ProblemInstanceRemoveResponse"
  
  
  
@@ -196,12 +308,16 @@ paths:
              
 definitions:
     
-    # ------------------ ALGORITHM BEGIN ------------------------------   
+    # ------------------ Algorithms BEGIN ------------------------------   
     
     AlgorithmResponse:
       type: object
       properties:
-        algorithm_id:
+        algorithmId:
+          type: string
+        status:
+          type: string
+        error:
           type: string
           
     AlgorithmAddRequest:
@@ -209,43 +325,64 @@ definitions:
       properties:
         name:
           type: string
-
         description:
           type: string
-        
-        parent:
+        parentClassificationId:
           type: string
           
     AlgorithmAddResponse:
       type: object
       properties:
-        algorithm_id:
+        algorithmId:
           type: string
+        status:
+          type: string
+        error:
+          type: string
+        
           
-    RemoveAlgorithmResponse:
+    AlgorithmRemoveResponse:
       type: object
       properties:
-        deleted_implementations:
+        deletedImplementations:
           type: array
           items:
             type: string
+        deletedProblemInstances:
+          type: array
+          items:
+            type: string
+        deletedBenchmarks:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+        error:
+          type: string
     
-    
-    
-    ReclassifyAlgorithmResponse:
+    AlgorithmReclassifyResponse:
       type: object
       properties:
-        id:
+        algorithmId:
           type: string
-        name:
+        status:
+          type: string
+        error:
+          type: string
+          
+    AlgorithmReclassifyRequest:
+      type: object
+      properties:
+        algorithmId:
+          type: string
+        newClassificationId:
           type: string
         
       
+    # ------------------ Algorithms END ------------------------------ 
     
-          
-    # ------------------ ALGORITHM END ------------------------------ 
-    
-    # ------------------ IMPLEMENTATION BEGIN ------------------------------     
+    # ------------------ Implementations BEGIN ------------------------------     
 
     ImplementationResponse:
       type: object
@@ -254,7 +391,14 @@ definitions:
           type: string
         name:
           type: string
-        source_code: 
+        sourceCode: 
+          type: string
+        parentAlgorithm: 
+          type: string
+          
+        statusCode:
+          type: integer
+        error:
           type: string
           
     ImplementationAddRequest:
@@ -262,29 +406,163 @@ definitions:
       properties:
         name:
           type: string
-        
-        parent_algorithm: 
+        parentAlgorithm: 
           type: string
-          
-        source_code: 
+        sourceCode: 
           type: string
           
     ImplementationAddResponse:
       type: object
       properties:
-        implementation_id:
+        implementationId:
+          type: string
+          
+        statusCode:
+          type: integer
+        error:
           type: string
           
     ImplementationRemoveResponse:
       type: object
       properties:
-        deleted_benchmarks:
+        deletedBenchmarks:
           type: array
           items:
             type: string
           
     
-    # ------------------ IMPLEMENTATION END ------------------------------
+    # ------------------ Implementations END ------------------------------
+    
+    # ------------------ Benchmarks BEGIN ------------------------------
+    
+    BenchmarkResponse:
+      type: object
+      properties:
+            
+        benchmarkId:
+          type: string
+        name:
+          type: string
+        parentImplementation:
+          type: string
+        languageName: 
+          type: string
+        executionTime: 
+          type: number
+        memoryUsage:
+          type: number
+        machineConfigurationId:
+          type: string
+
+        statusCode:
+          type: integer
+        error:
+          type: string
+          
+    BenchmarkAddRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        parentImplementation:
+          type: string
+        languageName: 
+          type: string
+        executionTime: 
+          type: number
+        memoryUsage:
+          type: number
+        machineConfigurationId:
+          type: string
+          
+    BenchmarkAddResponse:
+      type: object
+      properties:
+        benchmarkId:
+          type: string
+        statusCode:
+          type: integer
+        error:
+          type: string
+          
+    BenchmarkRemoveResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: string
+          
+    
+    
+    # ------------------ Benchmarks END ------------------------------
+    
+    # ------------------ Machine Configurations BEGIN ------------------------------
+    
+    MachineConfigurationResponse:
+      type: object
+      properties:
+
+        memorySize: 
+          type: string
+        CPU:
+          type: string
+        L1Size: 
+          type: string
+        L2Size:
+          type: string
+        L3Size:
+          type: string
+        cores: 
+          type: integer
+        threads: 
+          type: integer
+
+        statusCode:
+          type: integer
+        error:
+          type: string
+          
+    MachineConfigurationAddRequest:
+      type: object
+      properties:
+      
+        memorySize: 
+          type: string
+        CPU:
+          type: string
+        L1Size: 
+          type: string
+        L2Size:
+          type: string
+        L3Size:
+          type: string
+        cores: 
+          type: integer
+        threads: 
+          type: integer
+          
+    MachineConfigurationAddResponse:
+      type: object
+      properties:
+
+        machineConfigurationId:
+          type: string
+        statusCode:
+          type: integer
+        error:
+          type: string
+          
+    MachineConfigurationRemoveResponse:
+      type: object
+      properties:
+
+        statusCode:
+          type: integer
+        error:
+          type: string
+    
+    # ------------------ Machine Configurations END ------------------------------
     
     
     # ----------------- Problem Instance Begin ----------------------------
@@ -293,45 +571,58 @@ definitions:
       properties:
         name:
           type: string
-    
-    AddProblemInstanceRequest:
-      type: object
-      properties:
-        name:
+        datasetSize: 
           type: string
-        
-        dataSetSize: 
+        problemType: 
           type: string
-          
-        problem_type: 
-          type: string
-          
         description:
           type: string
+        dataset: 
+          type: string
+        statusCode:
+          type: integer
+        error:
+          type: string
     
-    
-    AddProblemInstanceResponse:
+    ProblemInstanceAddRequest:
       type: object
       properties:
         name:
           type: string
-          
-    RemoveProblemInstanceResponse:
-      type: "object"
-      required:
-      - "error"
-      - "name"
-      - "statusCode"
+        datasetSize: 
+          type: string
+        problemType: 
+          type: string
+        description:
+          type: string
+        dataset:
+          type: string
+    
+    ProblemInstanceAddResponse:
+      type: object
       properties:
-        name:
-          type: "string"
+        problemInstanceId:
+          type: string
         statusCode:
-          type: "integer"
+          type: integer
         error:
-          type: "string"
+          type: string
+          
+    ProblemInstanceRemoveResponse:
+      type: object
+      required:
+      - error
+      - statusCode
+      properties:
+        statusCode:
+          type: integer
+        error:
+          type: string
     
     
     # ----------------- Problem Instance End ------------------------------
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
-basePath: /CS509-SAO/AlgoHub/1.0.0
+# basePath: /CS509-SAO/AlgoHub/1.0.0
+# Added by API Auto Mocking Plugin
+basePath: /wpi-cs509-sao/algohub-api/1

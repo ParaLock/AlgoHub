@@ -87,6 +87,7 @@ paths:
   
   /implementations/{id}:
     get:
+      summary: Get implementation by id
       produces:
       - application/json
       parameters:
@@ -123,6 +124,7 @@ paths:
                 
   /implementations/remove/{id}:
     get:
+      summary: Remove implementation with given id
       produces:
       - application/json
       parameters:
@@ -142,6 +144,7 @@ paths:
   
   /benchmarks/{id}:
     get:
+      summary: Get benchmark with given id
       produces:
       - application/json
       parameters:
@@ -158,7 +161,7 @@ paths:
                 
   /benchmarks/add:
     post:
-      summary: Create Implementation
+      summary: Create benchmarks
       produces:
       - application/json
       consumes:
@@ -178,6 +181,7 @@ paths:
                 
   /benchmarks/remove/{id}:
     get:
+      summary: Remove benchmark with given id
       produces:
       - application/json
       parameters:
@@ -198,6 +202,7 @@ paths:
   
   /machine_configurations/{id}:
     get:
+      summary: Get machine configuration with given id
       produces:
       - application/json
       parameters:
@@ -234,6 +239,7 @@ paths:
                 
   /machine_configurations/remove/{id}:
     get:
+      summary: Get machine configuration with given id
       produces:
       - application/json
       parameters:

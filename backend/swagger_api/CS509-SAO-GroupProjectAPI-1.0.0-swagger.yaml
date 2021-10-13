@@ -413,6 +413,29 @@ paths:
         401:
           description: Unauthorized
 
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Fetch user's activity
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: User activity fetched
+          schema:
+            $ref: '#/definitions/UserActivityResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+
 definitions:
 
   # ------------------ ABSTRACT DEFINITIONS BEGIN --------------------
@@ -442,7 +465,6 @@ definitions:
       statusCode:
         type: integer
 
-
   # ------------------ ABSTRACT DEFINITIONS ENDS --------------------
 
   # ------------------ ALGORITHMS BEGIN ------------------------------
@@ -452,6 +474,7 @@ definitions:
     properties:
       algorithmId:
         type: string
+
       status:
         type: string
       error:
@@ -751,10 +774,30 @@ definitions:
   UserResponse:
     type: object
     properties:
+      id:
+        type: string
       username:
         type: string
-      role:
-        type: string
+
+  UserActivityResponse:
+    type: object
+    properties:
+      algorithms:
+        type: array
+        items:
+          $ref: '#/definitions/AlgorithmResponse'
+      implementations:
+        type: array
+        items:
+          $ref: '#/definitions/ImplementationResponse'
+      problemInstances:
+        type: array
+        items:
+          $ref: '#/definitions/ProblemInstanceResponse'
+      machineConfigurations:
+        type: array
+        items:
+          $ref: '#/definitions/MachineConfigurationResponse'
 
 host: virtserver.swaggerhub.com
 basePath: /wpi-cs509-sao/algohub-api/1

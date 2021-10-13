@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: ams-api
-  version: '1'
+  version: 1.0.1
 schemes:
   - https
 tags:
@@ -681,6 +681,8 @@ definitions:
   
   UserInfo:
     type: object
+    required: 
+    - username
     properties:
       id:
         type: string
@@ -691,6 +693,11 @@ definitions:
   
   AlgorithmInfo:
     type: object
+    required:
+    - name
+    - description
+    - parentClassification
+    - authorId
     properties:
       id:
         type: string
@@ -713,6 +720,10 @@ definitions:
       
   ImplementationInfo:
     type: object
+    required:
+    - name
+    - parentAlgorithm
+    - authorId
     properties:
       id:
         type: string
@@ -720,13 +731,20 @@ definitions:
         type: string
       filename:
         type: string
-      parent:
+      parentAlgorithm:
         $ref: "#/definitions/AlgorithmInfo"
       authorId: 
         type: string
   
   ProblemInstanceInfo:
     type: object
+    required:
+    - name
+    - datasetSize
+    - problemType
+    - description
+    - datasetFilename
+    - authorId
     properties:
       id:
         type: string
@@ -745,6 +763,13 @@ definitions:
       
   BenchmarkInfo:
     type: object
+    required:
+    - name
+    - parentImplementationId
+    - languageName
+    - executionTime
+    - memoryUsage
+    - machineConfigurationId
     properties:
       id:
         type: string
@@ -763,18 +788,28 @@ definitions:
   
   ClassificationInfo:
     type: object
+    required:
+    - name
+    - parentClassificationId
     properties:
       id:
         type: string
       name:
-        type: string
-      description:
         type: string
       parentClassificationId:
         type: string
   
   MachineConfigurationInfo:
     type: object
+    required:
+    - memorySize
+    - CPU
+    - L1Size
+    - L2Size
+    - L3Size
+    - cores
+    - threads
+    - authorId
     properties:
       id:
         type: string
@@ -880,9 +915,9 @@ definitions:
         type: string
       classificationBId:
         type: string
-      #classificationNewName is the name of the new classification that contents of A and B will be moved to.
-      # this new classification will have same parent as A and B.
       classificationNewName:
+        description: 
+          This property represents the name of the new classification that the contents of A and B will be moved to. this new classification will have the same parent as A and B.
         type: string
       status:
         type: string

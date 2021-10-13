@@ -647,11 +647,9 @@ definitions:
   ClassificationResponse:
     type: object
     properties:
-      classificationId:
+      classificationName:
         type: string
       classificationParentId:
-        type: string
-      classificationParentName:
         type: string
       algorithms:
         type: array
@@ -668,6 +666,8 @@ definitions:
       classificationAId:
         type: string
       classificationBId:
+        type: string
+      classificationNameNew:
         type: string
       status:
         type: string

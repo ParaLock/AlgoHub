@@ -649,6 +649,14 @@ definitions:
     properties:
       classificationId:
         type: string
+      classificationParentId:
+        type: string
+      classificationParentName:
+        type: string
+      algorithms:
+        type: array
+        items:
+          $ref: '#/definitions/AlgorithmResponse'
       status:
         type: string
       error:
@@ -670,6 +678,8 @@ definitions:
     type: object
     properties:
       classificationId:
+        type: string
+      classificationName:
         type: string
       status:
         type: string

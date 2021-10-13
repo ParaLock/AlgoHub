@@ -107,6 +107,108 @@ paths:
 
   # ------------------ ALGORITHMS END ------------------------------
 
+
+  # ------------------ CLASSIFICATIONS BEGIN -----------------------
+  
+  /classifications/add:
+    post:
+      tags:
+        - classifications
+      summary: Create classification
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: ClassificationAddRequest
+          required: true
+          schema:
+            $ref: '#/definitions/ClassificationAddRequest'
+      responses:
+        '200':
+          description: 200 response
+          schema:
+            $ref: '#/definitions/ClassificationAddResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  
+  
+  /classifications/{id}:
+    get:
+      tags:
+        - classifications
+      summary: Get classification by id
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: 200 response
+          schema:
+            $ref: '#/definitions/ClassificationResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse' 
+
+  /classifications/remove:
+    post:
+      tags:
+        - classifications
+      summary: Remove classification by id
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: RemoveClassification
+          required: true
+          schema:
+            $ref: '#/definitions/RemoveRequest'
+      responses:
+        '200':
+          description: 200 response
+          schema:
+            $ref: '#/definitions/RemoveResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+            
+  /classifications/merge:
+    post:
+      tags:
+        - classifications
+      summary: Merge classifications by ids
+      produces:
+        - application/json
+      parameters:
+        - name: MergeInfo
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ClassificationMergeRequest'
+      responses:
+        '200':
+          description: 200 response
+          schema:
+            $ref: '#/definitions/ClassificationMergeResponse'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      
+            
+  # ------------------ CLASSIFICATIONS END ------------------------------
+
+
+
   # ------------------ IMPLEMENTATIONS BEGIN -----------------------
 
   /implementations/{id}:
@@ -474,7 +576,6 @@ definitions:
     properties:
       algorithmId:
         type: string
-
       status:
         type: string
       error:
@@ -519,6 +620,65 @@ definitions:
         type: string
 
   # ------------------ ALGORITHMS END ------------------------------
+
+
+  # ------------------ CLASSIFICATIONS BEGIN -----------------------
+
+  ClassificationAddRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      parentClassificationId:
+        type: string
+
+  ClassificationAddResponse:
+    type: object
+    properties:
+      classificationId:
+        type: string
+      status:
+        type: string
+      error:
+        type: string
+  
+  ClassificationResponse:
+    type: object
+    properties:
+      classificationId:
+        type: string
+      status:
+        type: string
+      error:
+        type: string
+        
+  ClassificationMergeRequest:
+    type: object
+    properties:
+      classificationAId:
+        type: string
+      classificationBId:
+        type: string
+      status:
+        type: string
+      error:
+        type: string
+        
+  ClassificationMergeResponse:
+    type: object
+    properties:
+      classificationId:
+        type: string
+      status:
+        type: string
+      error:
+        type: string
+
+
+  # ------------------ CLASSIFICATIONS END ------------------------------
+
 
   # ------------------ IMPLEMENTATIONS BEGIN -----------------------
 

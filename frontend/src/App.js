@@ -5,11 +5,11 @@ import MainPage from './boundary/pages/MainPage'
 import AccountManagementPage from './boundary/pages/AccountManagementPage';
 import SignInPage from './boundary/pages/SignInPage';
 
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify, { Auth, API } from 'aws-amplify';
 
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-
+import axios from 'axios';
 import awsconfig from './aws-exports';
 
 import {
@@ -218,6 +218,20 @@ const benchmarkData = [
   }
 ]
 
+
+// async function addToGroup() { 
+//   let apiName = 'AdminQueries';
+//   let path = '/addUserToGroup';
+//   let myInit = {
+//       body: {}, 
+//       headers: {
+//         'Content-Type' : 'application/json',
+//         Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
+//       } 
+//   }
+//   return await API.post(apiName, path, myInit);
+// }
+
 function App() {
 
   const [toggleableItems, setToggleableItems] = useState([]);
@@ -230,12 +244,25 @@ function App() {
   React.useEffect(() => {
       return onAuthUIStateChange((nextAuthState, authData) => {
 
-          if(authData) {
+        console.log(authData)
+        console.log(nextAuthState)
+        
+          if(authData && nextAuthState == "signedin") {
+
+            console.log(authData.signInUserSession.accessToken.jwtToken )
+
+            axios.get(`https://b09opfk3vb.execute-api.us-east-1.amazonaws.com/beta/test`, {
+              headers: {
+                Authorization: authData.signInUserSession.accessToken.jwtToken 
+              }
+            })
+            .then(res => {
+              console.log(res.data)
+            })
 
             var groups =  authData.signInUserSession.accessToken.payload["cognito:groups"]
             var userId = authData.attributes.sub
   
-            console.log(authData)
 
             setCurrentUser({userId: userId, username: authData.username, groups: groups});
           }

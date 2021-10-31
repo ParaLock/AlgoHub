@@ -63,12 +63,13 @@ export default function ProblemInstancePanel(props) {
 
         <Wrapper>
             <Title>PROBLEM INSTANCES</Title>
-
-            <ButtonWrapper>
-                <IconButton color="inherit" size="large" onClick={() => props.onProblemInstanceAdd()}>
-                    <AddCircleOutlineIcon />
-                </IconButton>
-            </ButtonWrapper>
+            {props.currentUser && 
+                <ButtonWrapper>
+                    <IconButton color="inherit" size="large" onClick={() => props.onProblemInstanceAdd()}>
+                        <AddCircleOutlineIcon />
+                    </IconButton>
+                </ButtonWrapper>
+            }
 
             {
                 props.problemInstanceData.map((item) => {
@@ -94,11 +95,14 @@ export default function ProblemInstancePanel(props) {
                         </table>
                         <br />
 
-                        <ButtonWrapper>
-                            <IconButton color="inherit" size="small">
-                                <HighlightOffIcon />
-                            </IconButton>
-                        </ButtonWrapper>
+                        {props.currentUser && 
+                        
+                            <ButtonWrapper>
+                                <IconButton color="inherit" size="small">
+                                    <HighlightOffIcon />
+                                </IconButton>
+                            </ButtonWrapper>
+                        }
                     </ProblemInstanceWrapper>
                 })
             }

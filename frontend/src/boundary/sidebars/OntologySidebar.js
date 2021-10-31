@@ -66,18 +66,26 @@ export default function OntologySidebar(props) {
         <OntologySidebarWrapper open={props.open}>
             <ButtonWrapper>
                 <span>
-                    <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
-                        <MergeTypeIcon />
-                    </IconButton>
-                    <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
-                        <DriveFileMoveIcon />
-                    </IconButton>
+                    { props.currentUser &&
+                        <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
+                            <MergeTypeIcon />
+                        </IconButton>
+                    }
+                    { props.currentUser &&
+                        <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
+                            <DriveFileMoveIcon />
+                        </IconButton>
+                    }
                     <IconButton color="inherit" size="large" onClick={() => props.onOntologyReport()}>
                         <StarsIcon />
                     </IconButton>
+                    
                 </span>
             <span>
-            <CustomSpeedDial
+
+            { props.currentUser &&
+            
+                <CustomSpeedDial
                     ariaLabel="SpeedDial playground example"
                     direction="down"
                     sx="sm"
@@ -104,6 +112,10 @@ export default function OntologySidebar(props) {
                         onClickCapture={() => props.onImplementationAdd()}
                     />
                 </CustomSpeedDial>
+            
+            }
+
+            
             </span>
      
 
@@ -112,6 +124,7 @@ export default function OntologySidebar(props) {
 
             <OntologyViewer 
                         onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
+                        enableRemove={props.currentUser}
                         selected={props.selectedOntologyItem} 
                         ontologyData={props.ontologyData}
                         expandedOntologyItems={props.expandedOntologyItems}

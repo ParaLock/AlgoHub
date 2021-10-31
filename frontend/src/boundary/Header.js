@@ -14,10 +14,15 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 import { styled as material_styled} from '@mui/material/styles';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 import { useHistory } from 'react-router-dom';
+import Amplify, { Auth } from 'aws-amplify';
+
 
 const Wrapper = styled.div`
 
@@ -42,17 +47,32 @@ export default function Header(props) {
       <CustomToolbar variant="dense">
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            AlgoHub
+            AlgoHub 
+            {props.currentUser && " - " + props.currentUser.username} 
+            {props.currentUser && props.currentUser.groups.length > 0 && "(" + props.currentUser.groups.join(",") + ")"}
           </Typography>
           <IconButton onClick={props.onClickBenchmarkMenu} color="inherit">
            <AccessTimeIcon/>
           </IconButton>
-          <IconButton onClick={() => history.push('/accounts')} color="inherit">
-           <VisibilityIcon/>
-          </IconButton>
-          <IconButton onClick={() => history.push('/signin')}  color="inherit">
-           <VpnKeyIcon/>
-          </IconButton>
+          { props.currentUser && 
+            <IconButton onClick={() => history.push('/accounts')} color="inherit">
+            <VisibilityIcon/>
+            </IconButton>
+          }
+
+          { !props.currentUser && 
+              <IconButton onClick={() => props.onLogin()}  color="inherit">
+                <LoginIcon/>
+              </IconButton>
+          }
+
+          { props.currentUser && 
+              <IconButton onClick={() => props.onLogout()}  color="inherit">
+                <LogoutIcon/>
+              </IconButton>
+          }
+
+          
           
         </CustomToolbar>
       </Wrapper>

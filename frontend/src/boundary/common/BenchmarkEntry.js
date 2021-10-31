@@ -65,9 +65,13 @@ export default function BenchmarkEntry(props) {
                         <i>Input Size</i>: {props.benchmark.inputSize} 
                         <br/>
                         <i>Problem Instance</i>: {props.benchmark.problemInstance}</InputSize>
-            <IconButton color="inherit" size="small">
-                <HighlightOffIcon />
-            </IconButton>
+            
+            { props.enableRemove &&
+              <IconButton color="inherit" size="small">
+                  <HighlightOffIcon />
+              </IconButton>
+            }
+            
           </ContentWrapper>
           <MachineInfo>
             <h4>Machine Information</h4>

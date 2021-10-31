@@ -93,12 +93,16 @@ export default function MainPage(props) {
 
             <Header
                 onClickBenchmarkMenu={() => { props.toggleItem("benchmark_menu") }}
+                currentUser={props.currentUser}
+                onLogin={props.onLogin}
+                onLogout={props.onLogout}
             />
 
             <ContentWrapper>
 
                 <OntologySidebar
                     open={true}
+                    currentUser={props.currentUser}
                     onClassificationAdd={() => props.toggleItem("classification_form")}
                     onOntologyMerge={() => props.toggleItem("classification_merge")}
                     onAlgorithmAdd={() => props.toggleItem("algorithm_form")}
@@ -129,11 +133,12 @@ export default function MainPage(props) {
                     <ProblemInstancePanel 
                         problemInstanceData={problemInstances}
                         onProblemInstanceAdd={() => props.toggleItem("problem_instance_form")}
-
+                        currentUser={props.currentUser}
                     />
 
                 </InnerContentWrapper>
                 <BenchmarkSidebar
+                    currentUser={props.currentUser}
                     open={props.toggleableItems.includes("benchmark_menu")}
                     onBenchmarkAdd={() => props.toggleItem("benchmark_add_form", true)}
                     benchmarks={benchmarks}

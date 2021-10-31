@@ -24,7 +24,7 @@ return ontologyData.map((item) => ({
 }
 
 
-function TreeWrapper({ expandedOntologyItems, onSelect, selected, treeData, parentId = 0, level = 0 }) {
+function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, treeData, parentId = 0, level = 0 }) {
 const items = treeData
     .filter((item) => item.parentId === parentId)
     .sort((a, b) => (a.content > b.content ? 1 : -1));
@@ -41,6 +41,7 @@ return (
 
                 return <Tree 
                             selected={selected} 
+                            enableRemove={enableRemove}
                             content={item.content} 
                             style={{...style, color:"#6652ff"}} 
                             key={key}
@@ -49,6 +50,7 @@ return (
                             expandedOntologyItems={expandedOntologyItems} 
                         >
                             <TreeWrapper 
+                                            enableRemove={enableRemove}
                                             expandedOntologyItems={expandedOntologyItems} 
                                             onSelect={(i) => onSelect(i)} 
                                             selected={selected} 
@@ -61,6 +63,7 @@ return (
             } else {
                 
                 return <Tree 
+                                enableRemove={enableRemove}
                                 onSelect={(i) => onSelect(i)} 
                                 item={item}
                                 selected={selected} 
@@ -80,7 +83,13 @@ export default function OntologyViewer(props) {
 
     return (
         <div>
-            <TreeWrapper expandedOntologyItems={props.expandedOntologyItems} onSelect={(item) => props.onSelect(item)} selected={props.selected} treeData={getOntology(props.ontologyData)}/>
+            <TreeWrapper 
+                        expandedOntologyItems={props.expandedOntologyItems} 
+                        onSelect={(item) => props.onSelect(item)} 
+                        enableRemove={props.enableRemove}
+                        selected={props.selected} 
+                        treeData={getOntology(props.ontologyData)}
+            />
         </div>
     );
 }

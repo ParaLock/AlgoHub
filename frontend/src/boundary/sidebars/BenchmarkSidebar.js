@@ -50,7 +50,11 @@ export default function BenchmarkSidebar(props) {
 
             {props.benchmarks.length == 0 && <MsgWrapper>No Benchmarks</MsgWrapper>}
 
-            {props.benchmarks.map((item) => { return <BenchmarkEntry benchmark={item}/> })}
+            {props.benchmarks.map((item) => { 
+
+                    return <BenchmarkEntry enableRemove={props.currentUser} benchmark={item}/> 
+                })
+            }
              
         </BenchmarkSidebarWrapper>
     )

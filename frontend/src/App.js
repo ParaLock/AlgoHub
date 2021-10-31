@@ -5,12 +5,23 @@ import MainPage from './boundary/pages/MainPage'
 import AccountManagementPage from './boundary/pages/AccountManagementPage';
 import SignInPage from './boundary/pages/SignInPage';
 
+import Amplify, { Auth } from 'aws-amplify';
+
+import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
+import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+
+import awsconfig from './aws-exports';
+
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
+Amplify.configure(awsconfig);
+
+
+
 
 
 const ontologyData = [
@@ -207,13 +218,29 @@ const benchmarkData = [
   }
 ]
 
-
 function App() {
 
   const [toggleableItems, setToggleableItems] = useState([]);
   const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
   const [expandedOntologyItems, setExpandedOntologyItems] = useState({});
+
+  const [showAuthForm, setShowAuthForm] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState(null);
+
+  React.useEffect(() => {
+      return onAuthUIStateChange((nextAuthState, authData) => {
+
+          if(authData) {
+
+            var groups =  authData.signInUserSession.accessToken.payload["cognito:groups"]
+            var userId = authData.attributes.sub
   
+            console.log(authData)
+
+            setCurrentUser({userId: userId, username: authData.username, groups: groups});
+          }
+      });
+  }, []);
 
   var removeItemFromArray = (array, item) => {
     var index = array.indexOf(item);
@@ -254,9 +281,22 @@ function App() {
     setToggleableItems(copy);
   }
 
+  var onLogin = ()=> {
+
+    setShowAuthForm(true)
+
+  }
+
+  var onLogout = () => {
+
+    setShowAuthForm(false)
+    Auth.signOut()
+    setCurrentUser(null)
+  }
+
   return (
     <Router>
-
+          
       <Switch>
         <Route path="/signin">
           <SignInPage />
@@ -265,7 +305,13 @@ function App() {
           <AccountManagementPage />
         </Route>
         <Route path="/">
+
+          {showAuthForm && <AmplifyAuthenticator/>}
           <MainPage
+            currentUser={currentUser}
+            onLogin={onLogin}
+            onLogout={onLogout}
+
             ontologyData={ontologyData}
             benchmarkData={benchmarkData}
             problemInstanceData={problemInstanceData}
@@ -279,7 +325,8 @@ function App() {
 
             expandedOntologyItems={expandedOntologyItems}
 
-          />
+          >
+          </MainPage>
         </Route>
       </Switch>
     </Router>

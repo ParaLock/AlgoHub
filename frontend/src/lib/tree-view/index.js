@@ -41,11 +41,18 @@ const styles = {
 
 const ContentWrapper = styled.span`
 
+    display: inline-block;
     background-color: ${props => props.selected ? "lightgray" : "white"};
     vertical-align: 'middle';
     border-radius: 5px;
     padding: 5px;
+    
     border: 1px solid #ccc;
+
+`;
+
+const Placeholder = styled.div`
+
 
 `;
 
@@ -84,7 +91,7 @@ export default class Tree extends React.PureComponent {
 
   render() {
     const {  visible, immediate } = this.state
-    const { expandedOntologyItems, item, children, content, type, style, canHide, springConfig } = this.props
+    const { enableRemove, expandedOntologyItems, item, children, content, type, style, canHide, springConfig } = this.props
 
     if(!(item.id in expandedOntologyItems)) {
 
@@ -116,14 +123,21 @@ export default class Tree extends React.PureComponent {
         <ContentWrapper 
                         onClick={() => this.props.onSelect(item)} 
                         selected={this.props.selected.id == item.id}
-        >
+        > 
+
           {content}
-        
-          <IconButton color="inherit" size="small">
-            <HighlightOffIcon />
-          </IconButton>
-        
+          
+         
+          
         </ContentWrapper>
+          
+        {enableRemove && <IconButton color="inherit" size="small">
+              <HighlightOffIcon />
+            </IconButton>}
+        {!enableRemove && <Placeholder/>}
+   
+        
+
         <Spring
           native
           immediate={immediate}

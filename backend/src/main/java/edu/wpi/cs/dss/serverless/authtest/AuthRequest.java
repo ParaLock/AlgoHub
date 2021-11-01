@@ -2,14 +2,14 @@ package edu.wpi.cs.dss.serverless.authtest;
 
 public class AuthRequest {
 
-    public String token;
+    public String userName;
 
     public AuthRequest() {
-        token = "";
+        userName = "";
     }
 
     public AuthRequest(String t) {
-        token = t;
+        userName = t;
     }
 
 }

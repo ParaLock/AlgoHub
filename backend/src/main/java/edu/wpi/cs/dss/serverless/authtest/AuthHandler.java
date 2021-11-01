@@ -29,25 +29,10 @@ public class AuthHandler implements RequestHandler<AuthRequest,AuthResponse> {
         logger.log(req.toString());
 
         CognitoIdentity identity = context.getIdentity();
-        String token = req.token;
-        logger.log("token" + token);
+        String uName = req.userName;
+        logger.log("token" + uName);
 
-        AuthResponse response;
-
-        try {
-
-            DecodedJWT jwt = JWT.decode(token);
-            String email = jwt.getClaims().get("email").asString();
-            String username = jwt.getClaims().get("cognito:username").asString();
-            String userId = jwt.getClaims().get("sub").asString();
-
-            response = new AuthResponse(email, username, userId, 200);
-
-        } catch (JWTDecodeException exception){
-            response = new AuthResponse(400, exception.toString());
-        }
-
-        return response;
+        return new AuthResponse(uName, 200);
     }
 }
 

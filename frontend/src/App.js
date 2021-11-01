@@ -218,20 +218,6 @@ const benchmarkData = [
   }
 ]
 
-
-// async function addToGroup() { 
-//   let apiName = 'AdminQueries';
-//   let path = '/addUserToGroup';
-//   let myInit = {
-//       body: {}, 
-//       headers: {
-//         'Content-Type' : 'application/json',
-//         Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
-//       } 
-//   }
-//   return await API.post(apiName, path, myInit);
-// }
-
 function App() {
 
   const [toggleableItems, setToggleableItems] = useState([]);
@@ -249,18 +235,18 @@ function App() {
         
           if(authData && nextAuthState == "signedin") {
 
-            console.log(authData.signInUserSession.accessToken.jwtToken )
+            console.log(authData.signInUserSession.idToken.jwtToken )
 
-            axios.get(`https://b09opfk3vb.execute-api.us-east-1.amazonaws.com/beta/test`, {
+            axios.post(`https://4va7uqs0x1.execute-api.us-east-1.amazonaws.com/beta/test`, {},{
               headers: {
-                Authorization: authData.signInUserSession.accessToken.jwtToken 
+                Authorization: authData.signInUserSession.idToken.jwtToken 
               }
             })
             .then(res => {
               console.log(res.data)
             })
 
-            var groups =  authData.signInUserSession.accessToken.payload["cognito:groups"]
+            var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
             var userId = authData.attributes.sub
   
 

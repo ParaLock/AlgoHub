@@ -1,21 +1,12 @@
 package edu.wpi.cs.dss.serverless.database;
 
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DatabaseUtil {
 
-    // These should never be stored directly in code.  I am doing this quickly complete the
-    // demonstration code. The appropriate solution is to store these values in environment
-    // variables that are accessed by the Lambda function at run time like this
-    //
-    //  dbUsername = System.getenv("dbUsername");
-    //  dbPassword = System.getenv("dbPassword");
-    //  rdsMySqlDatabaseUrl = System.getenv("rdsMySqlDatabaseUrl");
-    //
-    // https://docs.aws.amazon.com/lambda/latest/dg/env_variables.html
-    //
-    // The above link shows how to do that.
     public static String rdsMySqlDatabaseUrl;
     public static String dbUsername;
     public static String dbPassword;
@@ -24,8 +15,7 @@ public class DatabaseUtil {
     public final static String rdsMySqlDatabasePort = "3306";
     public final static String multiQueries = "?allowMultiQueries=true";
 
-    public final static String dbName = "calc";           // Whatever Schema you created in tutorial.
-    public final static String testingName = "tmp";       // used for testing (also default created)
+    public final static String dbName = "algohub";
 
     // pooled across all usages.
     static Connection conn;
@@ -33,39 +23,34 @@ public class DatabaseUtil {
     /**
      * Singleton access to DB connection to share resources effectively across multiple accesses.
      */
-    protected static Connection connect() throws Exception {
+    public static Connection connect(LambdaLogger logger) throws Exception {
         if (conn != null) { return conn; }
-
-        boolean useTestDB = System.getenv("TESTING") != null;
-
-        // this is resistant to any SQL-injection attack since we choose one of two possible ones.
-        String schemaName = dbName;
-        if (useTestDB) {
-            schemaName = testingName;
-            System.out.println("USE TEST DB:" + useTestDB);
-        }
 
         dbUsername = System.getenv("dbUsername");
         if (dbUsername == null) {
-            System.err.println("Environment variable dbUsername is not set!");
+            logger.log("Environment variable dbUsername is not set!\n");
         }
         dbPassword = System.getenv("dbPassword");
         if (dbPassword == null) {
-            System.err.println("Environment variable dbPassword is not set!");
+            logger.log("Environment variable dbPassword is not set!\n");
         }
-        rdsMySqlDatabaseUrl = System.getenv("rdsMySqlDatabaseUrl");
+        rdsMySqlDatabaseUrl = System.getenv("dbHost");
         if (rdsMySqlDatabaseUrl == null) {
-            System.err.println("Environment variable rdsMySqlDatabaseUrl is not set!");
+            logger.log("Environment variable dbHost is not set!\n");
         }
 
+        logger.log("DB: Successfully retrieved env vars.\n");
+
         try {
-            //System.out.println("start connecting......");
+            logger.log("Getting mysql driver.\n");
             Class.forName("com.mysql.cj.jdbc.Driver");
+            logger.log("Got driver successfully.\n");
+            logger.log("Connecting to db.\n");
             conn = DriverManager.getConnection(
-                    jdbcTag + rdsMySqlDatabaseUrl + ":" + rdsMySqlDatabasePort + "/" + schemaName + multiQueries,
+                    jdbcTag + rdsMySqlDatabaseUrl + ":" + rdsMySqlDatabasePort + "/" + dbName + multiQueries,
                     dbUsername,
                     dbPassword);
-            //System.out.println("Database has been connected successfully.");
+            logger.log("Connected to db successfully successfully.");
             return conn;
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -1,2 +1,4 @@
-package edu.wpi.cs.dss.serverless.classifications.http;public class ClassificationMergeResponse {
+package edu.wpi.cs.dss.serverless.classifications.http;
+
+public class ClassificationMergeResponse {
 }

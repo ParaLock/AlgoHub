@@ -218,14 +218,30 @@ const benchmarkData = [
   }
 ]
 
+var API_PATH = "https://p0j2bbly07.execute-api.us-east-1.amazonaws.com/beta/";
+
 function App() {
 
   const [toggleableItems, setToggleableItems] = useState([]);
   const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
   const [expandedOntologyItems, setExpandedOntologyItems] = useState({});
+  const [classificationHierarchy, setClassificationHierarchy] = useState([]);
 
   const [showAuthForm, setShowAuthForm] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null);
+
+  React.useEffect(() => {
+    axios.get(API_PATH + `classifications/hierarchy`)
+    .then(res => {
+
+      if(res.data && res.data.hierarchy) {
+
+        setClassificationHierarchy(res.data.hierarchy)
+
+      }
+    })
+
+  }, []);
 
   React.useEffect(() => {
       return onAuthUIStateChange((nextAuthState, authData) => {
@@ -237,15 +253,7 @@ function App() {
 
             console.log(authData.signInUserSession.idToken.jwtToken )
 
-            axios.post(`https://4va7uqs0x1.execute-api.us-east-1.amazonaws.com/beta/test`, {},{
-              headers: {
-                Authorization: authData.signInUserSession.idToken.jwtToken 
-              }
-            })
-            .then(res => {
-              console.log(res.data)
-            })
-
+            
             var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
             var userId = authData.attributes.sub
   
@@ -325,7 +333,7 @@ function App() {
             onLogin={onLogin}
             onLogout={onLogout}
 
-            ontologyData={ontologyData}
+            ontologyData={classificationHierarchy}
             benchmarkData={benchmarkData}
             problemInstanceData={problemInstanceData}
 

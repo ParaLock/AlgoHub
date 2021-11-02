@@ -25,61 +25,68 @@ return ontologyData.map((item) => ({
 
 
 function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, treeData, parentId = 0, level = 0 }) {
-const items = treeData
-    .filter((item) => item.parentId === parentId)
-    .sort((a, b) => (a.content > b.content ? 1 : -1));
-if (!items.length) return null;
-return (
-    <>
-        {items.map((item, idx) => {
 
-            var style = treeStyles;
+    const items = treeData
+    .filter((item) => item.parentId == parentId)
+    .sort((a, b) => (a.name > b.name ? 1 : -1));
 
-            var key = level + item.parentId + "." + item.id;
+    if (!items.length) return null;
 
-            if(item.hasChildren) {
+    return (
+        <>
+            
+            {items.map((item, idx) => {
 
-                return <Tree 
-                            selected={selected} 
-                            enableRemove={enableRemove}
-                            content={item.content} 
-                            style={{...style, color:"#6652ff"}} 
-                            key={key}
-                            item={item}
-                            onSelect={(i) => onSelect(i)}
-                            expandedOntologyItems={expandedOntologyItems} 
-                        >
-                            <TreeWrapper 
-                                            enableRemove={enableRemove}
-                                            expandedOntologyItems={expandedOntologyItems} 
-                                            onSelect={(i) => onSelect(i)} 
-                                            selected={selected} 
-                                            treeData={treeData} 
-                                            parentId={item.id} 
-                                            level={level + 1} 
-                            />
-                    </Tree>
 
-            } else {
+                var style = treeStyles;
+
+                var key = level + item.parentId + "." + item.id;
                 
-                return <Tree 
-                                enableRemove={enableRemove}
-                                onSelect={(i) => onSelect(i)} 
-                                item={item}
+                if(item.hasChildren) {
+
+                    return <Tree 
                                 selected={selected} 
-                                content={item.content} 
-                                style={style} 
+                                enableRemove={enableRemove}
+                                content={item.name} 
+                                style={{...style, color:"#6652ff"}} 
                                 key={key}
+                                item={item}
+                                onSelect={(i) => onSelect(i)}
                                 expandedOntologyItems={expandedOntologyItems} 
-                        />
-            }
-        })}
-       
-    </>
-);
+                            >
+                                <TreeWrapper 
+                                                enableRemove={enableRemove}
+                                                expandedOntologyItems={expandedOntologyItems} 
+                                                onSelect={(i) => onSelect(i)} 
+                                                selected={selected} 
+                                                treeData={treeData} 
+                                                parentId={item.id} 
+                                                level={level + 1} 
+                                />
+                        </Tree>
+
+                } else {
+                    
+                    return <Tree 
+                                    enableRemove={enableRemove}
+                                    onSelect={(i) => onSelect(i)} 
+                                    item={item}
+                                    selected={selected} 
+                                    content={item.name} 
+                                    style={style} 
+                                    key={key}
+                                    expandedOntologyItems={expandedOntologyItems} 
+                            />
+                }
+            })}
+        
+        </>
+    );
 }
 
 export default function OntologyViewer(props) {
+
+    console.log(getOntology(props.ontologyData))
 
     return (
         <div>

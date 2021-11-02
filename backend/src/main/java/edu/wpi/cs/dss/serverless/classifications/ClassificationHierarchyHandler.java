@@ -36,7 +36,7 @@ public class ClassificationHierarchyHandler implements RequestHandler<Classifica
             logger.log("Finished connecting to db...\n");
 
             String query = "";
-            query += "SELECT parentClassification AS parentId, algorithmId AS id, name, 'algorithm' AS type " +
+            query += "SELECT algorithmId AS id, parentClassification AS parentId, name, 'algorithm' AS type " +
                      "FROM Algorithm " +
                      "UNION " +
                      "SELECT classificationId AS id, parentId, name, 'classification' AS type  " +

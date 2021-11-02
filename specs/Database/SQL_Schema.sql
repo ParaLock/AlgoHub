@@ -2,8 +2,7 @@ CREATE TABLE Classification (
    classificationId VARCHAR(36) NOT NULL,
    parentId VARCHAR(36) NOT NULL,
    name VARCHAR(100) NOT NULL,
-   PRIMARY KEY (classificationId),
-   FOREIGN KEY (parentId) REFERENCES Classification (classificationId)
+   PRIMARY KEY (classificationId)
 );
 
 CREATE TABLE Algorithm (
@@ -19,6 +18,7 @@ CREATE TABLE Algorithm (
 CREATE TABLE Implementation (
    implementationId VARCHAR(36) NOT NULL,
    sourceCodeFilename TEXT NOT NULL,
+   name TEXT NOT NULL,
    parentAlgorithm VARCHAR(36) NOT NULL,
    authorId VARCHAR(36) NOT NULL,
    PRIMARY KEY (implementationId),

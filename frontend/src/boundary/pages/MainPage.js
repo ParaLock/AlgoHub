@@ -59,15 +59,15 @@ const PanelTitle = styled.div`
 
 export default function MainPage(props) {
 
-    var parent = props.ontologyData[props.selectedOntologyItem.parentId - 1];
+    var parent = props.ontologyData.filter((item) => item.id == props.selectedOntologyItem.parentId)[0];
     var title = "";
 
     if(parent) {
-        title = parent.content;
+        title = parent.name;
     }
 
-    if(props.selectedOntologyItem.content) {
-        title += "." + props.selectedOntologyItem.content;
+    if(props.selectedOntologyItem.name) {
+        title += "." + props.selectedOntologyItem.name;
     } else {
         title = "Welcome to AMA"   
     }
@@ -75,11 +75,11 @@ export default function MainPage(props) {
     var benchmarks = props.benchmarkData.filter((item) => item.parent == title);
     var problemInstances = props.problemInstanceData.filter((item) => {
         
-        if(item.parent == props.selectedOntologyItem.content) {
+        if(item.parent == props.selectedOntologyItem.name) {
             return true;
         }
 
-        if(props.selectedOntologyItem.type == "implementation" && parent.content == item.parent) {
+        if(props.selectedOntologyItem.typeName == "implementation" && parent.name == item.parent) {
 
             return true;
         }   
@@ -120,13 +120,13 @@ export default function MainPage(props) {
                         {title}
                     </PanelTitle> 
 
-                    { props.selectedOntologyItem.type == "algorithm" && <AlgorithmPanel 
+                    { props.selectedOntologyItem.typeName == "algorithm" && <AlgorithmPanel 
                                                                                     selectedAlgorithm={props.selectedOntologyItem} 
                                                                     /> }
-                    { props.selectedOntologyItem.type == "classification" && <AlgorithmPanel 
+                    { props.selectedOntologyItem.typeName == "classification" && <AlgorithmPanel 
                                                                                     selectedAlgorithm={props.selectedOntologyItem} 
                                                                     /> }
-                    { props.selectedOntologyItem.type == "implementation" && <ImplementationPanel 
+                    { props.selectedOntologyItem.typeName == "implementation" && <ImplementationPanel 
                                                                                     selectedAlgorithm={props.selectedOntologyItem} 
                                                                         /> }
 

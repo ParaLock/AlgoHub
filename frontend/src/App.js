@@ -21,25 +21,6 @@ import {
 Amplify.configure(awsconfig);
 
 
-
-
-
-const ontologyData = [
-
-  { id: 1, content: "Algorithms", parentId: 0, type: "classification" },
-  { id: 2, content: "Sorting", parentId: 1, type: "classification" },
-  { id: 3, content: "Computational Geometry", parentId: 1, type: "classification" },
-  { id: 4, content: "Nearest Neighbor", parentId: 3, type: "algorithm" },
-  { id: 5, content: "Convex Hull", parentId: 3, type: "algorithm" },
-  { id: 6, content: "Graph Algorithms", parentId: 1, type: "classification" },
-  { id: 7, content: "Search", parentId: 6, type: "classification" },
-  { id: 8, content: "Breadth-First Search", parentId: 7, type: "algorithm" },
-  { id: 9, content: "Depth-First Search", parentId: 7, type: "algorithm" },
-  { id: 10, content: "C++", parentId: 9, type: "implementation" },
-  { id: 11, content: "Java", parentId: 9, type: "implementation" }
-
-]
-
 const problemInstanceData = [
 
   {
@@ -67,7 +48,7 @@ const problemInstanceData = [
 
 const benchmarkData = [
   {
-    parent: "Depth-First Search.C++",
+    parent: "Breadth-First Search.C++",
     id: 1,
     machine: {
       CPU: "Intel core i7",
@@ -82,7 +63,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.C++",
+    parent: "Breadth-First Search.C++",
     id: 2,
     machine: {
       CPU: "Intel core i9",
@@ -97,7 +78,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.C++",
+    parent: "Breadth-First Search.C++",
     id: 3,
     machine: {
       CPU: "Intel core i9",
@@ -112,7 +93,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.Java",
+    parent: "Breadth-First Search.Java",
     id: 4,
     machine: {
       CPU: "Intel core i9",
@@ -127,7 +108,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.Java",
+    parent: "Breadth-First Search.Java",
     id: 5,
     machine: {
       CPU: "Intel core i9",
@@ -142,7 +123,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.Java",
+    parent: "Breadth-First Search.Java",
     id: 6,
     machine: {
       CPU: "Intel core i9",
@@ -157,7 +138,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.Java",
+    parent: "Breadth-First Search.Java",
     id: 7,
     machine: {
       CPU: "Intel core i9",
@@ -231,6 +212,10 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState(null);
 
   React.useEffect(() => {
+
+    
+
+
     axios.get(API_PATH + `classifications/hierarchy`)
     .then(res => {
 
@@ -250,6 +235,27 @@ function App() {
         console.log(nextAuthState)
         
           if(authData && nextAuthState == "signedin") {
+
+            axios.post(API_PATH + `algorithms/add`, {
+
+              "algorithmInfo": {
+                "id": "",
+                "name": "",
+                "desciptions": "",
+                "authorId": "",
+                "parentClassificationId": ""
+              }
+        
+            },
+            {
+              "headers": {
+                "Authorization": authData.signInUserSession.idToken.jwtToken
+              }
+            })
+            .then(res => {
+        
+              console.log(res.data)
+            })
 
             console.log(authData.signInUserSession.idToken.jwtToken )
 

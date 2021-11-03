@@ -16,6 +16,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import { Resizable } from "re-resizable";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
     '& .MuiSpeedDial-actions': {
@@ -53,6 +54,14 @@ const ButtonWrapper = styled.div`
 
 
 export default function OntologySidebar(props) {
+
+    const [isOntologyLoading,setisOntologyLoading] = useState(true);
+
+    React.useEffect(() => {
+
+        setisOntologyLoading(props.ontologyData.length == 0)
+        
+    }, [props.ontologyData]);
 
     return (
 
@@ -118,9 +127,9 @@ export default function OntologySidebar(props) {
             
             </span>
      
-
-
             </ButtonWrapper>
+
+            {isOntologyLoading && <CircularProgress />}
 
             <OntologyViewer 
                         onSelect={(item)=> { props.onOntologyItemSelected(item)}} 

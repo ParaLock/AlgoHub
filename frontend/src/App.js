@@ -236,26 +236,26 @@ function App() {
         
           if(authData && nextAuthState == "signedin") {
 
-            axios.post(API_PATH + `algorithms/add`, {
+            // axios.post(API_PATH + `algorithms/add`, {
 
-              "algorithmInfo": {
-                "id": "",
-                "name": "",
-                "desciptions": "",
-                "authorId": "",
-                "parentClassificationId": ""
-              }
+            //   "algorithmInfo": {
+            //     "id": "",
+            //     "name": "",
+            //     "desciptions": "",
+            //     "authorId": "",
+            //     "parentClassificationId": ""
+            //   }
         
-            },
-            {
-              "headers": {
-                "Authorization": authData.signInUserSession.idToken.jwtToken
-              }
-            })
-            .then(res => {
+            // },
+            // {
+            //   "headers": {
+            //     "Authorization": authData.signInUserSession.idToken.jwtToken
+            //   }
+            // })
+            // .then(res => {
         
-              console.log(res.data)
-            })
+            //   console.log(res.data)
+            // })
 
             console.log(authData.signInUserSession.idToken.jwtToken )
 

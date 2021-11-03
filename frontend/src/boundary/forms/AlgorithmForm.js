@@ -13,6 +13,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
+import useInput from "../hooks/useInput";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -67,6 +68,9 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function AlgorithmForm(props) {
 
+    const parentClassificationId = useInput("");
+    const algorithmName = useInput("");
+
     return (
         <div>
             <BootstrapDialog
@@ -82,22 +86,29 @@ export default function AlgorithmForm(props) {
                 <DialogContent dividers>
                     <GeneralInfo>
                         <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
-                        renderInput={(params) => <TextField {...params} label="Parent Classification Name" />}
+                            sx={{width: "30%"}}
+                            disablePortal
+                            id="combo-box-demo"
+                            getOptionLabel={(item) => item.content}
+                            options={props.ontologyData.filter((item) => item.typeName == "classification")}
+                            renderInput={(params) => <TextField {...params} label="Parent Classification Name" />}
+                            {...parentClassificationId}
                         />
                         <TextField label="Algorithm Name"  
                             sx={{width: "30%"}}
+                            {...algorithmName}
+
                         />
                     </GeneralInfo>
 
 
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={() => props.onClose()}>
+                    <Button autoFocus onClick={() => {props.onClose(); props.onSubmit({
+                            parentClassificationId: parentClassificationId.value,
+                            algorithmName: algorithmName.value
+                        })}}
+                    >
                         Create
                     </Button>
                 </DialogActions>

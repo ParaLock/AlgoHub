@@ -86,6 +86,12 @@ export default function MainPage(props) {
     
     });
 
+    var addAlgorithm = (data) => {
+
+        console.log(data);
+
+    }
+
     return (
 
 
@@ -180,6 +186,7 @@ export default function MainPage(props) {
                 open={props.toggleableItems.includes("algorithm_form")}
                 onClose={() => props.toggleItem("algorithm_form", false)}
                 ontologyData={props.ontologyData}
+                onSubmit={addAlgorithm}
             />
 
             <ImplementationForm

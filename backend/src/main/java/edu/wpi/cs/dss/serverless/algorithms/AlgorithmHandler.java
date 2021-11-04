@@ -9,6 +9,9 @@ public class AlgorithmHandler implements RequestHandler<AlgorithmRequest, Algori
 
     @Override
     public AlgorithmResponse handleRequest(AlgorithmRequest input, Context context) {
-        return new AlgorithmResponse();
+        AlgorithmResponse response = new AlgorithmResponse();
+        response.setStatus(input.getId());
+        return response;
+
     }
 }

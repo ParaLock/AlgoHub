@@ -1,6 +1,6 @@
 {
     "identityPoolName": "algohub30331ded_identitypool_30331ded",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "algohu30331ded",
     "userPoolName": "algohub30331ded_userpool_30331ded",
     "autoVerifiedAttributes": [

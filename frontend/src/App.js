@@ -5,12 +5,13 @@ import MainPage from './boundary/pages/MainPage'
 import AccountManagementPage from './boundary/pages/AccountManagementPage';
 import SignInPage from './boundary/pages/SignInPage';
 
-import Amplify, { Auth, API } from 'aws-amplify';
-
+import Amplify, { Auth, API, Storage } from 'aws-amplify';
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import axios from 'axios';
 import awsconfig from './aws-exports';
+
+import { useSnackbar } from 'notistack';
 
 import {
   BrowserRouter as Router,
@@ -18,37 +19,62 @@ import {
   Route,
   Link
 } from "react-router-dom";
-Amplify.configure(awsconfig);
 
+Amplify.configure(awsconfig);
 
 const problemInstanceData = [
 
   {
-    parent: "Convex Hull",
+    parent: "a1",
     name: "Worst case",
     inputSize: 128
   },
   {
-    parent: "Depth-First Search",
+    parent: "a1",
     name: "Average case",
     inputSize: 32
   },
   {
-    parent: "Depth-First Search",
-    name: "Worst case",
-    inputSize: 256
-  },
-  {
-    parent: "Depth-First Search",
+    parent: "a2",
     name: "Best case",
     inputSize: 16
   }
 
 ]
 
+const algorithmData = [
+
+  {
+    id: "a1",
+    description: "This algorithm is awesome"
+  },
+  {
+    id: "a2",
+    description: "This algorithm is also awesome"
+  },
+
+]
+
+
+const implementationData = [
+
+  {
+    id: "i1",
+    parent: "a1",
+    sourceCodeFilename: "https://cs509-algohub-implementations.s3.amazonaws.com/dfs_haskell.txt",
+    name: "C++" 
+  },
+  {
+    id: "i2",
+    parent: "a2",
+    sourceCodeFilename: "https://cs509-algohub-implementations.s3.amazonaws.com/dfs_haskell.txt",
+    name: "Java" 
+  }
+]
+
 const benchmarkData = [
   {
-    parent: "Breadth-First Search.C++",
+    parent: "i1",
     id: 1,
     machine: {
       CPU: "Intel core i7",
@@ -63,7 +89,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Breadth-First Search.C++",
+    parent: "i1",
     id: 2,
     machine: {
       CPU: "Intel core i9",
@@ -78,7 +104,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Breadth-First Search.C++",
+    parent: "i1",
     id: 3,
     machine: {
       CPU: "Intel core i9",
@@ -93,7 +119,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Breadth-First Search.Java",
+    parent: "i2",
     id: 4,
     machine: {
       CPU: "Intel core i9",
@@ -108,7 +134,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Breadth-First Search.Java",
+    parent: "i2",
     id: 5,
     machine: {
       CPU: "Intel core i9",
@@ -123,7 +149,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Breadth-First Search.Java",
+    parent: "i2",
     id: 6,
     machine: {
       CPU: "Intel core i9",
@@ -138,7 +164,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Breadth-First Search.Java",
+    parent: "i2",
     id: 7,
     machine: {
       CPU: "Intel core i9",
@@ -153,7 +179,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.Java",
+    parent: "i2",
     id: 8,
     machine: {
       CPU: "Intel core i9",
@@ -168,7 +194,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.Java",
+    parent: "i2",
     id: 9,
     machine: {
       CPU: "Intel core i9",
@@ -183,7 +209,7 @@ const benchmarkData = [
     problemInstance: "Worst Case"
   },
   {
-    parent: "Depth-First Search.Java",
+    parent: "i2",
     id: 10,
     machine: {
       CPU: "Intel core i9",
@@ -205,16 +231,19 @@ function App() {
 
   const [toggleableItems, setToggleableItems] = useState([]);
   const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState(null);
+  const [selectedImplementation, setSelectedImplementation] = useState([]);
+  const [selectedProblemInstances, setSelectedProblemInstances] = useState([]);
+  const [selectedBenchmarks, setSelectedBenchmarks] = useState([]);
   const [expandedOntologyItems, setExpandedOntologyItems] = useState({});
   const [classificationHierarchy, setClassificationHierarchy] = useState([]);
-
   const [showAuthForm, setShowAuthForm] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null);
 
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+
   React.useEffect(() => {
-
-    
-
 
     axios.get(API_PATH + `classifications/hierarchy`)
     .then(res => {
@@ -236,34 +265,11 @@ function App() {
         
           if(authData && nextAuthState == "signedin") {
 
-            // axios.post(API_PATH + `algorithms/add`, {
-
-            //   "algorithmInfo": {
-            //     "id": "",
-            //     "name": "",
-            //     "desciptions": "",
-            //     "authorId": "",
-            //     "parentClassificationId": ""
-            //   }
-        
-            // },
-            // {
-            //   "headers": {
-            //     "Authorization": authData.signInUserSession.idToken.jwtToken
-            //   }
-            // })
-            // .then(res => {
-        
-            //   console.log(res.data)
-            // })
-
             console.log(authData.signInUserSession.idToken.jwtToken )
 
-            
             var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
             var userId = authData.attributes.sub
   
-
             setCurrentUser({userId: userId, username: authData.username, groups: groups});
           }
       });
@@ -321,42 +327,63 @@ function App() {
     setCurrentUser(null)
   }
 
+  var onOntologySelect = (item) => {
+
+    setSelectedOntologyItem(item)
+
+    var implementations = implementationData.filter((candidate) => candidate.id == item.id)
+
+    if(implementations.length > 0) {
+      setSelectedImplementation(implementations[0])
+    }
+
+    var algorithms = algorithmData.filter((candidate) => candidate.id == item.id)
+
+    if(algorithms.length > 0) {
+      setSelectedAlgorithm(algorithms[0])
+    }
+
+
+    var problemInstances = problemInstanceData.filter((candidate) => candidate.parent == item.id);
+    setSelectedProblemInstances(problemInstances)
+
+    var benchmarks = benchmarkData.filter((candidate) => candidate.parent == item.id);
+    setSelectedBenchmarks(benchmarks)
+  }
+
   return (
-    <Router>
-          
-      <Switch>
-        <Route path="/signin">
-          <SignInPage />
-        </Route>
-        <Route path="/accounts">
-          <AccountManagementPage />
-        </Route>
-        <Route path="/">
 
-          {showAuthForm && <AmplifyAuthenticator/>}
-          <MainPage
-            currentUser={currentUser}
-            onLogin={onLogin}
-            onLogout={onLogout}
+      <Router>
+            
+            <Switch>
+              <Route path="/signin">
+                <SignInPage />
+              </Route>
+              <Route path="/accounts">
+                <AccountManagementPage />
+              </Route>
+              <Route path="/">
+      
+                {showAuthForm && <AmplifyAuthenticator/>}
+                <MainPage
+                  currentUser={currentUser}
+                  onLogin={onLogin}
+                  onLogout={onLogout}
+                  ontologyData={classificationHierarchy}
+                  selectedBenchmarks={benchmarkData}
+                  selectedProblemInstances={selectedProblemInstances}
+                  selectedImplementation={selectedImplementation}
+                  setSelectedOntologyItem={onOntologySelect}
+                  selectedOntologyItem={selectedOntologyItem}
+                  toggleableItems={toggleableItems}
+                  toggleItem={(item, state) => toggleItem(item, state)}
+                  expandedOntologyItems={expandedOntologyItems}
+                >
+                </MainPage>
+              </Route>
+            </Switch>
+          </Router>
 
-            ontologyData={classificationHierarchy}
-            benchmarkData={benchmarkData}
-            problemInstanceData={problemInstanceData}
-
-            setSelectedOntologyItem={(item) => setSelectedOntologyItem(item)}
-
-            selectedOntologyItem={selectedOntologyItem}
-
-            toggleableItems={toggleableItems}
-            toggleItem={(item, state) => toggleItem(item, state)}
-
-            expandedOntologyItems={expandedOntologyItems}
-
-          >
-          </MainPage>
-        </Route>
-      </Switch>
-    </Router>
 
   );
 }

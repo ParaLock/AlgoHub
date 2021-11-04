@@ -62,7 +62,9 @@ export default function ProblemInstancePanel(props) {
     return (
 
         <Wrapper>
-            <Title>PROBLEM INSTANCES</Title>
+            <Typography variant="h6" align="center" component="div" gutterBottom>
+            Problem Instances
+            </Typography>
             {props.currentUser && 
                 <ButtonWrapper>
                     <IconButton color="inherit" size="large" onClick={() => props.onProblemInstanceAdd()}>
@@ -72,7 +74,7 @@ export default function ProblemInstancePanel(props) {
             }
 
             {
-                props.problemInstanceData.map((item) => {
+                props.selectedProblemInstances.map((item) => {
 
 
                     return <ProblemInstanceWrapper>
@@ -107,7 +109,7 @@ export default function ProblemInstancePanel(props) {
                 })
             }
 
-            {props.problemInstanceData.length == 0 && <MsgWrapper>None</MsgWrapper>}
+            {props.selectedProblemInstances.length == 0 && <MsgWrapper>None</MsgWrapper>}
 
         </Wrapper>
     );

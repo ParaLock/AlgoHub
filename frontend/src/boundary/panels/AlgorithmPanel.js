@@ -39,7 +39,7 @@ export default function AlgorithmPanel(props) {
 
       <Wrapper>
 
-          <AlgorithmDescription>Description goes here...</AlgorithmDescription>
+          <AlgorithmDescription>Algorithm description goes here...</AlgorithmDescription>
           
       </Wrapper>
   );

@@ -18,8 +18,7 @@ import BenchmarkForm from '../forms/BenchmarkForm';
 import AlgorithmForm from '../forms/AlgorithmForm';
 import ImplementationForm from "../forms/ImplementationForm"
 import ProblemInstanceForm from '../forms/ProblemInstanceForm';
-
-
+import { useSnackbar } from 'notistack';
 
 const Wrapper = styled.div`
       
@@ -59,6 +58,8 @@ const PanelTitle = styled.div`
 
 export default function MainPage(props) {
 
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     var parent = props.ontologyData.filter((item) => item.id == props.selectedOntologyItem.parentId)[0];
     var title = "";
 
@@ -72,28 +73,27 @@ export default function MainPage(props) {
         title = "Welcome to AMA"   
     }
 
-    var benchmarks = props.benchmarkData.filter((item) => item.parent == title);
-    var problemInstances = props.problemInstanceData.filter((item) => {
-        
-        if(item.parent == props.selectedOntologyItem.name) {
-            return true;
-        }
-
-        if(props.selectedOntologyItem.typeName == "implementation" && parent.name == item.parent) {
-
-            return true;
-        }   
-    
-    });
-
     var addAlgorithm = (data) => {
 
-        console.log(data);
+        enqueueSnackbar('Adding Algorithm...', 
+            {
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                },
+                variant: 'info',
+                autoHideDuration: 3000
+            });
 
     }
 
-    return (
+    var addImplementation = (data) => {
 
+    }
+
+
+
+    return (
 
         <Wrapper>
 
@@ -127,17 +127,18 @@ export default function MainPage(props) {
                     </PanelTitle> 
 
                     { props.selectedOntologyItem.typeName == "algorithm" && <AlgorithmPanel 
-                                                                                    selectedAlgorithm={props.selectedOntologyItem} 
+                                                                                    selectedAlgorithm={props.selectedAlgorithm} 
                                                                     /> }
                     { props.selectedOntologyItem.typeName == "classification" && <AlgorithmPanel 
                                                                                     selectedAlgorithm={props.selectedOntologyItem} 
                                                                     /> }
                     { props.selectedOntologyItem.typeName == "implementation" && <ImplementationPanel 
-                                                                                    selectedAlgorithm={props.selectedOntologyItem} 
+                                                                                    selectedImplementation={props.selectedImplementation} 
+                                                                                    
                                                                         /> }
 
                     <ProblemInstancePanel 
-                        problemInstanceData={problemInstances}
+                        selectedProblemInstances={props.selectedProblemInstances}
                         onProblemInstanceAdd={() => props.toggleItem("problem_instance_form")}
                         currentUser={props.currentUser}
                     />
@@ -147,7 +148,7 @@ export default function MainPage(props) {
                     currentUser={props.currentUser}
                     open={props.toggleableItems.includes("benchmark_menu")}
                     onBenchmarkAdd={() => props.toggleItem("benchmark_add_form", true)}
-                    benchmarks={benchmarks}
+                    selectedBenchmarks={props.selectedBenchmarks}
                 />
 
             </ContentWrapper>
@@ -180,6 +181,7 @@ export default function MainPage(props) {
                 open={props.toggleableItems.includes("benchmark_add_form")}
                 onClose={() => props.toggleItem("benchmark_add_form", false)}
                 ontologyData={props.ontologyData}
+                selectedBenchmarks={props.selectedBenchmarks}
             />
 
             <AlgorithmForm
@@ -193,6 +195,7 @@ export default function MainPage(props) {
                 open={props.toggleableItems.includes("implementation_form")}
                 onClose={() => props.toggleItem("implementation_form", false)}
                 ontologyData={props.ontologyData}
+                onSubmit={addImplementation}
             />
 
             <AlgorithmReclassifyForm

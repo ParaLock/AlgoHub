@@ -17,6 +17,7 @@ import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import { Resizable } from "re-resizable";
 import CircularProgress from '@mui/material/CircularProgress';
+import { useSnackbar } from 'notistack';
 
 const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
     '& .MuiSpeedDial-actions': {
@@ -56,10 +57,33 @@ const ButtonWrapper = styled.div`
 export default function OntologySidebar(props) {
 
     const [isOntologyLoading,setisOntologyLoading] = useState(true);
+    const [ontologyStatusKey, setOntologyStatusKey] = useState("");
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     React.useEffect(() => {
 
-        setisOntologyLoading(props.ontologyData.length == 0)
+        if(props.ontologyData.length == 0) {
+
+            const key = enqueueSnackbar('Loading Hierarchy...', 
+            {
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                },
+                variant: 'info',
+                persist: true,
+            });
+
+            setOntologyStatusKey(key)
+            setisOntologyLoading(true)
+        
+        } else {
+
+            closeSnackbar(ontologyStatusKey)
+
+            setOntologyStatusKey("")
+            setisOntologyLoading(false)
+        }
         
     }, [props.ontologyData]);
 

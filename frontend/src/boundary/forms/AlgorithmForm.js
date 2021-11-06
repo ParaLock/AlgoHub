@@ -23,7 +23,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         padding: theme.spacing(1),
     },
     "& .MuiPaper-root" : {
-        height: "50%"
+        height: "fit-content"
     }
 }));
 
@@ -70,6 +70,7 @@ export default function AlgorithmForm(props) {
 
     const parentClassificationId = useInput("");
     const algorithmName = useInput("");
+    const algorithmDescription = useInput("");
 
     return (
         <div>
@@ -89,9 +90,9 @@ export default function AlgorithmForm(props) {
                             sx={{width: "30%"}}
                             disablePortal
                             id="combo-box-demo"
-                            getOptionLabel={(item) => item.content}
+                            getOptionLabel={(item) => item.name}
                             options={props.ontologyData.filter((item) => item.typeName == "classification")}
-                            renderInput={(params) => <TextField {...params} label="Parent Classification Name" />}
+                            renderInput={(params) => <TextField {...params} label="Parent Classification" />}
                             {...parentClassificationId}
                         />
                         <TextField label="Algorithm Name"  
@@ -99,8 +100,16 @@ export default function AlgorithmForm(props) {
                             {...algorithmName}
 
                         />
+         
                     </GeneralInfo>
-
+                    <TextField
+                            placeholder="Please enter algorithm description"
+                            multiline
+                            rows={4}
+                            rowsMax={4}
+                            sx={{width: "30%"}}
+                            {...algorithmDescription}
+                        />
 
                 </DialogContent>
                 <DialogActions>

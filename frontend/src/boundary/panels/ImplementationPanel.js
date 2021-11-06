@@ -19,25 +19,21 @@ import awsconfig from '../../aws-exports';
 const Wrapper = styled.div`
   
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    height: 47.5%;
     border-radius: 5px;
     border-width: 1px;
     overflow-wrap: anywhere;
     margin: 5px;
     margin-bottom: 0px;
     display: flex;
-    flex-direction: column;
-`;
-
-const CodeWrapper = styled.div`
-
+    flex-grow: 1;
     height: 100%;
-    width: 100%;
+    flex-direction: column;
 `;
 
 const ButtonWrapper = styled.div`
 
     padding-right: 10px;
+    padding-bottom: 10px;
     display: flex;
     justify-content: right;
 
@@ -49,29 +45,25 @@ export default function ImplementationPanel(props) {
 
     React.useEffect(() => {
 
-        //Fetch s3 file
+        try {
 
-        // Storage.get('hello.png', {expires: 60})
-        // .then(result => console.log(result))
-        // .catch(err => console.log(err));
+            
 
-        // Storage.get('filename.txt', {
-        //     download: true,
-        //     progressCallback(progress) {
-                
-        //     }
-        // })
+        } catch(exception) {
+            console.log("Failed to get file.")
+        }
 
 
     }, [props.selectedImplementation]);
+
+    console.log(props.selectedImplementation)
 
     var lang = (props.selectedImplementation) ? props.selectedImplementation.name.toLowerCase() : "text"
 
     return (
 
         <Wrapper>
-            <CodeWrapper>
-            <SyntaxHighlighter language={lang} customStyle={{height: "100%", margin: "0px"}} style={{ ...docco}}>
+            <SyntaxHighlighter language={lang} customStyle={{height: "100%", margin: "0px", display: "flex", backgroundColor: "white"}} style={{ ...docco}}>
                     {`
 let root1, root2;
 
@@ -98,12 +90,10 @@ else if (discriminant == 0) {
     // result
                     }`}
                 </SyntaxHighlighter>
-            </CodeWrapper>
 
                 
                 <ButtonWrapper>
-
-                    <Button size="small" variant="contained">DOWNLOAD</Button>
+                    <Button size="small" variant="contained" >DOWNLOAD</Button>
                 </ButtonWrapper>
 
         </Wrapper>

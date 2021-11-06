@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -12,7 +12,11 @@ import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import useInput from "../hooks/useInput";
+import {decode as base64_decode, encode as base64_encode} from 'base-64';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
+import SendIcon from '@mui/icons-material/Send';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -22,7 +26,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         padding: theme.spacing(1),
     },
     "& .MuiPaper-root" : {
-        height: "50%"
+        height: "fit-content"
     }
 }));
 
@@ -76,6 +80,54 @@ const SourceCodeUpload = styled('div')(({ theme }) => ({
 
 export default function ImplementationForm(props) {
 
+    const [fileUploadMsg, setFileUploadMsg] = useState("") 
+    const [fileContents, setFileContents] = useState("")
+    const [error, setError] = useState("")
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+
+    const [loading, setLoading] = React.useState(false);
+
+    var processFileUpload = async (e) => {
+        e.preventDefault()
+        const reader = new FileReader()
+        reader.onload = async (e) => { 
+          
+            const text = (e.target.result)
+
+            try {
+
+                setFileContents(base64_encode(text))
+                setSubmitDisabled(false)
+                setError("")
+
+            } catch(e) {
+
+                setFileUploadMsg("Failed to upload file")
+                setSubmitDisabled(true)
+                setError("Please upload a valid file")
+            }
+        };
+
+        setFileUploadMsg(e.target.files[0].name)
+        reader.readAsText(e.target.files[0])
+    }
+
+    var handleSubmit = () => {
+
+        setLoading(true)
+
+        props.onSubmit(
+            {}, 
+            (err) => {
+
+                setError(err)
+                setLoading(false)
+
+            }
+        )
+
+    }
+
     return (
         <div>
             <BootstrapDialog
@@ -93,27 +145,49 @@ export default function ImplementationForm(props) {
                         <Autocomplete
                         sx={{width: "30%"}}
                         disablePortal
+                        required
                         id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
-                        renderInput={(params) => <TextField {...params} label="Parent Algorithm Name" />}
+                        getOptionLabel={(item) => item.name}
+                        options={props.ontologyData.filter((item) => item.typeName == "algorithm")}
+                        renderInput={(params) => <TextField {...params} label="Parent Algorithm" />}
                         />
-                        <TextField label="Language Name"  
+                        <TextField 
+                            label="Language"
+                            required  
                             sx={{width: "30%"}}
                         />
                     </GeneralInfo>
 
                     <SourceCodeUpload>
-
-                        <Button variant="contained">UPLOAD SOURCE CODE</Button>
-                    
+                        <label htmlFor="source_code_upload">
+                            <input
+                                style={{ display: 'none' }}
+                                id="source_code_upload"
+                                name="source_code"
+                                type="file"
+                                onChange={(e) => processFileUpload(e)}
+                                
+                            />
+                            <Button color="primary" variant="contained" component="span">
+                                Upload Code
+                            </Button>
+                            {fileUploadMsg}
+                        </label>
                     </SourceCodeUpload>
 
                 </DialogContent>
+                <font color="red">{ error.length > 0 && error}</font>
                 <DialogActions>
-                    <Button autoFocus onClick={() => props.onClose()}>
+
+                    <LoadingButton
+                        onClick={handleSubmit}
+                        loading={loading}
+                        disabled={submitDisabled}
+                        loadingPosition="center"
+                        variant="contained"
+                    >
                         Create
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </BootstrapDialog>
         </div>

@@ -11,18 +11,19 @@ import styled from 'styled-components';
 
 
 const Wrapper = styled.div`
-  
-    height: 47.5%;
+    height: 100%;
     border-radius: 5px;
     border-width: 1px;
     font-size: 25pt;
+    display: flex;
+    flex-grow: 1;
     margin: 5px;
 `;
 
 
 const AlgorithmDescription = styled.div`
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    height: 100%;
+    flex-grow: 1;
     border-radius: 5px;
     font-size: 12pt;
     border-width: 1px;
@@ -30,7 +31,6 @@ const AlgorithmDescription = styled.div`
     padding-left: 5px;
     padding-right: 5px;
     display: flex;
-    justify-content: center;
     
 `;
 

@@ -14,6 +14,12 @@
     "categories": {
       "auth": {
         "algohub30331ded": {}
+      },
+      "storage": {
+        "algohub6a570a67": {
+          "bucketName": "cs509-algohub-storage",
+          "region": "us-east-1"
+        }
       }
     }
   }

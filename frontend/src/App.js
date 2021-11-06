@@ -25,17 +25,17 @@ Amplify.configure(awsconfig);
 const problemInstanceData = [
 
   {
-    parent: "a1",
+    parent: "i1",
     name: "Worst case",
     inputSize: 128
   },
   {
-    parent: "a1",
+    parent: "i1",
     name: "Average case",
     inputSize: 32
   },
   {
-    parent: "a2",
+    parent: "i2",
     name: "Best case",
     inputSize: 16
   }
@@ -231,8 +231,8 @@ function App() {
 
   const [toggleableItems, setToggleableItems] = useState([]);
   const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState(null);
-  const [selectedImplementation, setSelectedImplementation] = useState([]);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState({});
+  const [selectedImplementation, setSelectedImplementation] = useState(null);
   const [selectedProblemInstances, setSelectedProblemInstances] = useState([]);
   const [selectedBenchmarks, setSelectedBenchmarks] = useState([]);
   const [expandedOntologyItems, setExpandedOntologyItems] = useState({});

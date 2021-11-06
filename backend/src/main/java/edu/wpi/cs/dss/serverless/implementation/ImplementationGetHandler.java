@@ -3,7 +3,7 @@ package edu.wpi.cs.dss.serverless.implementation;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import edu.wpi.cs.dss.serverless.database.DatabaseUtil;
+import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.implementation.http.ImplementationGetRequest;
 import edu.wpi.cs.dss.serverless.implementation.http.ImplementationGetResponse;
 import edu.wpi.cs.dss.serverless.implementation.model.ImplementationInfo;
@@ -17,32 +17,38 @@ import java.sql.SQLException;
 public class ImplementationGetHandler implements RequestHandler<ImplementationGetRequest, ImplementationGetResponse> {
 
     @Override
-    public ImplementationGetResponse handleRequest(ImplementationGetRequest implementationGetRequest, Context context) {
+    public ImplementationGetResponse handleRequest(ImplementationGetRequest request, Context context) {
         final LambdaLogger logger = context.getLogger();
-        logger.log("Received a get implementation request from AWS Lambda: \n" + implementationGetRequest);
+        logger.log("Received a get implementation request from AWS Lambda: \n" + request);
 
         // extracting implementation id from get implementation request
-        final String id = implementationGetRequest.getId();
+        final String id = request.getId();
 
         //create a sql query
         final String query = "SELECT * FROM Implementation impl WHERE impl.implementationId = ?";
 
-        // retrieve a connection
-        final Connection connection;
-        try {
-            connection = DatabaseUtil.connect(logger);
-        } catch (Exception e) {
-            logger.log("Not able to retrieve a connection: " + e.getMessage());
+        try (final Connection connection = DataSource.getConnection(logger);
+             final PreparedStatement preparedStatement = connection.prepareStatement(query)
+        ) {
+            logger.log("Successfully connected to db!");
+
+            final ImplementationGetResponse response = findById(id, preparedStatement);
+            return response;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.log("Could not execute SQL statement ...");
             return ImplementationGetResponse.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                    .error("Not able to retrieve a connection")
+                    .error("Could not execute SQL statement ...")
                     .build();
         }
+    }
 
-        try (final PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, id);
+    private ImplementationGetResponse findById(String id, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, id);
 
-            final ResultSet resultSet = preparedStatement.executeQuery();
+        try (final ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 final String filename = resultSet.getString(2);
                 final String name = resultSet.getString(3);
@@ -55,18 +61,11 @@ public class ImplementationGetHandler implements RequestHandler<ImplementationGe
                         .implementationInfo(implementationInfo)
                         .build();
             }
-
-            return ImplementationGetResponse.builder()
-                    .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                    .error("Could not find an implementation by the give id!")
-                    .build();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return ImplementationGetResponse.builder()
-                    .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                    .error("Could not execute a SQL statement!")
-                    .build();
         }
+
+        return ImplementationGetResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                .error("Could not find an implementation by the give id!")
+                .build();
     }
 }

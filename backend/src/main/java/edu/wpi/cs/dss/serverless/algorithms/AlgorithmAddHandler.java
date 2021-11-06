@@ -6,72 +6,55 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddRequest;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddResponse;
 import edu.wpi.cs.dss.serverless.algorithms.model.AlgorithmInfo;
-import edu.wpi.cs.dss.serverless.database.DatabaseUtil;
+import edu.wpi.cs.dss.serverless.util.DataSource;
+import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class AlgorithmAddHandler implements RequestHandler<AlgorithmAddRequest,AlgorithmAddResponse> {
 
     @Override
-    public AlgorithmAddResponse handleRequest(AlgorithmAddRequest algorithmAddRequest, Context context) {
+    public AlgorithmAddResponse handleRequest(AlgorithmAddRequest request, Context context) {
         final LambdaLogger logger = context.getLogger();
-        logger.log("Received an add algorithm request from AWS Lambda: \n" + algorithmAddRequest);
+        logger.log("Received an add algorithm request from AWS Lambda: \n" + request);
 
         // extracting algorithm info from add algorithm request
-        final String username = algorithmAddRequest.getUserName();
-        final AlgorithmInfo algorithmInfo = algorithmAddRequest.getAlgorithmInfo();
+        final String username = request.getUserName();
+        final AlgorithmInfo algorithmInfo = request.getAlgorithmInfo();
 
         // creating a sql query
         final String query = "INSERT INTO Algorithm (algorithmId, name, description, parentClassification, authorId) VALUES (?,?,?,?,?)";
 
         // save algorithm to the database
-        final Connection connection;
-        try {
-            connection = DatabaseUtil.connect(logger);
-        } catch (Exception e) {
-            logger.log("Not able to retrieve a connection: " + e.getMessage());
-            return new AlgorithmAddResponse(null, e.getMessage(), "400");
-        }
+        try (final Connection connection = DataSource.getConnection(logger);
+             final PreparedStatement preparedStatement = connection.prepareStatement(query)
+        ) {
+            logger.log("Successfully connected to db!\n");
 
-        final PreparedStatement preparedStatement;
-        try {
-            preparedStatement = connection.prepareStatement(query);
-            logger.log("Successfully retrieved a prepared statement!");
-        } catch (Exception e) {
-            logger.log("Not able to retrieve a prepared statement: " + e.getMessage());
-            return new AlgorithmAddResponse(null, e.getMessage(), "400");
-        }
-
-        try {
-            logger.log("We are inside of the last try block");
-
+            // TODO: id should be generated on the DB side! Also id should not be a part of request!
             preparedStatement.setString(1, algorithmInfo.getId());
             preparedStatement.setString(2, algorithmInfo.getName());
             preparedStatement.setString(3, algorithmInfo.getDescription());
             preparedStatement.setString(4, algorithmInfo.getParentClassificationId());
             preparedStatement.setString(5, username);
 
-            logger.log("Before executing executeUpdate()");
-
             final int rowsAffected = preparedStatement.executeUpdate();
-            logger.log("Insert algorithm statement has affected " + rowsAffected + " rows!");
+            logger.log("Insert algorithm statement has affected " + rowsAffected + " rows!\n");
 
-            final AlgorithmAddResponse algorithmAddResponse;
-            if (rowsAffected == 1) {
-                // insert is good
-                algorithmAddResponse = new AlgorithmAddResponse(algorithmInfo, "", "200");
-            } else {
-                // insert is not good
-                algorithmAddResponse = new AlgorithmAddResponse(null, "No rows were affected!", "400");
-            }
+            return AlgorithmAddResponse.builder()
+                    .statusCode(HttpStatus.SUCCESS.getValue())
+                    .algorithmInfo(algorithmInfo)
+                    .build();
 
-            return algorithmAddResponse;
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            logger.log("Why we are here???????? " + e.getMessage());
-            return new AlgorithmAddResponse(null, e.getMessage(), "400");
+            logger.log("Could not execute SQL statement ...");
+            return AlgorithmAddResponse.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                    .error("Could not execute SQL statement ...")
+                    .build();
         }
     }
 }

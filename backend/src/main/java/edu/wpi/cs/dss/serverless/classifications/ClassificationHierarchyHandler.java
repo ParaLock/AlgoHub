@@ -1,7 +1,5 @@
 package edu.wpi.cs.dss.serverless.classifications;
 
-import com.amazonaws.Request;
-import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -9,9 +7,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import edu.wpi.cs.dss.serverless.classifications.http.ClassificationHierarchyRequest;
 import edu.wpi.cs.dss.serverless.classifications.http.ClassificationHierarchyResponse;
 import edu.wpi.cs.dss.serverless.classifications.model.HierarchyEntry;
-import edu.wpi.cs.dss.serverless.database.DatabaseUtil;
-import org.apache.http.HeaderIterator;
+import edu.wpi.cs.dss.serverless.util.DataSource;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -21,7 +19,6 @@ public class ClassificationHierarchyHandler implements RequestHandler<Classifica
     private AmazonS3 s3 = null;
 
     LambdaLogger logger;
-    java.sql.Connection conn;
 
     @Override
     public ClassificationHierarchyResponse handleRequest(ClassificationHierarchyRequest req, Context context) {
@@ -32,7 +29,7 @@ public class ClassificationHierarchyHandler implements RequestHandler<Classifica
 
         try  {
             logger.log("Connecting to db...\n");
-            conn = DatabaseUtil.connect(logger);
+            Connection conn = DataSource.getConnection(logger);
             logger.log("Finished connecting to db...\n");
 
             String query = "";
@@ -62,6 +59,7 @@ public class ClassificationHierarchyHandler implements RequestHandler<Classifica
 
             resultSet.close();
             ps.close();
+            conn.close();
 
             response = new ClassificationHierarchyResponse(entries, 200, "");
 
@@ -69,8 +67,6 @@ public class ClassificationHierarchyHandler implements RequestHandler<Classifica
             e.printStackTrace();
 
             response = new ClassificationHierarchyResponse(new ArrayList<>(), 400, "Failed to connect to database.");
-
-            conn = null;
         }
 
         return response;

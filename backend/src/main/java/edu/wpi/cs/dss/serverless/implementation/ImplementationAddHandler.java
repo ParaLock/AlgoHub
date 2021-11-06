@@ -3,7 +3,7 @@ package edu.wpi.cs.dss.serverless.implementation;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import edu.wpi.cs.dss.serverless.database.DatabaseUtil;
+import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.implementation.http.ImplementationAddRequest;
 import edu.wpi.cs.dss.serverless.implementation.http.ImplementationAddResponse;
 import edu.wpi.cs.dss.serverless.implementation.model.ImplementationInfo;
@@ -16,30 +16,22 @@ import java.sql.SQLException;
 public class ImplementationAddHandler implements RequestHandler<ImplementationAddRequest, ImplementationAddResponse> {
 
     @Override
-    public ImplementationAddResponse handleRequest(ImplementationAddRequest implementationAddRequest, Context context) {
+    public ImplementationAddResponse handleRequest(ImplementationAddRequest request, Context context) {
         final LambdaLogger logger = context.getLogger();
-        logger.log("Received an add implementation request from AWS Lambda: \n" + implementationAddRequest);
+        logger.log("Received an add implementation request from AWS Lambda: \n" + request);
 
         // extracting algorithm info from add algorithm request
-        final String username = implementationAddRequest.getUserName();
-        final ImplementationInfo implementationInfo = implementationAddRequest.getImplementationInfo();
+        final String username = request.getUserName();
+        final ImplementationInfo implementationInfo = request.getImplementationInfo();
 
         // creating a sql query
         final String query = "INSERT INTO Implementation (implementationId, sourceCodeFilename, name, parentAlgorithm, authorId) VALUES (?,?,?,?,?)";
 
-        // retrieve a connection
-        final Connection connection;
-        try {
-            connection = DatabaseUtil.connect(logger);
-        } catch (Exception e) {
-            logger.log("Not able to retrieve a connection: " + e.getMessage());
-            return ImplementationAddResponse.builder()
-                    .error("Not able to retrieve a connection")
-                    .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                    .build();
-        }
+        try (final Connection connection = DataSource.getConnection(logger);
+             final PreparedStatement preparedStatement = connection.prepareStatement(query)
+        ) {
+            logger.log("Successfully connected to db!");
 
-        try (final PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             // TODO: id should be generated on the DB side! Also id should not be a part of request!
             preparedStatement.setString(1, implementationInfo.getId());
             preparedStatement.setString(2, implementationInfo.getFilename());
@@ -50,28 +42,17 @@ public class ImplementationAddHandler implements RequestHandler<ImplementationAd
             final int rowsAffected = preparedStatement.executeUpdate();
             logger.log("Insert algorithm statement has affected " + rowsAffected + " rows!");
 
-            final ImplementationAddResponse implementationAddResponse;
-            if (rowsAffected == 1) {
-                // insert is good
-                implementationAddResponse = ImplementationAddResponse.builder()
-                        .statusCode(HttpStatus.SUCCESS.getValue())
-                        .implementationInfo(implementationInfo)
-                        .build();
-            } else {
-                // insert is not good
-                implementationAddResponse = ImplementationAddResponse.builder()
-                        .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                        .error("Rows were not affected!")
-                        .build();
-            }
-
-            return implementationAddResponse;
+            return ImplementationAddResponse.builder()
+                    .statusCode(HttpStatus.SUCCESS.getValue())
+                    .implementationInfo(implementationInfo)
+                    .build();
 
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.log("Could not execute SQL statement ...");
             return ImplementationAddResponse.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                    .error("Could not execute a SQL statement!")
+                    .error("Could not execute SQL statement ...")
                     .build();
         }
     }

@@ -1,8 +1,8 @@
-package edu.wpi.cs.dss.serverless.algorithms.http;
+package edu.wpi.cs.dss.serverless.implementation.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.wpi.cs.dss.serverless.algorithms.model.AlgorithmInfo;
+import edu.wpi.cs.dss.serverless.implementation.model.ImplementationInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +11,11 @@ import lombok.SneakyThrows;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlgorithmAddRequest {
+public class ImplementationAddRequest {
 
+    // AWS Cognito based info
     private String userName;
-    private AlgorithmInfo algorithmInfo;
+    private ImplementationInfo implementationInfo;
 
     @Override
     @SneakyThrows

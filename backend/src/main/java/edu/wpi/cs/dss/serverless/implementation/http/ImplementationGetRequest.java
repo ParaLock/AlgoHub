@@ -1,8 +1,7 @@
-package edu.wpi.cs.dss.serverless.algorithms.http;
+package edu.wpi.cs.dss.serverless.implementation.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.wpi.cs.dss.serverless.algorithms.model.AlgorithmInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +10,9 @@ import lombok.SneakyThrows;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlgorithmAddRequest {
+public class ImplementationGetRequest {
 
-    private String userName;
-    private AlgorithmInfo algorithmInfo;
+    private String id;
 
     @Override
     @SneakyThrows

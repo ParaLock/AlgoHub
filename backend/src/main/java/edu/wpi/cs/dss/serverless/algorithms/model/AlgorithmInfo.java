@@ -1,62 +1,27 @@
 package edu.wpi.cs.dss.serverless.algorithms.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AlgorithmInfo {
 
     private String id;
     private String name;
-    private String descriptions;
     private String authorId;
+    private String description;
     private String parentClassificationId;
 
-    public AlgorithmInfo(String id, String name, String descriptions, String authorId, String parentClassificationId) {
-        this.id = id;
-        this.name = name;
-        this.descriptions = descriptions;
-        this.authorId = authorId;
-        this.parentClassificationId = parentClassificationId;
-    }
-
-    public AlgorithmInfo() {
-
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescriptions() {
-        return descriptions;
-    }
-
-    public void setDescriptions(String descriptions) {
-        this.descriptions = descriptions;
-    }
-
-    public String getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(String authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getParentClassificationId() {
-        return parentClassificationId;
-    }
-
-    public void setParentClassificationId(String parentClassificationId) {
-        this.parentClassificationId = parentClassificationId;
+    @Override
+    @SneakyThrows
+    public String toString() {
+        final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        return objectWriter.writeValueAsString(this);
     }
 }

@@ -2,7 +2,6 @@ package edu.wpi.cs.dss.serverless.implementation.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.wpi.cs.dss.serverless.implementation.model.ImplementationInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +12,12 @@ import lombok.SneakyThrows;
 @AllArgsConstructor
 public class ImplementationAddRequest {
 
-    // AWS Cognito based info
-    private String userName;
-    private ImplementationInfo implementationInfo;
+    private String name;
+    private String authorId;
+    private String extension;
+    private String algorithmId;
+    private String algorithmName;
+    private String sourceCodeBase64;
 
     @Override
     @SneakyThrows

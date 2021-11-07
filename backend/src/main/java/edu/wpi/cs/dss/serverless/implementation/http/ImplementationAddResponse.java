@@ -2,17 +2,16 @@ package edu.wpi.cs.dss.serverless.implementation.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.wpi.cs.dss.serverless.implementation.model.ImplementationInfo;
-import lombok.Builder;
+import edu.wpi.cs.dss.serverless.generic.GenericResponse;
+import lombok.Getter;
 import lombok.SneakyThrows;
-import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
-@Value
-@Builder
-public class ImplementationAddResponse {
-    String error;
-    Integer statusCode;
-    ImplementationInfo implementationInfo;
+@Getter
+@SuperBuilder
+public class ImplementationAddResponse extends GenericResponse {
+
+    private final String filename;
 
     @Override
     @SneakyThrows

@@ -45,6 +45,7 @@ const InnerContentWrapper = styled.div`
     width: 100%;
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 10px;
 `;
 
 const PanelTitle = styled.div`   
@@ -58,10 +59,16 @@ const PanelTitle = styled.div`
     
 `;
 
+const Seperator = styled.div`
+
+    margin-top: 10px;
+
+`;
+
 export default function MainPage(props) {
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const [topPanelHeight, setTopPanelHeight ] = useState(400);
+    const [topPanelHeight, setTopPanelHeight ] = useState(800);
     const [bottomPanelHeight, setBottomPanelHeight ] = useState(100);
 
     var parent = props.ontologyData.filter((item) => item.id == props.selectedOntologyItem.parentId)[0];
@@ -74,22 +81,58 @@ export default function MainPage(props) {
     if(props.selectedOntologyItem && props.selectedOntologyItem.name) {
         title += "." + props.selectedOntologyItem.name;
     } else {
-        title = "Welcome to AMA"   
+        title = "Welcome to Algohub"   
     }
 
-    var addAlgorithm = (data) => {
+    var addAlgorithm = (data, cb) => {
 
+        enqueueSnackbar('Created algorthm successfully!', 
+            {
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                },
+                variant: 'success'
+            });
+
+        console.log(data)
+
+        setTimeout(()=> cb(""), 2000)
     }
 
-    var sleep = (ms) => {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    var addClassification = (data, cb) => {
+
+        enqueueSnackbar('Created classification successfully!', 
+        {
+            anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            variant: 'success'
+        });
+
+        console.log(data)
+
+        setTimeout(()=> cb(""), 2000)
+
     }
 
     var addImplementation = (data, cb) => {
 
         console.log("processing")
 
-        setTimeout(()=> cb("Something went really wrong"), 2000)
+        enqueueSnackbar('Created implementation successfully!', 
+            {
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                },
+                variant: 'success'
+            });
+
+        console.log(data)
+
+        setTimeout(()=> cb(""), 2000)
     }
 
     return (
@@ -149,25 +192,7 @@ export default function MainPage(props) {
                                                                                     selectedAlgorithm={props.selectedAlgorithm} 
                                                                                     />
                                                                             </Resizable> }
-                    { props.selectedOntologyItem.typeName == "classification" &&  <Resizable
-                                                                                    enable={{ 
-                                                                                                top:false, 
-                                                                                                right:false, 
-                                                                                                bottom:true, 
-                                                                                                left:false, 
-                                                                                                topRight:false, 
-                                                                                                bottomRight:false, 
-                                                                                                bottomLeft:false, 
-                                                                                                topLeft:false 
-                                                                                            }}
-                                                                                    size={{ height: topPanelHeight}}
-                                                                                    onResizeStop={(e, direction, ref, d) => {
-                                                                                        setTopPanelHeight(topPanelHeight + d.height)
-                                                                                    }}
-                                                                                 >
-                                                                                    <AlgorithmPanel selectedAlgorithm={props.selectedOntologyItem} /> 
-                                                                                </Resizable>
-                    }
+
                     { props.selectedOntologyItem.typeName == "implementation" && <Resizable
                                                                                     enable={{ 
                                                                                                 top:false, 
@@ -187,12 +212,14 @@ export default function MainPage(props) {
                                                                                     <ImplementationPanel selectedImplementation={props.selectedImplementation} />
                                                                                     
                                                                                  </Resizable> }
-
-                    <ProblemInstancePanel 
-                        selectedProblemInstances={props.selectedProblemInstances}
-                        onProblemInstanceAdd={() => props.toggleItem("problem_instance_form")}
-                        currentUser={props.currentUser}
-                    />
+                    <Seperator/>
+                    { props.selectedOntologyItem.typeName && props.selectedOntologyItem.typeName == "implementation" &&
+                        <ProblemInstancePanel 
+                            selectedProblemInstances={props.selectedProblemInstances}
+                            onProblemInstanceAdd={() => props.toggleItem("problem_instance_form")}
+                            currentUser={props.currentUser}
+                        />
+                    }
 
 
                 </InnerContentWrapper>
@@ -209,6 +236,7 @@ export default function MainPage(props) {
                 open={props.toggleableItems.includes("classification_form")}
                 onClose={() => props.toggleItem("classification_form", false)}
                 ontologyData={props.ontologyData}
+                onSubmit={addClassification}
             />
 
             <ProblemInstanceForm

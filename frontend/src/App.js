@@ -10,6 +10,7 @@ import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import axios from 'axios';
 import awsconfig from './aws-exports';
+import {Config} from "./boundary/common/Config"
 
 import { useSnackbar } from 'notistack';
 
@@ -61,13 +62,13 @@ const implementationData = [
   {
     id: "i1",
     parent: "a1",
-    sourceCodeFilename: "https://cs509-algohub-implementations.s3.amazonaws.com/dfs_haskell.txt",
+    sourceCodeFilename: "https://cs509-algohub-storage.s3.amazonaws.com/implementations/dfs_haskell.txt",
     name: "C++" 
   },
   {
     id: "i2",
     parent: "a2",
-    sourceCodeFilename: "https://cs509-algohub-implementations.s3.amazonaws.com/dfs_haskell.txt",
+    sourceCodeFilename: "https://cs509-algohub-storage.s3.amazonaws.com/implementations/dfs_haskell.txt",
     name: "Java" 
   }
 ]
@@ -225,7 +226,6 @@ const benchmarkData = [
   }
 ]
 
-var API_PATH = "https://p0j2bbly07.execute-api.us-east-1.amazonaws.com/beta/";
 
 function App() {
 
@@ -245,7 +245,7 @@ function App() {
 
   React.useEffect(() => {
 
-    axios.get(API_PATH + `classifications/hierarchy`)
+    axios.get(Config.API_PATH + `classifications/hierarchy`)
     .then(res => {
 
       if(res.data && res.data.hierarchy) {

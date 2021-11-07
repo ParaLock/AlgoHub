@@ -13,6 +13,12 @@ public class ClassificationAddResponse {
         status = "200";
     }
 
+    public ClassificationAddResponse(String error) {
+        this.error = error;
+        this.status = "400";
+        this.classificationId = "";
+    }
+
     public ClassificationAddResponse(String classificationId, String error, String status) {
 
         this.classificationId = classificationId;

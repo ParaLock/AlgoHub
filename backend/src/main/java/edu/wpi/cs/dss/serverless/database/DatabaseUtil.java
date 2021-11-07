@@ -50,7 +50,7 @@ public class DatabaseUtil {
                     jdbcTag + rdsMySqlDatabaseUrl + ":" + rdsMySqlDatabasePort + "/" + dbName + multiQueries,
                     dbUsername,
                     dbPassword);
-            logger.log("Connected to db successfully successfully.");
+            logger.log("Connected to db successfully.");
             return conn;
         } catch (Exception ex) {
             ex.printStackTrace();

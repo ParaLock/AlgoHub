@@ -56,7 +56,7 @@ public class ImplementationAddHandler implements RequestHandler<ImplementationAd
         }
 
         // creating a sql query
-        final String query = "INSERT INTO implementation (id, programming_language, filename, algorithm_id, author_id) VALUES (?,?,?,?,?)";
+        final String query = "INSERT INTO implementation (id, name, filename, algorithm_id, author_id) VALUES (?,?,?,?,?)";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)
@@ -78,8 +78,8 @@ public class ImplementationAddHandler implements RequestHandler<ImplementationAd
                     .build();
 
         } catch (SQLException e) {
-            logger.log(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue());
             e.printStackTrace();
+            logger.log(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue());
             deleteFromS3(filename);
             return GenericResponse.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.getValue())

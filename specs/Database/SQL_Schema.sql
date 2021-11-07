@@ -20,7 +20,7 @@ ALTER TABLE algorithm ADD CONSTRAINT algorithm_classification_id_fk FOREIGN KEY 
 
 CREATE TABLE implementation (
    id VARCHAR(36) NOT NULL,
-   programming_language VARCHAR(36) NOT NULL,
+   name VARCHAR(100) NOT NULL,
    filename VARCHAR(255) NOT NULL,
    algorithm_id VARCHAR(36) NOT NULL,
    author_id VARCHAR(36) NOT NULL,

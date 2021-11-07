@@ -25,7 +25,7 @@ public class ImplementationAddHandler implements RequestHandler<ImplementationAd
     private static final String AMAZON_S3_BUCKET_NAME = "cs509-algohub-storage";
     private static final String AMAZON_S3_FOLDER_NAME = "implementations/";
 
-    private final AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();;
+    private final AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
     private LambdaLogger logger;
 

@@ -5,8 +5,9 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetRequest;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetResponse;
-import edu.wpi.cs.dss.serverless.algorithms.model.AlgorithmInfo;
+import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
+import edu.wpi.cs.dss.serverless.util.ErrorMessage;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 import java.sql.Connection;
@@ -14,20 +15,28 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AlgorithmGetHandler implements RequestHandler<AlgorithmGetRequest, AlgorithmGetResponse> {
+public class AlgorithmGetHandler implements RequestHandler<AlgorithmGetRequest, GenericResponse> {
 
     private LambdaLogger logger;
 
     @Override
-    public AlgorithmGetResponse handleRequest(AlgorithmGetRequest request, Context context) {
+    public GenericResponse handleRequest(AlgorithmGetRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received a get algorithm request from AWS Lambda: \n" + request);
 
+        // find algorithm by id
+        final GenericResponse response = findById(request);
+        logger.log("Sent a get algorithm response to AWS Lambda:\n" + response);
+
+        return response;
+    }
+
+    private GenericResponse findById(AlgorithmGetRequest request) {
         // extracting algorithm id from get algorithm request
         final String id = request.getId();
 
         // create sql query
-        final String query = "SELECT * FROM Algorithm alg WHERE alg.algorithmId = ?";
+        final String query = "SELECT * FROM algorithm WHERE id = ?";
 
         // execute query
         try (final Connection connection = DataSource.getConnection(logger);
@@ -35,42 +44,38 @@ public class AlgorithmGetHandler implements RequestHandler<AlgorithmGetRequest, 
         ) {
             logger.log("Successfully connected to db!");
 
-            final AlgorithmGetResponse algorithmGetResponse = findById(id, preparedStatement);
-            return algorithmGetResponse;
+            preparedStatement.setString(1, id);
+
+            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    final String name = resultSet.getString(2);
+                    final String description = resultSet.getString(3);
+                    final String classificationId = resultSet.getString(4);
+                    final String authorId = resultSet.getString(5);
+
+                    return AlgorithmGetResponse.builder()
+                            .statusCode(HttpStatus.SUCCESS.getValue())
+                            .classificationId(classificationId)
+                            .authorId(authorId)
+                            .description(description)
+                            .name(name)
+                            .id(id)
+                            .build();
+                }
+            }
+
+            return GenericResponse.builder()
+                    .error(ErrorMessage.RESOURCE_NOT_FOUND_EXCEPTION.getValue())
+                    .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                    .build();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            logger.log("Could not execute SQL statement ...");
+            logger.log(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue());
             return AlgorithmGetResponse.builder()
-                    .error("Could not execute SQL statement ...")
                     .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                    .error(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue())
                     .build();
         }
-    }
-
-    private AlgorithmGetResponse findById(String id, PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(1, id);
-
-        try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                final String name = resultSet.getString(2);
-                final String authorId = resultSet.getString(5);
-                final String description = resultSet.getString(3);
-                final String parentClassificationId = resultSet.getString(4);
-
-                final AlgorithmInfo algorithmInfo = new AlgorithmInfo(id, name, authorId, description, parentClassificationId);
-                logger.log("Algorithm by id:\n" + algorithmInfo);
-
-                return AlgorithmGetResponse.builder()
-                        .statusCode(HttpStatus.SUCCESS.getValue())
-                        .algorithmInfo(algorithmInfo)
-                        .build();
-            }
-        }
-
-        return AlgorithmGetResponse.builder()
-                .error("Could not find an algorithm by the given id ...")
-                .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                .build();
     }
 }

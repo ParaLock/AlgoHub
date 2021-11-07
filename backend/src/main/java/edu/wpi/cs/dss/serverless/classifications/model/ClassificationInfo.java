@@ -1,5 +1,8 @@
 package edu.wpi.cs.dss.serverless.classifications.model;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+
 public class ClassificationInfo {
 
     public String id;
@@ -13,6 +16,13 @@ public class ClassificationInfo {
     public ClassificationInfo(String name, String parentClassificationId) {
         this.name = name;
         this.parentClassificationId = parentClassificationId;
+        generateID();
+    }
+
+    public void generateID() {
+        if (this.id == null || this.id.length() == 0) {
+            this.id = UUID.randomUUID().toString();
+        }
     }
 
     public String getName() {
@@ -23,14 +33,14 @@ public class ClassificationInfo {
         return this.parentClassificationId;
     }
 
-    public boolean setId(String id) {
-        if (this.id != null && this.id.length() > 0) {
-            return false;
-        }
-
-        this.id = id + "";
-        return true;
-    }
+//    public boolean setId(String id) {
+//        if (this.id != null && this.id.length() > 0) {
+//            return false;
+//        }
+//
+//        this.id = id + "";
+//        return true;
+//    }
 
     public String getId() {
         return this.id;

@@ -17,19 +17,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ClassificationAddHandler implements RequestHandler<ClassificationAddRequest, ClassificationAddResponse> {
 
     private AmazonS3 s3 = null;
     LambdaLogger logger;
     java.sql.Connection conn;
+    Random random = new Random();
 
     @Override
     public ClassificationAddResponse handleRequest(ClassificationAddRequest req, Context context) {
         logger = context.getLogger();
         logger.log("in classification handle request");
         logger.log(req.classificationInfo.name);
-
 
         ClassificationAddResponse response = null;
 
@@ -38,9 +39,7 @@ public class ClassificationAddHandler implements RequestHandler<ClassificationAd
             conn = DatabaseUtil.connect(logger);
             logger.log("Finished connecting to db...\n");
 
-//            ClassificationInfo classification = req.classificationInfo;
-            ClassificationInfo classification = new ClassificationInfo("testName", "testId");
-            classification.setId("test-classification-id");
+            ClassificationInfo classification = req.getClassificationInfo();
 
             logger.log("Prepare statement...\n");
             final String query = "INSERT INTO Classification (classificationId, name, parentId) VALUES (?,?,?)";

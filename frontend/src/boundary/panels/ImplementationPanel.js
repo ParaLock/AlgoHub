@@ -53,8 +53,8 @@ export default function ImplementationPanel(props) {
 
             setLoadingFile(true)
 
-            if(props.selectedImplementation.sourceCodeFilename) {
-                axios.get(props.selectedImplementation.sourceCodeFilename)
+            if(props.selectedImplementation.filename) {
+                axios.get(props.selectedImplementation.filename)
                 .then(res => {
                     if(res.data) {
                         setSourceCode(res.data)
@@ -75,7 +75,7 @@ export default function ImplementationPanel(props) {
 
     }, [props.selectedImplementation]);
 
-    var lang = (props.selectedImplementation) ? props.selectedImplementation.name.toLowerCase() : "text"
+    var lang = (props.selectedImplementation) ? props.selectedImplementation.programmingLanguage.toLowerCase() : "text"
 
     
     var handleDownload = (url, filename) => {
@@ -104,7 +104,7 @@ export default function ImplementationPanel(props) {
                 <ButtonWrapper>
                     <Button 
                             onClick={() => {
-                                            var filename = props.selectedImplementation.sourceCodeFilename;
+                                            var filename = props.selectedImplementation.filename;
                                             
                                             if(filename) {
                                                 handleDownload(filename,filename)

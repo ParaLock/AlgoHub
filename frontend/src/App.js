@@ -291,7 +291,7 @@ function App() {
       });
   }, []);
 
-  var executeRequest = (cb, data, object, endpoint) => {
+  var executeAddRequest = (cb, data, object, endpoint) => {
 
 
     axios.post(Config.API_PATH + object + "/" + endpoint,
@@ -352,9 +352,34 @@ function App() {
 
   } 
 
+  var executeGetRequest = (cb, url) => {
+
+    axios.get(Config.API_PATH + url, {
+      headers: {
+        'Authorization': authToken
+      }
+    })
+    .then(res => {
+
+      console.log("executeGetRequest: ", res)
+
+      if(res.data && res.data.statusCode !== 400 || res.data.statusCode !== "400") {
+
+        cb("", res.data)
+      
+      } else {
+
+        cb(res.data.error ?? "error", null)
+      }
+    }).catch(res => {
+
+      cb("error", null)
+    })
+  }
+
   var addAlgorithm = (data, cb) => {
     console.log("add algorithm data: ", data)
-    executeRequest(cb,  {
+    executeAddRequest(cb,  {
         name: data.algorithmName,
         description: data.algorithmDescription,
         classificationId: data.parentClassificationId,
@@ -368,13 +393,13 @@ function App() {
     if(data.parentClassificationId == "")
       data.parentClassificationId = null
 
-    executeRequest(cb,  {
-      classificationInfo: {
-        name: data.classificationName,
-        parentClassificationId: data.parentClassificationId,
-        authorId: currentUser.userId
+      executeAddRequest(cb,  {
+        classificationInfo: {
+          name: data.classificationName,
+          parentClassificationId: data.parentClassificationId,
+          authorId: currentUser.userId
 
-      }
+        }
     
     }, "classifications", "add")
 
@@ -382,7 +407,7 @@ function App() {
 
   var addImplementation = (data, cb) => {
 
-    executeRequest(cb,  {
+    executeAddRequest(cb,  {
       name: data.name,
       algorithmId: data.parentId,
       extension: data.fileExtension,
@@ -447,22 +472,27 @@ function App() {
   var onOntologySelect = (item) => {
 
     setSelectedOntologyItem(item)
+    console.log("selected ontology item: ", item)
 
-    var implementations = implementationData.filter((candidate) => candidate.id == item.id)
-
-    if(implementations.length > 0) {
-      setSelectedImplementation(implementations[0])
+    if(item.typeName == "algorithm") {
+      executeGetRequest((err, data) => {
+        if(err.length == 0)
+          setSelectedAlgorithm(data)
+      }, "algorithms/" + item.id)  
     }
 
-    var algorithms = algorithmData.filter((candidate) => candidate.id == item.id)
+    if(item.typeName == "implementation") {
+      executeGetRequest((err, data) => {
+        if(err.length == 0) {
 
-    if(algorithms.length > 0) {
-      setSelectedAlgorithm(algorithms[0])
+          var temp = data.programmingLanguage;
+          data.programmingLanguage = data.filename;
+          data.filename = temp;
+
+          setSelectedImplementation(data)
+        }
+      }, "implementations/" + item.id)  
     }
-
-
-    var problemInstances = problemInstanceData.filter((candidate) => candidate.parent == item.id);
-    setSelectedProblemInstances(problemInstances)
 
     var benchmarks = benchmarkData.filter((candidate) => candidate.parent == item.id);
     setSelectedBenchmarks(benchmarks)

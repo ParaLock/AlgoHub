@@ -484,6 +484,7 @@ function App() {
     }
 
     if(item.typeName == "implementation") {
+      setSelectedImplementation(null)
       executeGetRequest((err, data) => {
         if(err.length == 0) {
 

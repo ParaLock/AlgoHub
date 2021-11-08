@@ -77,7 +77,6 @@ export default function ImplementationPanel(props) {
                 }
             } else {
 
-                console.log("using cache: ", cache[props.selectedImplementation.filename])
                 setSourceCode(cache[props.selectedImplementation.filename])
                 setLoadingFile(false)
 

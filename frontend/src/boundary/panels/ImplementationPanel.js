@@ -46,24 +46,41 @@ export default function ImplementationPanel(props) {
 
     const [sourceCode, setSourceCode] = useState("")
     const [loadingFile, setLoadingFile] = useState(false)
+    const [fileCache, setFileCache] = useState({});
 
     React.useEffect(() => {
 
+        setSourceCode("")
+        setLoadingFile(true)
+
+        var cache = {...fileCache}
+
+        if(!props.selectedImplementation )
+            return
+
         try {
 
-            setLoadingFile(true)
+            if(cache[props.selectedImplementation.filename] === undefined) {
 
-            if(props.selectedImplementation.filename) {
-                axios.get(props.selectedImplementation.filename)
-                .then(res => {
-                    if(res.data) {
-                        setSourceCode(res.data)
+                if(props.selectedImplementation.filename) {
+                    axios.get(Config.S3_PATH + "implementations/" + props.selectedImplementation.filename)
+                    .then(res => {
+                        if(res.data) {
+                            setSourceCode(res.data)
+                            cache[props.selectedImplementation.filename] = res.data
+                            setLoadingFile(false)
+                        }
+                    }).catch(() => {
+                        setSourceCode("-Failed to retrieve implementation file")
                         setLoadingFile(false)
-                    }
-                }).catch(() => {
-                    setSourceCode("-Failed to retrieve implementation file")
-                    setLoadingFile(false)
-                })
+                    })
+                }
+            } else {
+
+                console.log("using cache: ", cache[props.selectedImplementation.filename])
+                setSourceCode(cache[props.selectedImplementation.filename])
+                setLoadingFile(false)
+
             }
 
         } catch(exception) {
@@ -72,6 +89,7 @@ export default function ImplementationPanel(props) {
             setLoadingFile(false)
         }
 
+        setFileCache(cache)
 
     }, [props.selectedImplementation]);
 
@@ -91,20 +109,16 @@ export default function ImplementationPanel(props) {
 
         <Wrapper>
 
-            { loadingFile && <CircularProgress/> }
+            { (loadingFile || !props.selectedImplementation) && <CircularProgress /> }
 
-
-            { sourceCode.length > 0 && 
                 <SyntaxHighlighter language={lang} customStyle={{height: "100%", margin: "0px", display: "flex", backgroundColor: "white"}} style={{ ...docco}}>
                     {sourceCode}
                 </SyntaxHighlighter>
-            }
-
-                
+            
                 <ButtonWrapper>
                     <Button 
                             onClick={() => {
-                                            var filename = props.selectedImplementation.filename;
+                                            var filename = Config.S3_PATH + "implementations/" + props.selectedImplementation.filename;
                                             
                                             if(filename) {
                                                 handleDownload(filename,filename)

@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -35,13 +35,23 @@ const AlgorithmDescription = styled.div`
 `;
 
 export default function AlgorithmPanel(props) {
-  return (
 
-      <Wrapper>
+    React.useEffect(() => {
 
-          <AlgorithmDescription>Algorithm description goes here...</AlgorithmDescription>
-          
-      </Wrapper>
-  );
+        console.log(props.selectedAlgorithm)
+
+
+    }, [props.selectedAlgorithm]);
+
+    return (
+
+        <Wrapper>
+
+
+
+            <AlgorithmDescription>            {!props.selectedAlgorithm && <CircularProgress/>}{props.selectedAlgorithm && props.selectedAlgorithm.description}</AlgorithmDescription>
+            
+        </Wrapper>
+    );
 }
 

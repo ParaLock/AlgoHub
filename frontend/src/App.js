@@ -474,7 +474,9 @@ function App() {
     setSelectedOntologyItem(item)
     console.log("selected ontology item: ", item)
 
+
     if(item.typeName == "algorithm") {
+      setSelectedAlgorithm(null)
       executeGetRequest((err, data) => {
         if(err.length == 0)
           setSelectedAlgorithm(data)
@@ -484,10 +486,6 @@ function App() {
     if(item.typeName == "implementation") {
       executeGetRequest((err, data) => {
         if(err.length == 0) {
-
-          var temp = data.programmingLanguage;
-          data.programmingLanguage = data.filename;
-          data.filename = temp;
 
           setSelectedImplementation(data)
         }
@@ -520,6 +518,7 @@ function App() {
                   selectedBenchmarks={benchmarkData}
                   selectedProblemInstances={selectedProblemInstances}
                   selectedImplementation={selectedImplementation}
+                  selectedAlgorithm={selectedAlgorithm}
                   setSelectedOntologyItem={onOntologySelect}
                   selectedOntologyItem={selectedOntologyItem}
                   toggleableItems={toggleableItems}

@@ -38,7 +38,7 @@ public class ClassificationAddHandler implements RequestHandler<ClassificationAd
             ClassificationInfo classification = req.getClassificationInfo();
 
             logger.log("Prepare statement...\n");
-            final String query = "INSERT INTO Classification (classificationId, name, parentId) VALUES (?,?,?)";
+            final String query = "INSERT INTO classification (classificationId, name, parentId) VALUES (?,?,?)";
             PreparedStatement ps = conn.prepareStatement(query);
             logger.log("new classification to be added ====> \n");
             logger.log("classification name: " + classification.getName() + "\n");

@@ -85,7 +85,7 @@ export default function ImplementationForm(props) {
     const [requestError, setRequestError] = useState("")
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [implementationParentAlgorithmId, setImplementationParentAlgorithmId] = useState("");
-
+    const [implementationParentAlgorithmName, setImplementationParentAlgorithmName] = useState("");
     const [loading, setLoading] = React.useState(false);
     const implementationLanguageName = useInput("");
     const [implementationParentAlgorithm, setImplementationParentAlgorithm] = useState(null);
@@ -93,6 +93,7 @@ export default function ImplementationForm(props) {
     const [fileContentsError, setFileContentsError] = useState("")
     const [implementationLanguageNameError, setImplementationLanguageNameError] = useState("")
     const [implementationParentError, setImplementationParentError] = useState("")
+    const [filename, setFilename] = useState("");
 
     var processFileUpload = async (e) => {
         e.preventDefault()
@@ -116,6 +117,7 @@ export default function ImplementationForm(props) {
         };
 
         setFileUploadMsg(e.target.files[0].name)
+        setFilename(e.target.files[0].name)
         reader.readAsText(e.target.files[0])
     }
 
@@ -148,11 +150,15 @@ export default function ImplementationForm(props) {
         
         if(!errors) {
 
+            var fileExt = filename.split('.').pop();
+
             props.onSubmit(
                 {
                     implementationCode: fileContents,
                     name: implementationLanguageName.value,
-                    parentId: implementationParentAlgorithmId
+                    parentId: implementationParentAlgorithmId,
+                    parentName: implementationParentAlgorithmName,
+                    fileExtension: fileExt
     
                 }, 
                 (err) => {
@@ -203,10 +209,16 @@ export default function ImplementationForm(props) {
                             onChange={(e, item) => {
                                                         setImplementationParentError(""); 
                                                         setImplementationParentAlgorithm(item);  
-                                                        if(item)
+                                                        
+                                                        if(item) {
                                                             setImplementationParentAlgorithmId(item.id)
-                                                        else
+                                                            setImplementationParentAlgorithmName(item.name)
+
+                                                        }
+                                                        else {
                                                             setImplementationParentAlgorithmId("")
+                                                            setImplementationParentAlgorithmName("")
+                                                        }
                                                     }}
                             value={implementationParentAlgorithm}
                             

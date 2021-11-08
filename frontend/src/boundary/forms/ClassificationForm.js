@@ -94,12 +94,6 @@ export default function ClassificationForm(props) {
             errors = true;
         }
 
-        if(parentClassificationId.length == 0) {
-
-            setParentClassificationIdError("Provide specify parent classification.")
-            errors = true;
-        }
-
         if(errors) {
 
             setLoading(false)

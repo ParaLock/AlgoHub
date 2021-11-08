@@ -243,7 +243,7 @@ function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 
-  React.useEffect(() => {
+  var updateHierarchy = () => {
 
     axios.get(Config.API_PATH + `classifications/hierarchy`)
     .then(res => {
@@ -263,6 +263,11 @@ function App() {
 
       }
     })
+  }
+
+  React.useEffect(() => {
+
+    updateHierarchy();
 
   }, []);
 
@@ -298,17 +303,36 @@ function App() {
       }
       ).then(res => {
 
-        enqueueSnackbar("Created " + object + " successfully!", 
-        {
-            anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'right',
-            },
-            variant: 'success'
-        });
 
-        console.log("success", res)
-        cb("")
+        if(res.data.statusCode == "400" || res.data.statusCode == 400) {
+          enqueueSnackbar("Failed to create " + object + "\n" + "error: " + res.data.error, 
+          {
+              anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'right',
+              },
+              variant: 'error'
+          });
+
+          cb(res.data.error)
+
+        } else {
+
+          enqueueSnackbar("Created " + object + " successfully!", 
+          {
+              anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'right',
+              },
+              variant: 'success'
+          });
+
+          updateHierarchy()
+
+          console.log("success", res)
+          cb("")
+        }
+
               
       }).catch((err) => {
 
@@ -329,21 +353,26 @@ function App() {
   } 
 
   var addAlgorithm = (data, cb) => {
-
+    console.log("add algorithm data: ", data)
     executeRequest(cb,  {
         name: data.algorithmName,
         description: data.algorithmDescription,
-        parentClassificationId: data.parentClassificationId 
+        classificationId: data.parentClassificationId,
+        authorId: currentUser.userId
       
     }, "algorithms", "add")
   }
 
   var addClassification = (data, cb) => {
 
+    if(data.parentClassificationId == "")
+      data.parentClassificationId = null
+
     executeRequest(cb,  {
       classificationInfo: {
         name: data.classificationName,
-        parentClassificationId: data.parentClassificationId 
+        parentClassificationId: data.parentClassificationId,
+        authorId: currentUser.userId
 
       }
     
@@ -353,20 +382,14 @@ function App() {
 
   var addImplementation = (data, cb) => {
 
-      console.log("processing")
-
-      enqueueSnackbar('Created implementation successfully!', 
-          {
-              anchorOrigin: {
-                  vertical: 'bottom',
-                  horizontal: 'right',
-              },
-              variant: 'success'
-          });
-
-      console.log(data)
-
-      setTimeout(()=> cb(""), 2000)
+    executeRequest(cb,  {
+      name: data.name,
+      algorithmId: data.parentId,
+      extension: data.fileExtension,
+      algorithmName: data.parentName,
+      authorId: currentUser.userId,
+      sourceCodeBase64: data.implementationCode
+    }, "implementations", "add")
   }
 
   var removeItemFromArray = (array, item) => {

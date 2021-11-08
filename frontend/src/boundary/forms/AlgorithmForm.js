@@ -101,7 +101,7 @@ export default function AlgorithmForm(props) {
         }
 
         if(parentClassificationId.length == 0) {
-            setParentClassificationIdError("Please provide algorithm name.");
+            setParentClassificationIdError("Please provide algorithm classification.");
             errors = true;
         }
 

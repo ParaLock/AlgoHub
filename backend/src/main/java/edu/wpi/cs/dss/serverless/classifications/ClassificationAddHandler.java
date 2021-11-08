@@ -52,6 +52,7 @@ public class ClassificationAddHandler implements RequestHandler<ClassificationAd
             logger.log("Insert classification statement has affected " + rowsAffected + " rows!");
 
             return ClassificationAddResponse.builder()
+                    .statusCode(HttpStatus.SUCCESS.getValue())
                     .id(id)
                     .name(name)
                     .parentId(parentId)

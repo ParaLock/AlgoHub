@@ -16,16 +16,16 @@ import { Resizable } from "re-resizable";
 
 const Wrapper = styled.div`
 
-    height: 47.5%;
     border-radius: 5px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     margin: 5px;
     padding: 5px;
     font-size: 10pt;
-    justify-content: center;
+    height: 30%;
     flex-direction: column;
     overflow: scroll;
-       
+    display:flex;
+    flex-grow: 1;
     overflow-y: auto;
 `;
 
@@ -38,7 +38,6 @@ const Title = styled.h4`
 const ProblemInstanceWrapper = styled.div`
     border-radius: 5px;
     height: 80px;
-
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     margin-top: 10px;
     padding: 10px;

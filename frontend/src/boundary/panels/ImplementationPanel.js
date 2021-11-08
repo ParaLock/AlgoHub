@@ -8,36 +8,35 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
-
+import CircularProgress from '@mui/material/CircularProgress';
 import Amplify, { Auth, API, Storage } from 'aws-amplify';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import awsconfig from '../../aws-exports';
-
-
+import {Config} from "../common/Config"
+import axios from 'axios';
+import { saveAs } from "file-saver";
+import fileDownload from 'js-file-download'
 
 const Wrapper = styled.div`
+
   
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    height: 47.5%;
     border-radius: 5px;
     border-width: 1px;
     overflow-wrap: anywhere;
     margin: 5px;
     margin-bottom: 0px;
     display: flex;
-    flex-direction: column;
-`;
-
-const CodeWrapper = styled.div`
-
+    flex-grow: 1;
     height: 100%;
-    width: 100%;
+    flex-direction: column;
 `;
 
 const ButtonWrapper = styled.div`
 
     padding-right: 10px;
+    padding-bottom: 10px;
     display: flex;
     justify-content: right;
 
@@ -45,65 +44,90 @@ const ButtonWrapper = styled.div`
 
 export default function ImplementationPanel(props) {
 
-    const [sourceCode, setSourceCode] = useState("None")
+    const [sourceCode, setSourceCode] = useState("")
+    const [loadingFile, setLoadingFile] = useState(false)
+    const [fileCache, setFileCache] = useState({});
 
     React.useEffect(() => {
 
-        //Fetch s3 file
+        setSourceCode("")
+        setLoadingFile(true)
 
-        // Storage.get('hello.png', {expires: 60})
-        // .then(result => console.log(result))
-        // .catch(err => console.log(err));
+        var cache = {...fileCache}
 
-        // Storage.get('filename.txt', {
-        //     download: true,
-        //     progressCallback(progress) {
-                
-        //     }
-        // })
+        if(!props.selectedImplementation )
+            return
 
+        try {
+
+            if(cache[props.selectedImplementation.filename] === undefined) {
+
+                if(props.selectedImplementation.filename) {
+                    axios.get(Config.S3_PATH + "implementations/" + props.selectedImplementation.filename)
+                    .then(res => {
+                        if(res.data) {
+                            setSourceCode(res.data)
+                            cache[props.selectedImplementation.filename] = res.data
+                            setLoadingFile(false)
+                        }
+                    }).catch(() => {
+                        setSourceCode("-Failed to retrieve implementation file")
+                        setLoadingFile(false)
+                    })
+                }
+            } else {
+
+                console.log("using cache: ", cache[props.selectedImplementation.filename])
+                setSourceCode(cache[props.selectedImplementation.filename])
+                setLoadingFile(false)
+
+            }
+
+        } catch(exception) {
+
+            setSourceCode("-Failed to retrieve implementation file")
+            setLoadingFile(false)
+        }
+
+        setFileCache(cache)
 
     }, [props.selectedImplementation]);
 
-    var lang = (props.selectedImplementation) ? props.selectedImplementation.name.toLowerCase() : "text"
+    var lang = (props.selectedImplementation) ? props.selectedImplementation.programmingLanguage.toLowerCase() : "text"
+
+    
+    var handleDownload = (url, filename) => {
+        axios.get(url, {
+        responseType: 'blob',
+        })
+        .then((res) => {
+        fileDownload(res.data, filename)
+        })
+  }
 
     return (
 
         <Wrapper>
-            <CodeWrapper>
-            <SyntaxHighlighter language={lang} customStyle={{height: "100%", margin: "0px"}} style={{ ...docco}}>
-                    {`
-let root1, root2;
 
-// take input from the user
-let a = prompt("Enter the first number: ");
-let b = prompt("Enter the second number: ");
-let c = prompt("Enter the third number: ");
+            { (loadingFile || !props.selectedImplementation) && <CircularProgress /> }
 
-// calculate discriminant
-let discriminant = b * b - 4 * a * c;
-
-// condition for real and different roots
-if (discriminant > 0) {
-    root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-    root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-
-    // result
-}
-
-// condition for real and equal roots
-else if (discriminant == 0) {
-    root1 = root2 = -b / (2 * a);
-
-    // result
-                    }`}
+                <SyntaxHighlighter language={lang} customStyle={{height: "100%", margin: "0px", display: "flex", backgroundColor: "white"}} style={{ ...docco}}>
+                    {sourceCode}
                 </SyntaxHighlighter>
-            </CodeWrapper>
-
-                
+            
                 <ButtonWrapper>
-
-                    <Button size="small" variant="contained">DOWNLOAD</Button>
+                    <Button 
+                            onClick={() => {
+                                            var filename = Config.S3_PATH + "implementations/" + props.selectedImplementation.filename;
+                                            
+                                            if(filename) {
+                                                handleDownload(filename,filename)
+                                            }
+                                            }} 
+                            size="small" 
+                            variant="contained" 
+                    >DOWNLOAD</Button>
+  
                 </ButtonWrapper>
 
         </Wrapper>

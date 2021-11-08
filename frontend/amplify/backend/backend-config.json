@@ -27,9 +27,11 @@
     }
   },
   "storage": {
-    "algohubs3": {
+    "algohub6a570a67": {
       "service": "S3",
-      "providerPlugin": "awscloudformation"
+      "serviceType": "imported",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
     }
   }
 }

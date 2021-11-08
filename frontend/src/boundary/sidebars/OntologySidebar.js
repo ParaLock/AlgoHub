@@ -68,7 +68,7 @@ export default function OntologySidebar(props) {
             {
                 anchorOrigin: {
                     vertical: 'bottom',
-                    horizontal: 'left',
+                    horizontal: 'right',
                 },
                 variant: 'info',
                 persist: true,

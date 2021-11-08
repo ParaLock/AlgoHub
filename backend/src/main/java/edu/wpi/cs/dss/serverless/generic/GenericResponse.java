@@ -3,13 +3,11 @@ package edu.wpi.cs.dss.serverless.generic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-@RequiredArgsConstructor
 public class GenericResponse {
 
     private final String error;

@@ -18,23 +18,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassificationHierarchyHandler implements RequestHandler<ClassificationHierarchyRequest, ClassificationHierarchyResponse> {
+public class ClassificationHierarchyHandler implements RequestHandler<ClassificationHierarchyRequest, GenericResponse> {
 
     private LambdaLogger logger;
 
     @Override
-    public ClassificationHierarchyResponse handleRequest(ClassificationHierarchyRequest request, Context context) {
+    public GenericResponse handleRequest(ClassificationHierarchyRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received a get classification request from AWS Lambda:\n" + request);
 
         // get classification hierarchy
-        final ClassificationHierarchyResponse response = getHierarchy();
+        final GenericResponse response = getHierarchy();
         logger.log("Sent a get classification response to AWS Lambda:\n" + response);
 
         return response;
     }
 
-    private ClassificationHierarchyResponse getHierarchy() {
+    private GenericResponse getHierarchy() {
         final String query =
                 "SELECT id, parent_id, name, 'classification' AS type FROM classification" +
                 " UNION " +
@@ -69,7 +69,7 @@ public class ClassificationHierarchyHandler implements RequestHandler<Classifica
         } catch (SQLException e) {
             e.printStackTrace();
             logger.log(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue());
-            return ClassificationHierarchyResponse.builder()
+            return GenericResponse.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.getValue())
                     .error(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue())
                     .build();

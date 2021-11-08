@@ -97,7 +97,7 @@ public class ImplementationAddHandler implements RequestHandler<ImplementationAd
         final String extension = request.getExtension().toLowerCase();
         final String algorithmName = request.getAlgorithmName().toLowerCase();
 
-        return id + "_" + algorithmName + "_" + name + "." + extension;
+        return id + "_" + algorithmName + "_" + name + extension;
     }
 
     private boolean uploadToS3(String filename, String sourceCodeBase64) {

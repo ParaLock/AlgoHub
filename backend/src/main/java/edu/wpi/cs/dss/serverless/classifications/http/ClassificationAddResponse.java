@@ -1,26 +1,24 @@
 package edu.wpi.cs.dss.serverless.classifications.http;
 
-public class ClassificationAddResponse {
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.wpi.cs.dss.serverless.generic.GenericResponse;
+import lombok.Getter;
+import lombok.SneakyThrows;
+import lombok.experimental.SuperBuilder;
 
-    public String classificationId;
-    public String error;
-    public String status;
+@Getter
+@SuperBuilder
+public class ClassificationAddResponse extends GenericResponse {
 
-    public ClassificationAddResponse() {
-        error = "";
-        classificationId = "";
-        status = "200";
-    }
+    private final String id;
+    private final String name;
+    private final String parentId;
 
-    public ClassificationAddResponse(String error) {
-        this.error = error;
-        this.status = "400";
-        this.classificationId = "";
-    }
-
-    public ClassificationAddResponse(String classificationId, String error, String status) {
-        this.classificationId = classificationId;
-        this.error = error;
-        this.status = status;
+    @Override
+    @SneakyThrows
+    public String toString() {
+        final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        return objectWriter.writeValueAsString(this);
     }
 }

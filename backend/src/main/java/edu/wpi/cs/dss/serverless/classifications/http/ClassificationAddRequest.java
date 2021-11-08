@@ -6,12 +6,15 @@ public class ClassificationAddRequest {
     public ClassificationInfo classificationInfo;
 
     public ClassificationAddRequest() {
-
         classificationInfo = new ClassificationInfo();
     }
 
     public ClassificationAddRequest(ClassificationInfo info) {
-
         classificationInfo = info;
+    }
+
+    public ClassificationInfo getClassificationInfo() {
+        classificationInfo.generateID();
+        return classificationInfo;
     }
 }

@@ -9,14 +9,10 @@ import com.amazonaws.services.s3.AmazonS3;
 import edu.wpi.cs.dss.serverless.classifications.http.ClassificationAddRequest;
 import edu.wpi.cs.dss.serverless.classifications.http.ClassificationAddResponse;
 import edu.wpi.cs.dss.serverless.classifications.model.ClassificationInfo;
-import edu.wpi.cs.dss.serverless.classifications.model.HierarchyEntry;
 import edu.wpi.cs.dss.serverless.database.DatabaseUtil;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class ClassificationAddHandler implements RequestHandler<ClassificationAddRequest, ClassificationAddResponse> {

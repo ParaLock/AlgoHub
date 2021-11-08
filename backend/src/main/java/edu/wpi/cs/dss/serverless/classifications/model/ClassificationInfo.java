@@ -1,6 +1,5 @@
 package edu.wpi.cs.dss.serverless.classifications.model;
 
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class ClassificationInfo {
@@ -10,7 +9,6 @@ public class ClassificationInfo {
     public String parentClassificationId;
 
     public ClassificationInfo() {
-
     }
 
     public ClassificationInfo(String name, String parentClassificationId) {

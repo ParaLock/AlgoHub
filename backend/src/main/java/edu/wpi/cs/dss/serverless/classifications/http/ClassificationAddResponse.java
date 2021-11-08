@@ -7,7 +7,6 @@ public class ClassificationAddResponse {
     public String status;
 
     public ClassificationAddResponse() {
-
         error = "";
         classificationId = "";
         status = "200";
@@ -20,7 +19,6 @@ public class ClassificationAddResponse {
     }
 
     public ClassificationAddResponse(String classificationId, String error, String status) {
-
         this.classificationId = classificationId;
         this.error = error;
         this.status = status;

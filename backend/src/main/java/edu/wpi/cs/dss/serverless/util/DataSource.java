@@ -17,7 +17,7 @@ public class DataSource {
     private static final String AWS_RDS_USERNAME;
     private static final String AWS_RDS_PASSWORD;
     private static final String AWS_RDS_PORT = ":3306";
-    private static final String AWS_RDS_NAME = "/algo";
+    private static final String AWS_RDS_NAME = "/algohub";
     private static final String AWS_RDS_URL_ENV_KEY = "dbHost";
     private static final String AWS_RDS_USERNAME_ENV_KEY = "dbUsername";
     private static final String AWS_RDS_PASSWORD_ENV_KEY = "dbPassword";

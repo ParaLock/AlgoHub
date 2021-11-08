@@ -84,56 +84,6 @@ export default function MainPage(props) {
         title = "Welcome to Algohub"   
     }
 
-    var addAlgorithm = (data, cb) => {
-
-        enqueueSnackbar('Created algorthm successfully!', 
-            {
-                anchorOrigin: {
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                },
-                variant: 'success'
-            });
-
-        console.log(data)
-
-        setTimeout(()=> cb(""), 2000)
-    }
-
-    var addClassification = (data, cb) => {
-
-        enqueueSnackbar('Created classification successfully!', 
-        {
-            anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'right',
-            },
-            variant: 'success'
-        });
-
-        console.log(data)
-
-        setTimeout(()=> cb(""), 2000)
-
-    }
-
-    var addImplementation = (data, cb) => {
-
-        console.log("processing")
-
-        enqueueSnackbar('Created implementation successfully!', 
-            {
-                anchorOrigin: {
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                },
-                variant: 'success'
-            });
-
-        console.log(data)
-
-        setTimeout(()=> cb(""), 2000)
-    }
 
     return (
 
@@ -236,7 +186,7 @@ export default function MainPage(props) {
                 open={props.toggleableItems.includes("classification_form")}
                 onClose={() => props.toggleItem("classification_form", false)}
                 ontologyData={props.ontologyData}
-                onSubmit={addClassification}
+                onSubmit={props.addClassification}
             />
 
             <ProblemInstanceForm
@@ -268,14 +218,14 @@ export default function MainPage(props) {
                 open={props.toggleableItems.includes("algorithm_form")}
                 onClose={() => props.toggleItem("algorithm_form", false)}
                 ontologyData={props.ontologyData}
-                onSubmit={addAlgorithm}
+                onSubmit={props.addAlgorithm}
             />
 
             <ImplementationForm
                 open={props.toggleableItems.includes("implementation_form")}
                 onClose={() => props.toggleItem("implementation_form", false)}
                 ontologyData={props.ontologyData}
-                onSubmit={addImplementation}
+                onSubmit={props.addImplementation}
             />
 
             <AlgorithmReclassifyForm

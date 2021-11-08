@@ -15,6 +15,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import LoadingButton from '@mui/lab/LoadingButton';
 import useInput from "../hooks/useInput";
 import useError from "../hooks/useError";
+import { googlecode } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {Validation, fieldValidatorCore} from "react-validation-framework";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -123,7 +125,6 @@ export default function ClassificationForm(props) {
                 }
             )
         }
-
     }
 
     return (

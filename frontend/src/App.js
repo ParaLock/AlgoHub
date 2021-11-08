@@ -239,7 +239,7 @@ function App() {
   const [classificationHierarchy, setClassificationHierarchy] = useState([]);
   const [showAuthForm, setShowAuthForm] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null);
-
+  const [authToken, setAuthToken] = React.useState(null);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 
@@ -267,6 +267,8 @@ function App() {
 
             console.log(authData.signInUserSession.idToken.jwtToken )
 
+            setAuthToken(authData.signInUserSession.idToken.jwtToken)
+
             var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
             var userId = authData.attributes.sub
   
@@ -274,6 +276,79 @@ function App() {
           }
       });
   }, []);
+
+
+  var addAlgorithm = (data, cb) => {
+    console.log(data)
+      enqueueSnackbar('Created algorthm successfully!', 
+          {
+              anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'right',
+              },
+              variant: 'success'
+          });
+
+      axios.post(Config.API_PATH + `algorithms/add`,
+      
+      {
+        algorithmInfo: {
+          name: data.algorithmName,
+          description: data.algorithmDescription,
+          parentClassificationId: data.parentClassificationId 
+        }
+      }, 
+        {
+            headers: {
+                'Authorization': authToken
+            }
+        }
+        ).then(res => {
+
+          console.log("success", res)
+          cb("")
+                
+        }).catch((err) => {
+
+          console.log("error", err)
+          cb("")
+        })
+  }
+
+  var addClassification = (data, cb) => {
+
+      enqueueSnackbar('Created classification successfully!', 
+      {
+          anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'right',
+          },
+          variant: 'success'
+      });
+
+      console.log(data)
+
+      setTimeout(()=> cb(""), 2000)
+
+  }
+
+  var addImplementation = (data, cb) => {
+
+      console.log("processing")
+
+      enqueueSnackbar('Created implementation successfully!', 
+          {
+              anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'right',
+              },
+              variant: 'success'
+          });
+
+      console.log(data)
+
+      setTimeout(()=> cb(""), 2000)
+  }
 
   var removeItemFromArray = (array, item) => {
     var index = array.indexOf(item);
@@ -376,6 +451,9 @@ function App() {
                   setSelectedOntologyItem={onOntologySelect}
                   selectedOntologyItem={selectedOntologyItem}
                   toggleableItems={toggleableItems}
+                  addAlgorithm={addAlgorithm}
+                  addClassification={addClassification}
+                  addImplementation={addImplementation}
                   toggleItem={(item, state) => toggleItem(item, state)}
                   expandedOntologyItems={expandedOntologyItems}
                 >

@@ -250,6 +250,15 @@ function App() {
 
       if(res.data && res.data.hierarchy) {
 
+        res.data.hierarchy = res.data.hierarchy.map((item) => {
+
+          if(!item.parentId)
+            item.parentId = ""
+
+          return item;
+
+        })
+
         setClassificationHierarchy(res.data.hierarchy)
 
       }
@@ -272,63 +281,73 @@ function App() {
             var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
             var userId = authData.attributes.sub
   
-            setCurrentUser({userId: userId, username: authData.username, groups: groups});
+            setCurrentUser({userId: authData.username, username: authData.username, groups: groups});
           }
       });
   }, []);
 
+  var executeRequest = (cb, data, object, endpoint) => {
+
+
+    axios.post(Config.API_PATH + object + "/" + endpoint,
+    data, 
+      {
+          headers: {
+              'Authorization': authToken
+          }
+      }
+      ).then(res => {
+
+        enqueueSnackbar("Created " + object + " successfully!", 
+        {
+            anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            variant: 'success'
+        });
+
+        console.log("success", res)
+        cb("")
+              
+      }).catch((err) => {
+
+        enqueueSnackbar("Failed to create " + object + " :(", 
+        {
+            anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            variant: 'error'
+        });
+
+        console.log("error", err)
+        
+        cb("error")
+      })
+
+  } 
 
   var addAlgorithm = (data, cb) => {
-    console.log(data)
-      enqueueSnackbar('Created algorthm successfully!', 
-          {
-              anchorOrigin: {
-                  vertical: 'bottom',
-                  horizontal: 'right',
-              },
-              variant: 'success'
-          });
 
-      axios.post(Config.API_PATH + `algorithms/add`,
+    executeRequest(cb,  {
+        name: data.algorithmName,
+        description: data.algorithmDescription,
+        parentClassificationId: data.parentClassificationId 
       
-      {
-        algorithmInfo: {
-          name: data.algorithmName,
-          description: data.algorithmDescription,
-          parentClassificationId: data.parentClassificationId 
-        }
-      }, 
-        {
-            headers: {
-                'Authorization': authToken
-            }
-        }
-        ).then(res => {
-
-          console.log("success", res)
-          cb("")
-                
-        }).catch((err) => {
-
-          console.log("error", err)
-          cb("")
-        })
+    }, "algorithms", "add")
   }
 
   var addClassification = (data, cb) => {
 
-      enqueueSnackbar('Created classification successfully!', 
-      {
-          anchorOrigin: {
-              vertical: 'bottom',
-              horizontal: 'right',
-          },
-          variant: 'success'
-      });
+    executeRequest(cb,  {
+      classificationInfo: {
+        name: data.classificationName,
+        parentClassificationId: data.parentClassificationId 
 
-      console.log(data)
-
-      setTimeout(()=> cb(""), 2000)
+      }
+    
+    }, "classifications", "add")
 
   }
 

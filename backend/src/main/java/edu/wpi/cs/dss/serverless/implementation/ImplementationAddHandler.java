@@ -74,6 +74,7 @@ public class ImplementationAddHandler implements RequestHandler<ImplementationAd
 
             return ImplementationAddResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())
+                    .id(id)
                     .filename(filename)
                     .build();
 

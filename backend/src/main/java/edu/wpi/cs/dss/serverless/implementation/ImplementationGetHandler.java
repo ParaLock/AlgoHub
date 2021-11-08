@@ -47,8 +47,8 @@ public class ImplementationGetHandler implements RequestHandler<ImplementationGe
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    final String filename = resultSet.getString(2);
-                    final String programmingLanguage = resultSet.getString(3);
+                    final String programmingLanguage = resultSet.getString(2);
+                    final String filename = resultSet.getString(3);
                     final String algorithmId = resultSet.getString(4);
                     final String authorId = resultSet.getString(5);
 

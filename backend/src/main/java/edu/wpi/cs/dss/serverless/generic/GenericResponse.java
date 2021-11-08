@@ -1,21 +1,17 @@
-package edu.wpi.cs.dss.serverless.algorithms.http;
+package edu.wpi.cs.dss.serverless.generic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class AlgorithmAddResponse extends GenericResponse {
+public class GenericResponse {
 
-    private final String id;
-    private final String name;
-    private final String authorId;
-    private final String description;
-    private final String classificationId;
+    private final String error;
+    private final Integer statusCode;
 
     @Override
     @SneakyThrows

@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
-import CircularProgress from '@mui/material/CircularProgress';
+
 
 const Wrapper = styled.div`
     height: 100%;
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 
-const AlgorithmDescription = styled.div`
+const ClassificationDescription = styled.div`
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     flex-grow: 1;
     border-radius: 5px;
@@ -34,24 +34,12 @@ const AlgorithmDescription = styled.div`
     
 `;
 
-export default function AlgorithmPanel(props) {
+export default function ClassificationPanel(props) {
+  return (
 
-    React.useEffect(() => {
-
-        console.log(props.selectedAlgorithm)
-
-
-    }, [props.selectedAlgorithm]);
-
-    return (
-
-        <Wrapper>
-
-
-
-            <AlgorithmDescription>            {!props.selectedAlgorithm && <CircularProgress/>}{props.selectedAlgorithm && props.selectedAlgorithm.description}</AlgorithmDescription>
-            
-        </Wrapper>
-    );
+      <Wrapper>
+          
+      </Wrapper>
+  );
 }
 

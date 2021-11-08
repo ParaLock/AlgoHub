@@ -37,12 +37,13 @@ const Title = styled.h4`
 
 const ProblemInstanceWrapper = styled.div`
     border-radius: 5px;
+    height: 80px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     margin-top: 10px;
     padding: 10px;
     display:flex;
-    height: 80px;
     flex-direction: row;
+    justify-content: space-between;
 `;
 
 const MsgWrapper = styled.h3`

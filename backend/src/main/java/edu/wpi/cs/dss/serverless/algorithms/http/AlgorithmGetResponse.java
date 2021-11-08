@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class AlgorithmAddResponse extends GenericResponse {
+public class AlgorithmGetResponse extends GenericResponse {
 
     private final String id;
     private final String name;

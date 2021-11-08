@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import useInput from "../hooks/useInput";
 
@@ -68,9 +69,70 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function AlgorithmForm(props) {
 
-    const parentClassificationId = useInput("");
+    const [parentClassification, setParentClassification] = useState(null);
     const algorithmName = useInput("");
     const algorithmDescription = useInput("");
+    const [loading, setLoading] = React.useState(false);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+
+    const [requestError, setRequestError] = useState("");
+    const [algorithmDescriptionError, setAlgorithmDescriptionError] = useState("");
+    const [algorithmNameError, setAlgorithmNameError] = useState("");
+    const [parentClassificationIdError, setParentClassificationIdError] = useState("");
+
+    const [parentClassificationId, setParentClassificationId] = useState("");
+
+    var handleSubmit = () => {
+
+        setLoading(true)
+
+        var errors = false;
+
+        if(algorithmDescription.value.length == 0) {
+
+            setAlgorithmDescriptionError("Please provide algorithm description.");
+            errors = true;
+        }
+
+        if(algorithmName.value.length == 0) {
+
+            setAlgorithmNameError("Please provide algorithm name.");
+            errors = true;
+        }
+
+        if(parentClassificationId.length == 0) {
+            setParentClassificationIdError("Please provide algorithm classification.");
+            errors = true;
+        }
+
+        if(errors) {
+
+            setLoading(false)
+        }
+        
+        if(!errors) {
+
+            props.onSubmit(
+                {
+                    parentClassificationId: parentClassificationId,
+                    algorithmName: algorithmName.value,
+                    algorithmDescription: algorithmDescription.value
+                }, 
+                (err) => {
+
+                    setRequestError(err)
+                    setLoading(false)
+
+                    if(err.length == 0) {
+
+                        props.onClose()
+                    }
+
+                }
+            )
+        }
+
+    }
 
     return (
         <div>
@@ -92,12 +154,33 @@ export default function AlgorithmForm(props) {
                             id="combo-box-demo"
                             getOptionLabel={(item) => item.name}
                             options={props.ontologyData.filter((item) => item.typeName == "classification")}
-                            renderInput={(params) => <TextField {...params} label="Parent Classification" />}
-                            {...parentClassificationId}
+                            renderInput={(params) => <TextField 
+                                                                {...params} 
+                                                                label="Parent Classification" 
+                                                                onKeyUp={() => setParentClassificationIdError("")}
+                                                                helperText={parentClassificationIdError}
+                                                                error={parentClassificationIdError.length > 0}
+
+                                                    />
+                                        }
+                            onChange={(e, item) => {
+                                                        setParentClassificationIdError("")
+                                                        if(item)
+                                                            setParentClassificationId(item.id);
+                                                        else
+                                                            setParentClassificationId("")
+                                                        setParentClassification(item);
+                                                    }}
+                            value={parentClassification}
+      
+                            
                         />
                         <TextField label="Algorithm Name"  
                             sx={{width: "30%"}}
                             {...algorithmName}
+                            helperText={algorithmNameError}
+                            error={algorithmNameError.length > 0}
+                            onKeyUp={() => setAlgorithmNameError("")}
 
                         />
          
@@ -109,17 +192,24 @@ export default function AlgorithmForm(props) {
                             rowsMax={4}
                             sx={{width: "30%"}}
                             {...algorithmDescription}
+                            helperText={algorithmDescriptionError}
+                            error={algorithmDescriptionError.length > 0}
+                            onKeyUp={() => setAlgorithmDescriptionError("")}
                         />
 
                 </DialogContent>
+                <font color="red">{ requestError.length > 0 && requestError}</font>
                 <DialogActions>
-                    <Button autoFocus onClick={() => {props.onClose(); props.onSubmit({
-                            parentClassificationId: parentClassificationId.value,
-                            algorithmName: algorithmName.value
-                        })}}
+
+                    <LoadingButton
+                        onClick={handleSubmit}
+                        loading={loading}
+                        disabled={submitDisabled}
+                        loadingPosition="center"
+                        variant="contained"
                     >
                         Create
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </BootstrapDialog>
         </div>

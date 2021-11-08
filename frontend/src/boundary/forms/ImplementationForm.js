@@ -64,8 +64,8 @@ const GeneralInfo = styled('div')(({ theme }) => ({
     
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: "50px"
+    marginBottom: "50px",
+    gap: "40px"
 
 }));
 
@@ -82,10 +82,18 @@ export default function ImplementationForm(props) {
 
     const [fileUploadMsg, setFileUploadMsg] = useState("") 
     const [fileContents, setFileContents] = useState("")
-    const [error, setError] = useState("")
+    const [requestError, setRequestError] = useState("")
     const [submitDisabled, setSubmitDisabled] = useState(false);
-
+    const [implementationParentAlgorithmId, setImplementationParentAlgorithmId] = useState("");
+    const [implementationParentAlgorithmName, setImplementationParentAlgorithmName] = useState("");
     const [loading, setLoading] = React.useState(false);
+    const implementationLanguageName = useInput("");
+    const [implementationParentAlgorithm, setImplementationParentAlgorithm] = useState(null);
+
+    const [fileContentsError, setFileContentsError] = useState("")
+    const [implementationLanguageNameError, setImplementationLanguageNameError] = useState("")
+    const [implementationParentError, setImplementationParentError] = useState("")
+    const [filename, setFilename] = useState("");
 
     var processFileUpload = async (e) => {
         e.preventDefault()
@@ -98,17 +106,18 @@ export default function ImplementationForm(props) {
 
                 setFileContents(base64_encode(text))
                 setSubmitDisabled(false)
-                setError("")
+                setRequestError("")
 
             } catch(e) {
 
                 setFileUploadMsg("Failed to upload file")
                 setSubmitDisabled(true)
-                setError("Please upload a valid file")
+                setRequestError("Please upload a valid file")
             }
         };
 
         setFileUploadMsg(e.target.files[0].name)
+        setFilename(e.target.files[0].name)
         reader.readAsText(e.target.files[0])
     }
 
@@ -116,15 +125,55 @@ export default function ImplementationForm(props) {
 
         setLoading(true)
 
-        props.onSubmit(
-            {}, 
-            (err) => {
+        var errors = false;
 
-                setError(err)
-                setLoading(false)
+        if(implementationLanguageName.value.length == 0) {
 
-            }
-        )
+            setImplementationLanguageNameError("Please specify language name.");
+            errors = true;
+        }
+
+        if(implementationParentAlgorithmId.length == 0) {
+            setImplementationParentError("Please specify implementation parent");
+            errors = true;
+        }
+
+        if(fileContents.length == 0) {
+            setRequestError("Please upload valid code file.");
+            errors = true;
+        }
+
+        if(errors) {
+
+            setLoading(false)
+        }
+        
+        if(!errors) {
+
+            var fileExt = filename.split('.').pop();
+
+            props.onSubmit(
+                {
+                    implementationCode: fileContents,
+                    name: implementationLanguageName.value,
+                    parentId: implementationParentAlgorithmId,
+                    parentName: implementationParentAlgorithmName,
+                    fileExtension: fileExt
+    
+                }, 
+                (err) => {
+    
+                    setRequestError(err)
+                    setLoading(false)
+    
+                    if(err.length == 0) {
+    
+                        props.onClose()
+                    }
+    
+                }
+            )
+        }
 
     }
 
@@ -142,19 +191,46 @@ export default function ImplementationForm(props) {
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <GeneralInfo>
+ 
                         <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        required
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.name}
-                        options={props.ontologyData.filter((item) => item.typeName == "algorithm")}
-                        renderInput={(params) => <TextField {...params} label="Parent Algorithm" />}
+                            sx={{width: "30%"}}
+                            disablePortal
+                            id="combo-box-demo"
+                            getOptionLabel={(item) => item.name}
+                            options={props.ontologyData.filter((item) => item.typeName == "algorithm")}
+                            renderInput={(params) => {return <TextField 
+                                {...params} 
+                                label="Parent Algorithm"
+
+                                helperText={implementationParentError}
+                                error={implementationParentError.length > 0}
+                                onKeyUp={() => setImplementationParentError("")}
+                            />}}
+                            onChange={(e, item) => {
+                                                        setImplementationParentError(""); 
+                                                        setImplementationParentAlgorithm(item);  
+                                                        
+                                                        if(item) {
+                                                            setImplementationParentAlgorithmId(item.id)
+                                                            setImplementationParentAlgorithmName(item.name)
+
+                                                        }
+                                                        else {
+                                                            setImplementationParentAlgorithmId("")
+                                                            setImplementationParentAlgorithmName("")
+                                                        }
+                                                    }}
+                            value={implementationParentAlgorithm}
+                            
                         />
                         <TextField 
                             label="Language"
                             required  
                             sx={{width: "30%"}}
+                            {...implementationLanguageName}
+                            helperText={implementationLanguageNameError}
+                            error={implementationLanguageNameError.length > 0}
+                            onKeyUp={() => setImplementationLanguageNameError("")}
                         />
                     </GeneralInfo>
 
@@ -176,7 +252,7 @@ export default function ImplementationForm(props) {
                     </SourceCodeUpload>
 
                 </DialogContent>
-                <font color="red">{ error.length > 0 && error}</font>
+                <font color="red">{ requestError.length > 0 && requestError}</font>
                 <DialogActions>
 
                     <LoadingButton

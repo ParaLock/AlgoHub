@@ -10,6 +10,7 @@ import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import axios from 'axios';
 import awsconfig from './aws-exports';
+import {Config} from "./boundary/common/Config"
 
 import { useSnackbar } from 'notistack';
 
@@ -61,13 +62,13 @@ const implementationData = [
   {
     id: "i1",
     parent: "a1",
-    sourceCodeFilename: "https://cs509-algohub-implementations.s3.amazonaws.com/dfs_haskell.txt",
+    sourceCodeFilename: "https://cs509-algohub-storage.s3.amazonaws.com/implementations/dfs_haskell.txt",
     name: "C++" 
   },
   {
     id: "i2",
     parent: "a2",
-    sourceCodeFilename: "https://cs509-algohub-implementations.s3.amazonaws.com/dfs_haskell.txt",
+    sourceCodeFilename: "https://cs509-algohub-storage.s3.amazonaws.com/implementations/dfs_haskell.txt",
     name: "Java" 
   }
 ]
@@ -225,7 +226,6 @@ const benchmarkData = [
   }
 ]
 
-var API_PATH = "https://p0j2bbly07.execute-api.us-east-1.amazonaws.com/beta/";
 
 function App() {
 
@@ -239,21 +239,35 @@ function App() {
   const [classificationHierarchy, setClassificationHierarchy] = useState([]);
   const [showAuthForm, setShowAuthForm] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null);
-
+  const [authToken, setAuthToken] = React.useState(null);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 
-  React.useEffect(() => {
+  var updateHierarchy = () => {
 
-    axios.get(API_PATH + `classifications/hierarchy`)
+    axios.get(Config.API_PATH + `classifications/hierarchy`)
     .then(res => {
 
       if(res.data && res.data.hierarchy) {
+
+        res.data.hierarchy = res.data.hierarchy.map((item) => {
+
+          if(!item.parentId)
+            item.parentId = ""
+
+          return item;
+
+        })
 
         setClassificationHierarchy(res.data.hierarchy)
 
       }
     })
+  }
+
+  React.useEffect(() => {
+
+    updateHierarchy();
 
   }, []);
 
@@ -267,13 +281,141 @@ function App() {
 
             console.log(authData.signInUserSession.idToken.jwtToken )
 
+            setAuthToken(authData.signInUserSession.idToken.jwtToken)
+
             var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
             var userId = authData.attributes.sub
   
-            setCurrentUser({userId: userId, username: authData.username, groups: groups});
+            setCurrentUser({userId: authData.username, username: authData.username, groups: groups});
           }
       });
   }, []);
+
+  var executeAddRequest = (cb, data, object, endpoint) => {
+
+
+    axios.post(Config.API_PATH + object + "/" + endpoint,
+    data, 
+      {
+          headers: {
+              'Authorization': authToken
+          }
+      }
+      ).then(res => {
+
+
+        if(res.data.statusCode == "400" || res.data.statusCode == 400) {
+          enqueueSnackbar("Failed to create " + object + "\n" + "error: " + res.data.error, 
+          {
+              anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'right',
+              },
+              variant: 'error'
+          });
+
+          cb(res.data.error)
+
+        } else {
+
+          enqueueSnackbar("Created " + object + " successfully!", 
+          {
+              anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'right',
+              },
+              variant: 'success'
+          });
+
+          updateHierarchy()
+
+          console.log("success", res)
+          cb("")
+        }
+
+              
+      }).catch((err) => {
+
+        enqueueSnackbar("Failed to create " + object + " :(", 
+        {
+            anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            variant: 'error'
+        });
+
+        console.log("error", err)
+        
+        cb("error")
+      })
+
+  } 
+
+  var executeGetRequest = (cb, url) => {
+
+    axios.get(Config.API_PATH + url, {
+      headers: {
+        'Authorization': authToken
+      }
+    })
+    .then(res => {
+
+      console.log("executeGetRequest: ", res)
+
+      if(res.data && res.data.statusCode !== 400 || res.data.statusCode !== "400") {
+
+        cb("", res.data)
+      
+      } else {
+
+        cb(res.data.error ?? "error", null)
+      }
+    }).catch(res => {
+
+      cb("error", null)
+    })
+  }
+
+  var addAlgorithm = (data, cb) => {
+    console.log("add algorithm data: ", data)
+    executeAddRequest(cb,  {
+        name: data.algorithmName,
+        description: data.algorithmDescription,
+        classificationId: data.parentClassificationId,
+        authorId: currentUser.userId
+      
+    }, "algorithms", "add")
+  }
+
+  var addClassification = (data, cb) => {
+
+    if(data.parentClassificationId == "")
+      data.parentClassificationId = null
+
+      executeAddRequest(cb,  {
+        classificationInfo: {
+          name: data.classificationName,
+          parentClassificationId: data.parentClassificationId,
+          authorId: currentUser.userId
+
+        }
+    
+    }, "classifications", "add")
+
+  }
+
+  var addImplementation = (data, cb) => {
+
+    executeAddRequest(cb,  {
+      name: data.name,
+      algorithmId: data.parentId,
+      extension: data.fileExtension,
+      algorithmName: data.parentName,
+      authorId: currentUser.userId,
+      sourceCodeBase64: data.implementationCode
+    }, "implementations", "add")
+  }
 
   var removeItemFromArray = (array, item) => {
     var index = array.indexOf(item);
@@ -330,22 +472,25 @@ function App() {
   var onOntologySelect = (item) => {
 
     setSelectedOntologyItem(item)
+    console.log("selected ontology item: ", item)
 
-    var implementations = implementationData.filter((candidate) => candidate.id == item.id)
 
-    if(implementations.length > 0) {
-      setSelectedImplementation(implementations[0])
+    if(item.typeName == "algorithm") {
+      setSelectedAlgorithm(null)
+      executeGetRequest((err, data) => {
+        if(err.length == 0)
+          setSelectedAlgorithm(data)
+      }, "algorithms/" + item.id)  
     }
 
-    var algorithms = algorithmData.filter((candidate) => candidate.id == item.id)
+    if(item.typeName == "implementation") {
+      executeGetRequest((err, data) => {
+        if(err.length == 0) {
 
-    if(algorithms.length > 0) {
-      setSelectedAlgorithm(algorithms[0])
+          setSelectedImplementation(data)
+        }
+      }, "implementations/" + item.id)  
     }
-
-
-    var problemInstances = problemInstanceData.filter((candidate) => candidate.parent == item.id);
-    setSelectedProblemInstances(problemInstances)
 
     var benchmarks = benchmarkData.filter((candidate) => candidate.parent == item.id);
     setSelectedBenchmarks(benchmarks)
@@ -373,9 +518,13 @@ function App() {
                   selectedBenchmarks={benchmarkData}
                   selectedProblemInstances={selectedProblemInstances}
                   selectedImplementation={selectedImplementation}
+                  selectedAlgorithm={selectedAlgorithm}
                   setSelectedOntologyItem={onOntologySelect}
                   selectedOntologyItem={selectedOntologyItem}
                   toggleableItems={toggleableItems}
+                  addAlgorithm={addAlgorithm}
+                  addClassification={addClassification}
+                  addImplementation={addImplementation}
                   toggleItem={(item, state) => toggleItem(item, state)}
                   expandedOntologyItems={expandedOntologyItems}
                 >

@@ -1,26 +1,25 @@
 package edu.wpi.cs.dss.serverless.classifications.http;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.wpi.cs.dss.serverless.classifications.model.HierarchyEntry;
+import edu.wpi.cs.dss.serverless.generic.GenericResponse;
+import lombok.Getter;
+import lombok.SneakyThrows;
+import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class ClassificationHierarchyResponse {
+@Getter
+@SuperBuilder
+public class ClassificationHierarchyResponse extends GenericResponse {
 
-    public ArrayList<HierarchyEntry> hierarchy;
-    public int status;
-    public String error;
+    public final List<HierarchyEntry> hierarchy;
 
-    public ClassificationHierarchyResponse() {
-
-        hierarchy = new ArrayList<HierarchyEntry>();
-        error = "";
-        status = 200;
-    }
-
-    public ClassificationHierarchyResponse(ArrayList<HierarchyEntry> hierarchy, int status, String err) {
-
-        this.error = err;
-        this.hierarchy = hierarchy;
-        this.status = status;
+    @Override
+    @SneakyThrows
+    public String toString() {
+        final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        return objectWriter.writeValueAsString(this);
     }
 }

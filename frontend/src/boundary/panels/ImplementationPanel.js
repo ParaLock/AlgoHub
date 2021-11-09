@@ -96,6 +96,10 @@ export default function ImplementationPanel(props) {
 
     
     var handleDownload = (url, filename) => {
+
+        const guidRegex = /.*(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}_/;
+        filename = filename.replace(guidRegex, "");
+
         axios.get(url, {
         responseType: 'blob',
         })
@@ -120,7 +124,7 @@ export default function ImplementationPanel(props) {
                                             var filename = Config.S3_PATH + "implementations/" + props.selectedImplementation.filename;
                                             
                                             if(filename) {
-                                                handleDownload(filename,filename)
+                                                handleDownload(filename,props.selectedImplementation.filename)
                                             }
                                             }} 
                             size="small" 

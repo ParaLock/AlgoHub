@@ -95,14 +95,26 @@ export default function ImplementationForm(props) {
     const [implementationParentError, setImplementationParentError] = useState("")
     const [filename, setFilename] = useState("");
 
+    function cleanString(input) {
+        var output = "";
+        for (var i=0; i<input.length; i++) {
+            if (input.charCodeAt(i) <= 127) {
+                output += input.charAt(i);
+            }
+        }
+        return output;
+    }
+
     var processFileUpload = async (e) => {
         e.preventDefault()
         const reader = new FileReader()
         reader.onload = async (e) => { 
           
-            const text = (e.target.result)
+            var text = (e.target.result)
 
             try {
+
+                text = cleanString(text)
 
                 setFileContents(base64_encode(text))
                 setSubmitDisabled(false)
@@ -110,15 +122,18 @@ export default function ImplementationForm(props) {
 
             } catch(e) {
 
-                setFileUploadMsg("Failed to upload file")
+                setFileUploadMsg("Failed to upload file. " + e)
                 setSubmitDisabled(true)
                 setRequestError("Please upload a valid file")
             }
         };
 
-        setFileUploadMsg(e.target.files[0].name)
-        setFilename(e.target.files[0].name)
-        reader.readAsText(e.target.files[0])
+        if(e.target.files[0]) {
+
+            setFileUploadMsg(e.target.files[0].name)
+            setFilename(e.target.files[0].name)
+            reader.readAsText(e.target.files[0])
+        }
     }
 
     var handleSubmit = () => {

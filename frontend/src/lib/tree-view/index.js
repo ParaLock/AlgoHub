@@ -40,6 +40,7 @@ const styles = {
   },
 }
 
+
 const ContentWrapper = styled.span`
 
     display: inline-block;
@@ -47,7 +48,7 @@ const ContentWrapper = styled.span`
     vertical-align: 'middle';
     border-radius: 5px;
     padding: 5px;
-    
+    margin-right: 10px;
     border: 1px solid #ccc;
 
 `;
@@ -81,23 +82,26 @@ export default class Tree extends React.PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    this.setState(state => {
-      return ['open', 'visible'].reduce(
-        (acc, val) =>
-          this.props[val] !== props[val] ? { ...acc, [val]: props[val] } : acc,
-        {}
-      )
-    })
+
+      this.setState(state => {
+        return ['open', 'visible'].reduce(
+          (acc, val) =>
+            this.props[val] !== props[val] ? { ...acc, [val]: props[val] } : acc,
+          {}
+        )
+      })
+
+
   }
 
   render() {
     const {  visible, immediate } = this.state
     const { enableRemove, expandedOntologyItems, item, children, content, type, style, canHide, springConfig } = this.props
 
-    if(!(item.id in expandedOntologyItems)) {
+    // if(!(item.id in expandedOntologyItems)) {
 
-      expandedOntologyItems[item.id] = false; 
-    }
+    //   expandedOntologyItems[item.id] = false; 
+    // }
 
     var open = expandedOntologyItems[item.id];
 
@@ -121,9 +125,12 @@ export default class Tree extends React.PureComponent {
             onClick={this.toggleVisibility}
           />
         )}
+
+
+
         <ContentWrapper 
-                        onClick={() => this.props.onSelect(item)} 
-                        selected={this.props.selected.id == item.id}
+          onClick={() => this.props.onSelect(item)} 
+          selected={this.props.selected.id == item.id}
         > 
 
           {content}

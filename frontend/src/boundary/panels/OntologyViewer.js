@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useReducer } from 'react';
 import Tree from '../../lib/tree-view/index';
 
 import IconButton from '@mui/material/IconButton';
@@ -29,6 +29,7 @@ function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, 
     const items = treeData
     .filter((item) => item.parentId == parentId)
     .sort((a, b) => (a.name > b.name ? 1 : -1));
+
 
     if (!items.length) return null;
 
@@ -86,7 +87,6 @@ function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, 
 
 export default function OntologyViewer(props) {
 
-    console.log(getOntology(props.ontologyData))
 
     return (
         <div>

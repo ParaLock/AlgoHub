@@ -31,6 +31,7 @@ const AlgorithmDescription = styled.div`
     padding-left: 5px;
     padding-right: 5px;
     display: flex;
+    flex-direction: column;
     
 `;
 
@@ -46,10 +47,15 @@ export default function AlgorithmPanel(props) {
     return (
 
         <Wrapper>
+            
 
 
-
-            <AlgorithmDescription>            {!props.selectedAlgorithm && <CircularProgress/>}{props.selectedAlgorithm && props.selectedAlgorithm.description}</AlgorithmDescription>
+            <AlgorithmDescription>   
+                <Typography variant="h7" align="center" component="div" gutterBottom>
+                Description
+                </Typography>         
+                {!props.selectedAlgorithm && <CircularProgress/>}{props.selectedAlgorithm && props.selectedAlgorithm.description}
+            </AlgorithmDescription>
             
         </Wrapper>
     );

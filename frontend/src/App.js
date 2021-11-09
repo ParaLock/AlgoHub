@@ -243,7 +243,7 @@ function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
 
-  var updateHierarchy = () => {
+  var updateHierarchy = (cb = null) => {
 
     axios.get(Config.API_PATH + `classifications/hierarchy`)
     .then(res => {
@@ -260,6 +260,9 @@ function App() {
         })
 
         setClassificationHierarchy(res.data.hierarchy)
+        if(cb) {
+          cb(res.data.hierarchy)
+        }
 
       }
     })
@@ -303,8 +306,10 @@ function App() {
       }
       ).then(res => {
 
+        console.log("AddRequest: ", res)
 
         if(res.data.statusCode == "400" || res.data.statusCode == 400) {
+
           enqueueSnackbar("Failed to create " + object + "\n" + "error: " + res.data.error, 
           {
               anchorOrigin: {
@@ -327,7 +332,40 @@ function App() {
               variant: 'success'
           });
 
-          updateHierarchy()
+          updateHierarchy((newHierarchy) => {
+
+            var hierarchyElement = newHierarchy.filter((item) => {
+
+              return item.id == res.data.id;
+            });
+
+            if(hierarchyElement.length > 0) {
+
+              var temp = {...expandedOntologyItems}
+
+              var expandParents = function(expandedOntologyItems, ontology, hierarchyElement) {
+
+                expandedOntologyItems[hierarchyElement.id] = true
+
+                var parent = ontology.filter((item) => {
+                  return item.id == hierarchyElement.parentId;
+                });
+
+                if(parent.length == 1) {
+
+                  expandParents(expandedOntologyItems, ontology, parent[0])
+
+                } else {
+
+                  expandedOntologyItems[hierarchyElement.id] = true 
+                }
+              }
+
+              expandParents(temp, newHierarchy, hierarchyElement[0]);
+              setExpandedOntologyItems(temp);
+            }
+
+          })
 
           console.log("success", res)
           cb("")
@@ -360,8 +398,7 @@ function App() {
       }
     })
     .then(res => {
-
-      console.log("executeGetRequest: ", res)
+      console.log("GetRequest: ", res)
 
       if(res.data && res.data.statusCode !== 400 || res.data.statusCode !== "400") {
 
@@ -394,13 +431,10 @@ function App() {
       data.parentClassificationId = null
 
       executeAddRequest(cb,  {
-        classificationInfo: {
-          name: data.classificationName,
-          parentClassificationId: data.parentClassificationId,
-          authorId: currentUser.userId
+        name: data.classificationName,
+        parentId: data.parentClassificationId,
+        authorId: currentUser.userId
 
-        }
-    
     }, "classifications", "add")
 
   }

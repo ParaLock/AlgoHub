@@ -62,3 +62,6 @@ CREATE TABLE benchmark (
 ALTER TABLE benchmark ADD CONSTRAINT benchmark_pk PRIMARY KEY (id);
 ALTER TABLE benchmark ADD CONSTRAINT benchmark_implementation_id_fk FOREIGN KEY (implementation_id) REFERENCES implementation (id);
 ALTER TABLE benchmark ADD CONSTRAINT benchmark_problem_instance_id_fk FOREIGN KEY (problem_instance_id) REFERENCES problem_instance (id);
+
+-- add author_id column to classification table
+ALTER TABLE classification ADD COLUMN author_id VARCHAR(36) NOT NULL;

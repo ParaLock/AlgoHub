@@ -1,17 +1,25 @@
 package edu.wpi.cs.dss.serverless.classifications.http;
 
-import edu.wpi.cs.dss.serverless.classifications.model.ClassificationInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.SneakyThrows;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class ClassificationAddRequest {
-    public ClassificationInfo classificationInfo;
 
-    public ClassificationAddRequest() {
+    private String name;
+    private String authorId;
+    private String parentId;
 
-        classificationInfo = new ClassificationInfo();
-    }
-
-    public ClassificationAddRequest(ClassificationInfo info) {
-
-        classificationInfo = info;
+    @Override
+    @SneakyThrows
+    public String toString() {
+        final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        return objectWriter.writeValueAsString(this);
     }
 }

@@ -236,7 +236,7 @@ function App() {
   const [selectedProblemInstances, setSelectedProblemInstances] = useState([]);
   const [selectedBenchmarks, setSelectedBenchmarks] = useState([]);
   const [expandedOntologyItems, setExpandedOntologyItems] = useState({});
-  const [classificationHierarchy, setClassificationHierarchy] = useState([]);
+  const [classificationHierarchy, setClassificationHierarchy] = useState(null);
   const [showAuthForm, setShowAuthForm] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null);
   const [authToken, setAuthToken] = React.useState(null);
@@ -247,6 +247,8 @@ function App() {
 
     axios.get(Config.API_PATH + `classifications/hierarchy`)
     .then(res => {
+
+      console.log(res.data)
 
       if(res.data && res.data.hierarchy) {
 

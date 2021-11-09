@@ -177,6 +177,8 @@ export default function ImplementationForm(props) {
 
     }
 
+    var algorithmOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.typeName == "algorithm") : [];
+
     return (
         <div>
             <BootstrapDialog
@@ -197,7 +199,7 @@ export default function ImplementationForm(props) {
                             disablePortal
                             id="combo-box-demo"
                             getOptionLabel={(item) => item.name}
-                            options={props.ontologyData.filter((item) => item.typeName == "algorithm")}
+                            options={algorithmOptions}
                             renderInput={(params) => {return <TextField 
                                 {...params} 
                                 label="Parent Algorithm"

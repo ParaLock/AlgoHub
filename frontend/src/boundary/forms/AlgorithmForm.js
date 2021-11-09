@@ -134,6 +134,8 @@ export default function AlgorithmForm(props) {
 
     }
 
+    var classificationOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.typeName == "classification") : [];
+
     return (
         <div>
             <BootstrapDialog
@@ -153,7 +155,7 @@ export default function AlgorithmForm(props) {
                             disablePortal
                             id="combo-box-demo"
                             getOptionLabel={(item) => item.name}
-                            options={props.ontologyData.filter((item) => item.typeName == "classification")}
+                            options={classificationOptions}
                             renderInput={(params) => <TextField 
                                                                 {...params} 
                                                                 label="Parent Classification" 

@@ -71,18 +71,23 @@ export default function MainPage(props) {
     const [topPanelHeight, setTopPanelHeight ] = useState(800);
     const [bottomPanelHeight, setBottomPanelHeight ] = useState(100);
 
-    var parent = props.ontologyData.filter((item) => item.id == props.selectedOntologyItem.parentId)[0];
-    var title = "";
+    if(props.ontologyData) {
 
-    if(parent) {
-        title = parent.name;
+        var parent = props.ontologyData.filter((item) => item.id == props.selectedOntologyItem.parentId)[0];
+        var title = "";
+    
+        if(parent) {
+            title = parent.name;
+        }
+    
+        if(props.selectedOntologyItem && props.selectedOntologyItem.name) {
+            title += "." + props.selectedOntologyItem.name;
+        } else {
+            title = "Welcome to Algohub"   
+        }
+    
     }
 
-    if(props.selectedOntologyItem && props.selectedOntologyItem.name) {
-        title += "." + props.selectedOntologyItem.name;
-    } else {
-        title = "Welcome to Algohub"   
-    }
 
 
     return (

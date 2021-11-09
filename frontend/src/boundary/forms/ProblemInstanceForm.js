@@ -67,6 +67,8 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function ProblemInstanceForm(props) {
 
+    var parentAlgorithmOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "algorithm") : [];
+ 
     return (
         <div>
             <BootstrapDialog
@@ -86,8 +88,9 @@ export default function ProblemInstanceForm(props) {
                         disablePortal
                         id="combo-box-demo"
                         getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "algorithm")}
-                        renderInput={(params) => <TextField {...params} label="Parent Algorithm Name" />}
+                        options={parentAlgorithmOptions}
+                        renderInput={(params) => <TextField {...params} 
+                        label="Parent Algorithm Name" />}
                         />
                         <TextField label="Problem Instance Name"  
                             sx={{width: "30%"}}

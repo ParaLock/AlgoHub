@@ -86,6 +86,9 @@ const ResultsInfomation = styled('div')(({ theme }) => ({
 
 export default function BenchmarkForm(props) {
 
+
+    var algorithmOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "algorithm") : [];
+
     return (
         <div>
             <BootstrapDialog
@@ -105,7 +108,7 @@ export default function BenchmarkForm(props) {
                         disablePortal
                         id="combo-box-demo"
                         getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "algorithm")}
+                        options={algorithmOptions}
                         renderInput={(params) => <TextField {...params} label="Parent Algorithm Name" />}
                         />
                         <TextField label="Implementation Name"  

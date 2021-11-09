@@ -67,6 +67,8 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function ClassificationMergeForm(props) {
 
+    var classificationOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "classification") : [];
+
     return (
         <div>
             <BootstrapDialog
@@ -86,7 +88,7 @@ export default function ClassificationMergeForm(props) {
                         disablePortal
                         id="combo-box-demo"
                         getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
+                        options={classificationOptions}
                         renderInput={(params) => <TextField {...params} label="Classification A" />}
                         />
                         <Autocomplete
@@ -94,7 +96,7 @@ export default function ClassificationMergeForm(props) {
                         disablePortal
                         id="combo-box-demo"
                         getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
+                        options={classificationOptions}
                         renderInput={(params) => <TextField {...params} label="Classification B" />}
                         />
                         <TextField label="New Classification" />

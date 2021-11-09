@@ -63,7 +63,7 @@ export default function OntologySidebar(props) {
 
     React.useEffect(() => {
 
-        if(props.ontologyData.length == 0) {
+        if(!props.ontologyData) {
 
             const key = enqueueSnackbar('Loading Hierarchy...', 
             {

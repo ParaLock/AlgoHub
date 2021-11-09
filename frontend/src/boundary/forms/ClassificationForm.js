@@ -121,6 +121,8 @@ export default function ClassificationForm(props) {
         }
     }
 
+    var parentClassificationOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.typeName == "classification") : [];
+
     return (
         <div>
             <BootstrapDialog
@@ -139,7 +141,7 @@ export default function ClassificationForm(props) {
                             sx={{width: "30%"}}
                             id="combo-box-demo"
                             getOptionLabel={(item) => item.name}
-                            options={props.ontologyData.filter((item) => item.typeName == "classification")}
+                            options={parentClassificationOptions}
                             renderInput={(params) => <TextField 
                                 {...params} 
                                 label="Parent Classification" 

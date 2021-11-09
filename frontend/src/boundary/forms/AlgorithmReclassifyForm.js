@@ -67,6 +67,9 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function ClassificationForm(props) {
 
+    var algorithmOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "algorithm") : [];
+    var classificationOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "classification") : [];
+
     return (
         <div>
             <BootstrapDialog
@@ -86,7 +89,7 @@ export default function ClassificationForm(props) {
                         disablePortal
                         id="combo-box-demo"
                         getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "algorithm")}
+                        options={algorithmOptions}
                         renderInput={(params) => <TextField {...params} label="Algorithm Name" />}
                         />
                         <Autocomplete
@@ -94,7 +97,7 @@ export default function ClassificationForm(props) {
                         disablePortal
                         id="combo-box-demo"
                         getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
+                        options={classificationOptions}
                         renderInput={(params) => <TextField {...params} label="New Parent Classification" />}
                         />
                     </GeneralInfo>

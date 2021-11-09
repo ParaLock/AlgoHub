@@ -17,10 +17,18 @@ const treeStyles = {
 //Credit for recursion: https://betterprogramming.pub/recursive-rendering-with-react-components-10fa07c45456 
 
 function getOntology(ontologyData) {
-return ontologyData.map((item) => ({
-    ...item,
-    hasChildren: ontologyData.filter((i) => i.parentId === item.id).length > 0,
-}));
+
+    if(ontologyData) {
+
+        return ontologyData.map((item) => ({
+            ...item,
+            hasChildren: ontologyData.filter((i) => i.parentId === item.id).length > 0,
+        }));
+    } else {
+
+        return []
+    }
+
 }
 
 

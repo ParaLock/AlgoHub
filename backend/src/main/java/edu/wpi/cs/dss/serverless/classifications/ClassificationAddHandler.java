@@ -34,10 +34,11 @@ public class ClassificationAddHandler implements RequestHandler<ClassificationAd
     private GenericResponse save(ClassificationAddRequest request) {
         final String name = request.getName();
         final String parentId = request.getParentId();
+        final String authorId = request.getAuthorId();
         final String id = UUID.randomUUID().toString();
 
         // creating a sql query
-        final String query = "INSERT INTO classification (id, name, parent_id) VALUES (?, ?, ?)";
+        final String query = "INSERT INTO classification (id, name, parent_id, author_id) VALUES (?, ?, ?, ?)";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)
@@ -47,6 +48,7 @@ public class ClassificationAddHandler implements RequestHandler<ClassificationAd
             preparedStatement.setString(1, id);
             preparedStatement.setString(2, name);
             preparedStatement.setString(3, parentId);
+            preparedStatement.setString(4, authorId);
 
             final int rowsAffected = preparedStatement.executeUpdate();
             logger.log("Insert classification statement has affected " + rowsAffected + " rows!");
@@ -56,6 +58,7 @@ public class ClassificationAddHandler implements RequestHandler<ClassificationAd
                     .id(id)
                     .name(name)
                     .parentId(parentId)
+                    .authorId(authorId)
                     .build();
 
         } catch (SQLException e) {

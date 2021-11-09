@@ -13,6 +13,7 @@ public class ClassificationAddResponse extends GenericResponse {
 
     private final String id;
     private final String name;
+    private final String authorId;
     private final String parentId;
 
     @Override

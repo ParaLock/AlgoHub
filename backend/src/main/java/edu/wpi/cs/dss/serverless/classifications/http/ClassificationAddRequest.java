@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 public class ClassificationAddRequest {
 
     private String name;
+    private String authorId;
     private String parentId;
 
     @Override

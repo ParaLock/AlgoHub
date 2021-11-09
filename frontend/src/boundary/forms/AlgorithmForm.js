@@ -94,11 +94,24 @@ export default function AlgorithmForm(props) {
             errors = true;
         }
 
+        if(algorithmDescription.value.length > 500) {
+
+            setAlgorithmDescriptionError("Algorithm description must not be greater then 500 characters. Current size: " + algorithmDescription.value.length);
+            errors = true;
+        }
+
         if(algorithmName.value.length == 0) {
 
             setAlgorithmNameError("Please provide algorithm name.");
             errors = true;
         }
+
+        if(algorithmName.value.length > 100) {
+
+            setAlgorithmNameError("Algorithm name must not be greater then 100 characters. Current size: " + algorithmName.value.length);
+            errors = true;
+        }
+
 
         if(parentClassificationId.length == 0) {
             setParentClassificationIdError("Please provide algorithm classification.");
@@ -190,8 +203,7 @@ export default function AlgorithmForm(props) {
                     <TextField
                             placeholder="Please enter algorithm description"
                             multiline
-                            rows={4}
-                            rowsMax={4}
+                            rows={5}
                             sx={{width: "30%"}}
                             {...algorithmDescription}
                             helperText={algorithmDescriptionError}

@@ -244,7 +244,7 @@ function App() {
 
 
   var updateHierarchy = (cb = null) => {
-
+    setClassificationHierarchy(null)
     axios.get(Config.API_PATH + `classifications/hierarchy`)
     .then(res => {
 

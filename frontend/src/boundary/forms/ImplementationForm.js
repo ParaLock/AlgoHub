@@ -133,6 +133,12 @@ export default function ImplementationForm(props) {
             errors = true;
         }
 
+        if(implementationLanguageName.value.length > 100) {
+
+            setImplementationLanguageNameError("Language name must not be greater then 100 characters. Current size: " + implementationLanguageName.value.length);
+            errors = true;
+        }
+
         if(implementationParentAlgorithmId.length == 0) {
             setImplementationParentError("Please specify implementation parent");
             errors = true;

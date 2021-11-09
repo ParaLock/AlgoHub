@@ -94,6 +94,12 @@ export default function ClassificationForm(props) {
             errors = true;
         }
 
+        if(classificationName.value.length > 100) {
+
+            setClassificationNameError("Classification name must not be greater then 100 characters. Current size: " + classificationName.value.length);
+            errors = true;
+        }
+
         if(errors) {
 
             setLoading(false)

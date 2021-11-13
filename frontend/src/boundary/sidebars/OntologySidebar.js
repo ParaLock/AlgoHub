@@ -18,6 +18,8 @@ import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import { Resizable } from "re-resizable";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useSnackbar } from 'notistack';
+import OntologyTreeViewer from '../panels/OntologyTreeViewer';
+import Switch from '@mui/material/Switch';
 
 const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
     '& .MuiSpeedDial-actions': {
@@ -52,7 +54,12 @@ const ButtonWrapper = styled.div`
     border: 1px solid #1976d2;
 `;
 
+const SwitchContainer = styled.div`
 
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+`;
 
 
 export default function OntologySidebar(props) {
@@ -153,16 +160,23 @@ export default function OntologySidebar(props) {
             </span>
      
             </ButtonWrapper>
+            <SwitchContainer>
 
+                <Switch inputProps={{ariaLabel: 'Switch demo', style: {width: "50%"}}} />
+            </SwitchContainer>
             {isOntologyLoading && <CircularProgress />}
+            <OntologyTreeViewer
 
-            <OntologyViewer 
+                ontologyData={props.ontologyData}
+            />
+
+            {/* <OntologyViewer 
                         onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
                         enableRemove={props.currentUser}
                         selected={props.selectedOntologyItem} 
                         ontologyData={props.ontologyData}
                         expandedOntologyItems={props.expandedOntologyItems}
-            />
+            /> */}
         </OntologySidebarWrapper></Resizable>
     )
 }

@@ -33,9 +33,13 @@ export default function OntologyTreeViewer(props) {
 
     const debouncedFit = debounce((e) => {
 
-        network.fit()
-        console.log(network.body.container.clientHeight)
-        network.moveTo({ offset: { y: - (0.5 * (network.body.container.clientHeight /  3)) } })
+        if(!network) {
+
+            setTimeout(() => debouncedFit(), 500)
+
+            return
+        }
+        fitNetwork()
 
     }, 10)
 
@@ -73,7 +77,27 @@ export default function OntologyTreeViewer(props) {
         }
     }
 
+    var fitNetwork = () => {
 
+        if(network) {
+            if(props.selected.id) {
+
+                network.setSelection({
+                    nodes: [
+                        props.selected.id
+                    ]
+                })
+            }
+            network.fit()
+            network.moveTo({ offset: { y: - (0.5 * (network.body.container.clientHeight /  3)) } })
+        }
+
+    }
+
+    React.useEffect(() => {
+        fitNetwork()
+
+    }, [network]);
     React.useEffect(() => {
 
         if(!props.ontologyData) {
@@ -89,7 +113,8 @@ export default function OntologyTreeViewer(props) {
                 font: {
                     color: "white"  
                 },
-                shape: getShape(item.typeName)
+                shape: getShape(item.typeName),
+                actualNode: item
             }
         });
 
@@ -140,6 +165,15 @@ export default function OntologyTreeViewer(props) {
     const events = {
         select: function (event) {
             var { nodes, edges } = event;
+            if(nodes.length > 0) {
+
+                var clickedNode = this.body.nodes[nodes[0]];
+                if(clickedNode.options.actualNode) {
+
+                    console.log(clickedNode)
+                    props.onSelect(clickedNode.options.actualNode);
+                }
+            }
         },
         resize: function (event) {
             debouncedFit(event)
@@ -151,6 +185,7 @@ export default function OntologyTreeViewer(props) {
             options={options}
             events={events}
             getNetwork={network => {
+
                 setNetwork(network)
             }}
         />

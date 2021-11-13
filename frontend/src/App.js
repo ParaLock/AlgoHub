@@ -296,6 +296,25 @@ function App() {
       });
   }, []);
 
+  var expandParents = (expandedOntologyItems, ontology, hierarchyElement) => {
+
+
+    expandedOntologyItems[hierarchyElement.id] = true
+
+    var parent = ontology.filter((item) => {
+      return item.id == hierarchyElement.parentId;
+    });
+
+    if(parent.length == 1) {
+
+      expandParents(expandedOntologyItems, ontology, parent[0])
+
+    } else {
+
+      expandedOntologyItems[hierarchyElement.id] = true 
+    }
+  }
+
   var executeAddRequest = (cb, data, object, endpoint) => {
 
 
@@ -344,25 +363,6 @@ function App() {
             if(hierarchyElement.length > 0) {
 
               var temp = {...expandedOntologyItems}
-
-              var expandParents = function(expandedOntologyItems, ontology, hierarchyElement) {
-
-                expandedOntologyItems[hierarchyElement.id] = true
-
-                var parent = ontology.filter((item) => {
-                  return item.id == hierarchyElement.parentId;
-                });
-
-                if(parent.length == 1) {
-
-                  expandParents(expandedOntologyItems, ontology, parent[0])
-
-                } else {
-
-                  expandedOntologyItems[hierarchyElement.id] = true 
-                }
-              }
-
               expandParents(temp, newHierarchy, hierarchyElement[0]);
               setExpandedOntologyItems(temp);
             }
@@ -510,6 +510,9 @@ function App() {
     setSelectedOntologyItem(item)
     console.log("selected ontology item: ", item)
 
+    var temp = {...expandedOntologyItems}
+    expandParents(temp, classificationHierarchy, item);
+    setExpandedOntologyItems(temp);
 
     if(item.typeName == "algorithm") {
       setSelectedAlgorithm(null)

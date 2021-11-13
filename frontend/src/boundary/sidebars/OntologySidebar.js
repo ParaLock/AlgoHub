@@ -20,7 +20,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useSnackbar } from 'notistack';
 import OntologyTreeViewer from '../panels/OntologyTreeViewer';
 import Switch from '@mui/material/Switch';
-
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
 const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
     '& .MuiSpeedDial-actions': {
         zIndex: 9999,
@@ -56,9 +56,11 @@ const ButtonWrapper = styled.div`
 
 const SwitchContainer = styled.div`
 
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: row;
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+    bottom: 50px;
+    z-index: 999999;
 `;
 
 
@@ -67,6 +69,7 @@ export default function OntologySidebar(props) {
     const [isOntologyLoading,setisOntologyLoading] = useState(true);
     const [ontologyStatusKey, setOntologyStatusKey] = useState("");
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const [showTreeView, setShowTreeView] = useState(false);
 
     React.useEffect(() => {
 
@@ -162,21 +165,31 @@ export default function OntologySidebar(props) {
             </ButtonWrapper>
             <SwitchContainer>
 
-                <Switch inputProps={{ariaLabel: 'Switch demo', style: {width: "50%"}}} />
+                Tree View
+                <Switch 
+                    onClick={() => setShowTreeView(!showTreeView)}
+                />
             </SwitchContainer>
             {isOntologyLoading && <CircularProgress />}
-            <OntologyTreeViewer
+            { showTreeView &&
 
-                ontologyData={props.ontologyData}
-            />
+                <OntologyTreeViewer
+                    onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
+                    enableRemove={props.currentUser}
+                    selected={props.selectedOntologyItem} 
+                    ontologyData={props.ontologyData}
+                />
+            }
 
-            {/* <OntologyViewer 
+            { !showTreeView && 
+                <OntologyViewer 
                         onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
                         enableRemove={props.currentUser}
                         selected={props.selectedOntologyItem} 
                         ontologyData={props.ontologyData}
                         expandedOntologyItems={props.expandedOntologyItems}
-            /> */}
+                />
+            }
         </OntologySidebarWrapper></Resizable>
     )
 }

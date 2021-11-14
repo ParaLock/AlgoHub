@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import ReactDOM from "react-dom";
 import Graph from "react-graph-vis";
 import debounce from 'lodash.debounce';
-
+import 'vis-network/dist/dist/vis-network.min.css';
 export default function OntologyTreeViewer(props) {
 
     const [network, setNetwork] = useState(null)
@@ -13,6 +13,17 @@ export default function OntologyTreeViewer(props) {
 
     const options = {
         interaction: { hover: true },
+        manipulation: {
+            initiallyActive: true,
+            deleteNode: (props.enableRemove) ? (node, cb) => {
+
+                handleNodeDelete(node, cb)
+            } : false,
+            deleteEdge: false,
+            editEdge: false,
+            addNode: false,
+            addEdge: false
+        },
         autoResize: true,
         physics: {
             enabled: false
@@ -30,6 +41,19 @@ export default function OntologyTreeViewer(props) {
         },
         height: "100%"
     };
+
+    const handleNodeDelete = (node, cb) => {
+
+        console.log(props.selected)
+        // var deletedNode = network.body.nodes[nodes[0]];
+        // if(deletedNode.options.actualNode) {
+
+        //     console.log(deletedNode)
+        //     //props.onRemove(deletedNode.options.actualNode);
+        // }
+
+        cb([])
+    }
 
     const debouncedFit = debounce((e) => {
 
@@ -177,6 +201,10 @@ export default function OntologyTreeViewer(props) {
         },
         resize: function (event) {
             debouncedFit(event)
+        },
+        deleteNode: function(event) {
+
+            console.log(event)
         }
     };
     return (

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import Graph from "react-graph-vis";
 import debounce from 'lodash.debounce';
 import 'vis-network/dist/dist/vis-network.min.css';
+import { toPlainObject } from "lodash";
 export default function OntologyTreeViewer(props) {
 
     const [network, setNetwork] = useState(null)
@@ -10,6 +11,7 @@ export default function OntologyTreeViewer(props) {
         nodes: [],
         edges: []
     });
+
 
     const options = {
         interaction: { hover: true },
@@ -124,12 +126,12 @@ export default function OntologyTreeViewer(props) {
     }, [network]);
     React.useEffect(() => {
 
-        if(!props.ontologyData) {
+        if(!props.model.ontologyHierarchy) {
             return;
         }
 
         console.log(props)
-        var nodes = props.ontologyData.map((item) => {
+        var nodes = props.model.ontologyHierarchy.map((item) => {
             return {
                 label: item.name,
                 id: item.id,
@@ -144,10 +146,10 @@ export default function OntologyTreeViewer(props) {
 
         var edges = []
 
-        for(var i in props.ontologyData) {
+        for(var i in props.model.ontologyHierarchy) {
 
-            var item = props.ontologyData[i];
-            var parent = props.ontologyData.filter((p) => p.id == item.parentId);
+            var item = props.model.ontologyHierarchy[i];
+            var parent = props.model.ontologyHierarchy.filter((p) => p.id == item.parentId);
             console.log(parent)
             if(parent.length > 0) {
 
@@ -184,7 +186,7 @@ export default function OntologyTreeViewer(props) {
         )
 
         debouncedFit()
-    }, [props.ontologyData]);
+    }, [props.model.ontologyHierarchy ?? []]);
 
     const events = {
         select: function (event) {

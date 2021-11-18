@@ -22,7 +22,7 @@ import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 import { useHistory } from 'react-router-dom';
 import Amplify, { Auth } from 'aws-amplify';
-
+import { useSelector, useDispatch } from 'react-redux'
 
 const Wrapper = styled.div`
 
@@ -41,6 +41,7 @@ const CustomToolbar = material_styled(Toolbar)(({ theme }) => ({
 export default function Header(props) {
 
   const history = useHistory();
+  const currentUser = useSelector(state => state.model.currentUser);
 
   return (
       <Wrapper>
@@ -48,25 +49,25 @@ export default function Header(props) {
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             AlgoHub 
-            {props.currentUser && " - " + props.currentUser.username} 
-            {props.currentUser && props.currentUser.groups && props.currentUser.groups.length > 0 && "(" + props.currentUser.groups.join(",") + ")"}
+            {currentUser && " - " + currentUser.username} 
+            {currentUser && currentUser.groups && currentUser.groups.length > 0 && "(" + currentUser.groups.join(",") + ")"}
           </Typography>
           <IconButton onClick={props.onClickBenchmarkMenu} color="inherit">
            <AccessTimeIcon/>
           </IconButton>
-          { props.currentUser && 
+          { currentUser && 
             <IconButton onClick={() => history.push('/accounts')} color="inherit">
             <VisibilityIcon/>
             </IconButton>
           }
 
-          { !props.currentUser && 
+          { !currentUser && 
               <Button onClick={() => props.onLogin()}  color="inherit">
                 Login
               </Button>
           }
 
-          { props.currentUser && 
+          { currentUser && 
               <Button onClick={() => props.onLogout()}  color="inherit">
                 Logout
               </Button>

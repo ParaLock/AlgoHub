@@ -87,7 +87,7 @@ const ResultsInfomation = styled('div')(({ theme }) => ({
 export default function BenchmarkForm(props) {
 
 
-    var algorithmOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "algorithm") : [];
+    var algorithmOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.type == "algorithm") : [];
 
     return (
         <div>

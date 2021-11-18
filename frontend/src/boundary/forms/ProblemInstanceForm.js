@@ -67,7 +67,7 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function ProblemInstanceForm(props) {
 
-    var parentAlgorithmOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "algorithm") : [];
+    var parentAlgorithmOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.type == "algorithm") : [];
  
     return (
         <div>

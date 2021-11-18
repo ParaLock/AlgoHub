@@ -58,13 +58,16 @@ const ButtonWrapper = styled.div`
 
 
 export default function ProblemInstancePanel(props) {
+
+    var problemInstances = props.model.selectedItem["problem_instances"] ?? [];
+
     return (
 
         <Wrapper>
             <Typography variant="h6" align="center" component="div" gutterBottom>
             Problem Instances
             </Typography>
-            {props.currentUser && 
+            {props.model.currentUser && 
                 <ButtonWrapper>
                     <IconButton color="inherit" size="large" onClick={() => props.onProblemInstanceAdd()}>
                         <AddCircleOutlineIcon />
@@ -73,7 +76,7 @@ export default function ProblemInstancePanel(props) {
             }
 
             {
-                props.selectedProblemInstances.map((item) => {
+                props.problemInstances.map((item) => {
 
 
                     return <ProblemInstanceWrapper>
@@ -96,7 +99,7 @@ export default function ProblemInstancePanel(props) {
                         </table>
                         <br />
 
-                        {props.currentUser && 
+                        {props.models.currentUser && 
                         
                             <ButtonWrapper>
                                 <IconButton color="inherit" size="small">
@@ -108,7 +111,7 @@ export default function ProblemInstancePanel(props) {
                 })
             }
 
-            {props.selectedProblemInstances.length == 0 && <MsgWrapper>None</MsgWrapper>}
+            {problemInstances.length == 0 && <MsgWrapper>None</MsgWrapper>}
 
         </Wrapper>
     );

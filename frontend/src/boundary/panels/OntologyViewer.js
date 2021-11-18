@@ -99,11 +99,11 @@ export default function OntologyViewer(props) {
     return (
         <div>
             <TreeWrapper 
-                        expandedOntologyItems={props.expandedOntologyItems} 
+                        expandedOntologyItems={props.model.expandedOntologyItems} 
                         onSelect={(item) => props.onSelect(item)} 
                         enableRemove={props.enableRemove}
-                        selected={props.selected} 
-                        treeData={getOntology(props.ontologyData)}
+                        selected={props.model.selectedOntologyItem} 
+                        treeData={getOntology(props.model.ontologyHierarchy)}
             />
         </div>
     );

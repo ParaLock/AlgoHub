@@ -42,7 +42,9 @@ export default function AlgorithmPanel(props) {
         console.log(props.selectedAlgorithm)
 
 
-    }, [props.selectedAlgorithm]);
+    }, [props.model.selectedItem["algorithm"]]);
+
+    var algorithm = props.model.selectedItem["algorithm"]
 
     return (
 
@@ -54,7 +56,7 @@ export default function AlgorithmPanel(props) {
                 <Typography variant="h7" align="center" component="div" gutterBottom>
                 Description
                 </Typography>         
-                {!props.selectedAlgorithm && <CircularProgress/>}{props.selectedAlgorithm && props.selectedAlgorithm.description}
+                {!algorithm && <CircularProgress/>}{algorithm.description}
             </AlgorithmDescription>
             
         </Wrapper>

@@ -67,7 +67,7 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function ClassificationMergeForm(props) {
 
-    var classificationOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.type == "classification") : [];
+    var classificationOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.type == "classification") : [];
 
     return (
         <div>

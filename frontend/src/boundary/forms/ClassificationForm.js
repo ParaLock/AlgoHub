@@ -107,27 +107,28 @@ export default function ClassificationForm(props) {
         
         if(!errors) {
 
-            props.onSubmit(
-                {
-                    parentClassificationId: parentClassificationId,
-                    classificationName: classificationName.value
-                }, 
+            this.props.requestService.executeAddRequest(
                 (err) => {
-
                     setError(err)
                     setLoading(false)
 
-                    if(err.length == 0) {
+                    if (err.length == 0) {
 
                         props.onClose()
                     }
 
-                }
+                },
+                {
+                    parentClassificationId: parentClassificationId,
+                    classificationName: classificationName.value
+                }, 
+                "classifications", 
+                "/add"
             )
         }
     }
 
-    var parentClassificationOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.typeName == "classification") : [];
+    var parentClassificationOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.typeName == "classification") : [];
 
     return (
         <div>

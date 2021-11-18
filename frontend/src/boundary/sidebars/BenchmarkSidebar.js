@@ -38,6 +38,10 @@ const MsgWrapper = styled.h3`
 
 export default function BenchmarkSidebar(props) {
     
+    console.log(props)
+
+    var benchmarks = props.model.selectedItem["benchmark"] ?? [];
+
     return (
 
         <BenchmarkSidebarWrapper open={props.open}>
@@ -48,11 +52,11 @@ export default function BenchmarkSidebar(props) {
                 </IconButton>
             </ButtonWrapper>
 
-            {props.selectedBenchmarks.length == 0 && <MsgWrapper>No Benchmarks</MsgWrapper>}
+            {benchmarks.length == 0 && <MsgWrapper>No Benchmarks</MsgWrapper>}
 
-            {props.selectedBenchmarks.map((item) => { 
+            {benchmarks.map((item) => { 
 
-                    return <BenchmarkEntry enableRemove={props.currentUser} benchmark={item}/> 
+                    return <BenchmarkEntry enableRemove={props.model.currentUser} benchmark={item}/> 
                 })
             }
              

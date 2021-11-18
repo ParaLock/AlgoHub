@@ -173,32 +173,33 @@ export default function ImplementationForm(props) {
 
             var fileExt = filename.split('.').pop();
 
-            props.onSubmit(
+
+            this.props.requestService.executeAddRequest(
+                (err) => {
+                    setRequestError(err)
+                    setLoading(false)
+
+                    if (err.length == 0) {
+
+                        props.onClose()
+                    }
+
+                },
                 {
                     implementationCode: fileContents,
                     name: implementationLanguageName.value,
                     parentId: implementationParentAlgorithmId,
                     parentName: implementationParentAlgorithmName,
                     fileExtension: fileExt
-    
                 }, 
-                (err) => {
-    
-                    setRequestError(err)
-                    setLoading(false)
-    
-                    if(err.length == 0) {
-    
-                        props.onClose()
-                    }
-    
-                }
+                "implementations", 
+                "/add"
             )
         }
 
     }
 
-    var algorithmOptions = (props.ontologyData) ? props.ontologyData.filter((item) => item.typeName == "algorithm") : [];
+    var algorithmOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.typeName == "algorithm") : [];
 
     return (
         <div>

@@ -73,7 +73,9 @@ export default function OntologySidebar(props) {
 
     React.useEffect(() => {
 
-        if(!props.ontologyData) {
+        console.log("Ontology sidebar update: ", props.model)
+
+        if(!props.model.ontologyHierarchy) {
 
             const key = enqueueSnackbar('Loading Hierarchy...', 
             {
@@ -96,7 +98,7 @@ export default function OntologySidebar(props) {
             setisOntologyLoading(false)
         }
         
-    }, [props.ontologyData]);
+    }, [props.model.ontologyHierarchy]);
 
     return (
 
@@ -110,12 +112,12 @@ export default function OntologySidebar(props) {
         <OntologySidebarWrapper open={props.open}>
             <ButtonWrapper>
                 <span>
-                    { props.currentUser &&
+                    { props.model.currentUser &&
                         <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
                             <MergeTypeIcon />
                         </IconButton>
                     }
-                    { props.currentUser &&
+                    { props.model.currentUser &&
                         <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
                             <DriveFileMoveIcon />
                         </IconButton>
@@ -127,7 +129,7 @@ export default function OntologySidebar(props) {
                 </span>
             <span>
 
-            { props.currentUser &&
+            { props.model.currentUser &&
             
                 <CustomSpeedDial
                     ariaLabel="SpeedDial playground example"
@@ -174,20 +176,22 @@ export default function OntologySidebar(props) {
             { showTreeView &&
 
                 <OntologyTreeViewer
-                    onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
-                    enableRemove={props.currentUser}
-                    selected={props.selectedOntologyItem} 
-                    ontologyData={props.ontologyData}
+                    onSelect={(item)=> { props.ontologyController.selectOntologyItem(item)}} 
+                    enableRemove={props.model.currentUser}
+                    model={props.model}
+                    selected={props.model.selectedOntologyItem} 
+                    ontologyData={props.model.ontologyHierarchy}
                 />
             }
 
             { !showTreeView && 
                 <OntologyViewer 
-                        onSelect={(item)=> { props.onOntologyItemSelected(item)}} 
-                        enableRemove={props.currentUser}
-                        selected={props.selectedOntologyItem} 
-                        ontologyData={props.ontologyData}
-                        expandedOntologyItems={props.expandedOntologyItems}
+                        onSelect={(item)=> { props.ontologyController.selectOntologyItem(item)} } 
+                        enableRemove={props.model.currentUser}
+                        model={props.model}
+                        selected={props.model.selectedOntologyItem} 
+                        ontologyData={props.model.ontologyHierarchy}
+                        expandedOntologyItems={props.model.expandedOntologyItems}
                 />
             }
         </OntologySidebarWrapper></Resizable>

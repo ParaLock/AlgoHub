@@ -2,44 +2,65 @@ import { expandParents } from "../boundary/common/Common";
 import axios from 'axios';
 import {Config} from "../boundary/common/Config"
 
+import store from '../model/ModelProxy';
+import {
+        updateSelectedOntologyItem,
+        updateSelectedItem,
+        updateExpanded,
+} from "../model/ViewModel";
+
+import {
+    updateOntology
+} from "../model/Model";
+
 export default class OntologyController {
 
-    constructor(model, requestService) {
+    constructor(requestService) {
 
-        this.model = model;
         this.requestService = requestService;
-
-        this.model.selectedItem["algorithm"] = null;
-        this.model.selectedItem["classification"] = null;
-        this.model.selectedItem["benchmark"] = null;
-        this.model.selectedItem["problem_instance"] = null;
-        this.model.selectedItem["classification"] = null;
-        
     }
-
 
     selectOntologyItem(item) {
 
-        this.model.selectedOntologyItem = item;
-        this.model.selectedItem[item.typeName] = null;
+        store.dispatch(updateSelectedOntologyItem(
+            {
+                parent: null,
+                selectedItem: item
+            }
+        ));
 
-        var temp = {...this.model.expandedOntologyItems}
-        expandParents(temp, this.model.classificationHierarchy, item);
+        store.dispatch(updateSelectedItem(
+            {
+                name: item.typeName,
+                selectedItem: null
+            }
+        ));
 
-        this.model.expandedOntologyItems = temp;
+        var model = store.getState().model;
+        var temp = {...model.expandedOntologyItems}
+        expandParents(temp, model.classificationHierarchy, item);
+        store.dispatch(updateExpanded(temp));
 
         var endpoint = item.typeName + "s/";
-        
         this.requestService.executeGetRequest((err, data) => {
-            if(err.length == 0)
-                this.model.selectedItem[item.typeName] = data;
+            
+            if(err.length == 0) {
+
+                store.dispatch(updateSelectedItem(
+                    {
+                        name: item.typeName,
+                        item: data
+                    }
+                ));
+
+            }
           }, endpoint + item.id) 
 
     }
 
     updateOntology(cb = null) {
 
-        this.model.ontologyHierarchy = null;
+        store.dispatch(updateOntology(null));
 
         axios.get(Config.API_PATH + `classifications/hierarchy`)
             .then(res => {
@@ -57,7 +78,7 @@ export default class OntologyController {
 
                     })
 
-                    this.model.ontologyHierarchy = [...res.data.hierarchy];
+                    store.dispatch(updateOntology(res.data.hierarchy));
 
                     if (cb) {
                         cb(res.data.hierarchy)
@@ -65,33 +86,6 @@ export default class OntologyController {
 
                 }
             })
-    }
-
-    getSelectedItemKey() {
-
-        if(this.model.ontologyHierarchy) {
-
-            var parent = this.model.ontologyHierarchy.filter((item) => item.id == this.model.selectedOntologyItem.parentId)[0];
-            var title = "";
-        
-            if(parent) {
-                title = parent.name;
-            }
-        
-            if(this.model.selectedOntologyItem && this.model.selectedOntologyItem.name) {
-                title += "." + this.model.selectedOntologyItem.name;
-            }
-
-            return title;
-        }
-
-        return "Welcome to Algohub";
-
-    }
-
-    getSelectedType() {
-
-        return this.model.selectedOntologyItem.typeName;
     }
 
     expandItem(id) {
@@ -105,9 +99,10 @@ export default class OntologyController {
 
             if (hierarchyElement.length > 0) {
 
-                var temp = { ...this.model.expandedOntologyItems }
-                expandParents(temp, newHierarchy, hierarchyElement[0]);
-                this.model.expandedOntologyItems = temp;
+                var model = store.getState().model;
+                var temp = {...model.expandedOntologyItems}
+                expandParents(temp, model.classificationHierarchy, item);
+                store.dispatch(updateExpanded(temp));
             }
         })
     }

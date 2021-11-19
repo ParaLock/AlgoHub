@@ -22,10 +22,9 @@ import OntologyController from './controllers/OntologyController';
 import RequestService from './services/RequestService';
 import AuthController from "./controllers/AuthController";
 import PanelController from './controllers/PanelController';
-import Model from "./model/Model";
-
 import store from './model/ModelProxy';
 import { Provider } from 'react-redux'
+import {updateOperationStatus} from "../model/ViewModel";
 
 Amplify.configure(awsconfig);
 
@@ -33,19 +32,70 @@ function App() {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  var model = new Model();
-  var requestService = new RequestService(model, enqueueSnackbar);
-
-  var requestController = new RequestController(model);
-  var authController = new AuthController(model);
-  var panelController = new PanelController(model);
-  var ontologyController = new OntologyController(model, requestService);
+  var requestService = new RequestService();
+  var requestController = new RequestController();
+  var authController = new AuthController();
+  var panelController = new PanelController();
+  var ontologyController = new OntologyController(requestService);
 
   requestController.registerAddRequestSuccessListener((res) => {
 
     ontologyController.expandItem(res.data.id);
   });
 
+  function handleViewModelUpdate() {
+
+    var statusList = store.getState().viewModel.operationStatus;
+    var status = statusList["hierarchy_loading"];
+    
+    if(status.status == "request_complete") {
+
+      this.enqueueSnackbar(status.msg,
+        {
+            anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            variant: status.type
+        });
+    }
+
+    if(status.status == "loading_complete") {
+
+      closeSnackbar(status.widgetKey);
+      store.dispatch(updateOperationStatus({
+        name: "hierarchy_loading",
+        widgetKey: "",
+        status: "",
+        msg: "",
+        type: status.type
+      }))
+    }
+
+    if(status.status == "loading_started") {
+
+      var key = this.enqueueSnackbar(status.msg,
+      {
+          anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'right',
+          },
+          variant: status.type
+      });
+
+      store.dispatch(updateOperationStatus({
+        name: "hierarchy_loading",
+        widgetKey: key,
+        status: "loading_started",
+        msg: "",
+        type: status.type
+      }))
+    }
+
+
+  }
+
+  store.subscribe(handleViewModelUpdate)
 
   React.useEffect(() => {
 
@@ -67,7 +117,6 @@ function App() {
 
             {panelController.panelOpen("validation_form") && <AmplifyAuthenticator />}
             <MainPage
-              model={model}
               authController={authController}
               panelController={panelController}
               ontologyController={ontologyController}

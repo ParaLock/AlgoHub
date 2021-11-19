@@ -16,12 +16,12 @@ export const ModelSlice = createSlice({
     updateOntology: (state, action) => {
         state.ontologyHierarchy = action.payload
     },
-    updateSelectedItems: (state, action) => {
+    updateSelectedItem: (state, action) => {
         state.selectedItem = action.payload;
     }
   }
 })
 
 
-export const { increment, decrement, incrementByAmount } = ModelSlice.actions
+export const { updateUser, updateOntology, updateSelectedItems } = ModelSlice.actions
 export default ModelSlice.reducer

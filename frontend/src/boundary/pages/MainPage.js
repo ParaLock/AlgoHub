@@ -21,6 +21,7 @@ import ProblemInstanceForm from '../forms/ProblemInstanceForm';
 import { useSnackbar } from 'notistack';
 import Typography from '@mui/material/Typography';
 import { Resizable } from "re-resizable";
+import { HeadphonesBatteryOutlined } from '@mui/icons-material';
 
 const Wrapper = styled.div`
       
@@ -75,8 +76,7 @@ export default function MainPage(props) {
 
         <Wrapper>
 
-            <Header
-                model={props.model}
+            <HeadphonesBatteryOutlined
                 authController={props.authController}
                 formController={props.formController}
             />
@@ -85,7 +85,6 @@ export default function MainPage(props) {
 
                 <OntologySidebar
                     open={true}
-                    model={props.model}
                     formController={props.formController}
                     ontologyController={props.ontologyController}
                 />
@@ -146,7 +145,6 @@ export default function MainPage(props) {
                         <ProblemInstancePanel
                             formController={props.formController}
                             ontologyController={props.ontologyController}
-                            model={props.model}
                         />
                     }
 
@@ -154,7 +152,6 @@ export default function MainPage(props) {
                 </InnerContentWrapper>
                 <BenchmarkSidebar
                     open={props.panelController.panelOpen("benchmark_menu")}
-                    model={props.model}
                     panelController={props.panelController}
                 />
 
@@ -163,7 +160,6 @@ export default function MainPage(props) {
             <ClassificationForm
                 open={props.panelController.panelOpen("classification_form")}
                 onClose={() => props.panelController.togglePanel("classification_form", false)}
-                model={props.model}
                 requestService={props.requestService}
                 onSubmit={props.addClassification}
             />
@@ -171,28 +167,24 @@ export default function MainPage(props) {
             <ProblemInstanceForm
                 open={props.panelController.panelOpen("problem_instance_form")}
                 onClose={() => props.panelController.togglePanel("problem_instance_form", false)}
-                model={props.model}
                 requestService={props.requestService}
             />
 
             <ClassificationMergeForm
                 open={props.panelController.panelOpen("classification_merge_form")}
                 onClose={() => props.panelController.togglePanel("classification_merge_form", false)}
-                model={props.model}
                 requestService={props.requestService}
             />
 
             <AlgorithmRankingPanel
                 open={props.panelController.panelOpen("algorithm_ranking_panel")}
                 onClose={() => props.panelController.togglePanel("algorithm_ranking_panel", false)}
-                model={props.model}
                 requestService={props.requestService}
             />
 
             <BenchmarkForm
                 open={props.panelController.panelOpen("benchmark_add_form")}
                 onClose={() => props.panelController.togglePanel("benchmark_add_form", false)}
-                model={props.model}
                 requestService={props.requestService}
             />
 
@@ -200,15 +192,12 @@ export default function MainPage(props) {
                 open={props.panelController.panelOpen("algorithm_form")}
                 onClose={() => props.panelController.togglePanel("algorithm_form", false)}
                 requestService={props.requestService}
-                model={props.model}
-                requestService={props.requestService}
             />
 
             <ImplementationForm
 
                 open={props.panelController.panelOpen("implementation_form")}
                 onClose={() => props.panelController.togglePanel("implementation_form", false)}
-                model={props.model}
                 requestService={props.requestService}
             />
 
@@ -216,7 +205,6 @@ export default function MainPage(props) {
 
                 open={props.panelController.panelOpen("algorithm_reclassify_form")}
                 onClose={() => props.panelController.togglePanel("algorithm_reclassify_form", false)}
-                model={props.model}
                 requestService={props.requestService}
             />
 

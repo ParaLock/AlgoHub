@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useSelector, useDispatch } from 'react-redux'
 
 const Wrapper = styled.div`
     height: 100%;
@@ -37,14 +38,7 @@ const AlgorithmDescription = styled.div`
 
 export default function AlgorithmPanel(props) {
 
-    React.useEffect(() => {
-
-        console.log(props.selectedAlgorithm)
-
-
-    }, [props.model.selectedItem["algorithm"]]);
-
-    var algorithm = props.model.selectedItem["algorithm"]
+    const algorithm = useSelector(state => state.model.selectedItem["algorithm"]);
 
     return (
 

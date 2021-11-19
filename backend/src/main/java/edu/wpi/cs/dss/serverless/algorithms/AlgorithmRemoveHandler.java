@@ -1,8 +1,10 @@
-package edu.wpi.cs.dss.serverless.algorithms.http;
+package edu.wpi.cs.dss.serverless.algorithms;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddResponse;
+import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
@@ -28,10 +30,7 @@ public class AlgorithmRemoveHandler implements RequestHandler<AlgorithmRemoveReq
     }
 
     private GenericResponse save(AlgorithmRemoveRequest request){
-        
-
         final String id = request.getId();
-
         final String query = String.format("DELETE FROM algorithm WHERE id=%s",id);
 
         try (final Connection connection = DataSource.getConnection(logger);

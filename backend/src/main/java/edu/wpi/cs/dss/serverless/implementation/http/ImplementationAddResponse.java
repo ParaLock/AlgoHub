@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class ImplementationAddResponse extends GenericResponse {
 
+    private final String id;
     private final String filename;
 
     @Override

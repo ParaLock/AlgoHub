@@ -32,7 +32,7 @@ public class ProblemInstanceGetHandler implements RequestHandler<ProblemInstance
     }
 
     private GenericResponse getProblemInstanceById(ProblemInstanceGetRequest request) {
-        // extracting implementation id from get implementation request
+        // extracting problem instance id from get problem instance request
         final String id = request.getId();
 
         //create a sql query

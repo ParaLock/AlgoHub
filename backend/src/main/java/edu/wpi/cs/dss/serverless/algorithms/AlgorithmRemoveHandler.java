@@ -3,9 +3,7 @@ package edu.wpi.cs.dss.serverless.algorithms;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddResponse;
-import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmRemoveRequest;
-import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmRemoveResponse;
+import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
@@ -15,24 +13,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class AlgorithmRemoveHandler implements RequestHandler<AlgorithmRemoveRequest,GenericResponse> {
+public class AlgorithmRemoveHandler implements RequestHandler<GenericRemoveRequest,GenericResponse> {
     private LambdaLogger logger;
 
     @Override
-    public GenericResponse handleRequest(AlgorithmRemoveRequest request, Context context) {
+    public GenericResponse handleRequest(GenericRemoveRequest request, Context context) {
         logger = context.getLogger();
-        logger.log("Received an remove algorithm request from AWS Lambda:\n" + request);
+        logger.log("Received a remove algorithm request from AWS Lambda:\n" + request);
 
-        final GenericResponse response = save(request);
-        logger.log("Sent an remove algorithm response to AWS Lambda:\n" + response);
+        final GenericResponse response = remove(request);
+        logger.log("Sent a remove algorithm response to AWS Lambda:\n" + response);
 
         return response;
 
     }
 
-    private GenericResponse save(AlgorithmRemoveRequest request){
+    private GenericResponse remove(GenericRemoveRequest request){
         final String id = request.getId();
-        final String query = String.format("DELETE FROM algorithm WHERE id=%s",id);
+        final String query = "DELETE FROM algorithm WHERE id=?";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)
@@ -44,7 +42,7 @@ public class AlgorithmRemoveHandler implements RequestHandler<AlgorithmRemoveReq
             final int rowsAffected = preparedStatement.executeUpdate();
             logger.log("Delete algorithm statement has affected " + rowsAffected + " rows!");
 
-            return AlgorithmRemoveResponse.builder()
+            return GenericResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue()).build();
 
         } catch (SQLException e) {

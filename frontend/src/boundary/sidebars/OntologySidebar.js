@@ -22,7 +22,7 @@ import OntologyTreeViewer from '../panels/OntologyTreeViewer';
 import Switch from '@mui/material/Switch';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import { useSelector, useDispatch } from 'react-redux'
-import { updateOperationStatus,updateLoadingStatus } from "../../model/ViewModel";
+import { enqueueNotification, updateNotificationStatus, updateLoadingStatus } from "../../model/ViewModel";
 
 const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
     '& .MuiSpeedDial-actions': {
@@ -34,6 +34,8 @@ const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
 
 const OntologySidebarWrapper = styled.div`
     user-select: none;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     background-color: #f5f7fa;
     flex-wrap: nowrap;
@@ -44,7 +46,7 @@ const OntologySidebarWrapper = styled.div`
     border-radius: 0px 10px 10px 5px;
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
     margin-top: 3px;
-    overflow-y: auto;
+    overflow-y: ${props => props.scrollEnabled ? "auto" : "hidden"};
 
 `;
 
@@ -62,7 +64,7 @@ const SwitchContainer = styled.div`
     display: inline-block;
     position: absolute;
     right: 0px;
-    bottom: 50px;
+    bottom: 0px;
     z-index: 999999;
 `;
 
@@ -74,15 +76,16 @@ export default function OntologySidebar(props) {
 
     const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy);
     const currentUser = useSelector(state => state.model.currentUser);
-    const isOntologyLoading = useSelector(state => state.viewModel.loadingStatus["ontology_loading"])
+    const isOntologyLoading = useSelector(state => state.viewModel.loadingStatus["loading_hierarchy"])
 
     React.useEffect(() => {
 
         if(!ontologyHierarchy) {
 
-            dispatch(updateOperationStatus({
+            dispatch(enqueueNotification({
                 name: "loading_hierarchy",
                 status: "loading_started",
+                widgetKey: "",
                 msg: "Loading Hierarchy...",
                 type: "info"
             }))
@@ -94,12 +97,12 @@ export default function OntologySidebar(props) {
 
         } else {
 
-            dispatch(updateOperationStatus({
-                name: "loading_hierarchy",
-                status: "loading_complete",
-                msg: "Loading Hierarchy...",
-                type: "info"
-            }))
+            dispatch(updateNotificationStatus(
+                {
+                    name: "loading_hierarchy",
+                    status: "loading_complete"
+                }
+            ));
 
             dispatch(updateLoadingStatus({
                 name: "loading_hierarchy",
@@ -118,20 +121,20 @@ export default function OntologySidebar(props) {
             height:"100%",
         }}
         >
-        <OntologySidebarWrapper open={props.open}>
+        <OntologySidebarWrapper open={props.open} scrollEnabled={!showTreeView}>
             <ButtonWrapper>
                 <span>
                     { currentUser &&
-                        <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
+                        <IconButton color="inherit" size="large" onClick={() => props.togglePanel("classification_merge_form", true)}>
                             <MergeTypeIcon />
                         </IconButton>
                     }
                     { currentUser &&
-                        <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
+                        <IconButton color="inherit" size="large" onClick={() => props.togglePanel("algorithm_reclassify_form", true)}>
                             <DriveFileMoveIcon />
                         </IconButton>
                     }
-                    <IconButton color="inherit" size="large" onClick={() => props.onOntologyReport()}>
+                    <IconButton color="inherit" size="large" onClick={() => props.togglePanel("algorithm_ranking_panel", true)}>
                         <StarsIcon />
                     </IconButton>
                     
@@ -152,19 +155,19 @@ export default function OntologySidebar(props) {
                         key={"action_1"}
                         icon={<CategoryIcon/>}
                         tooltipTitle={"Add Classification"}
-                        onClickCapture={() => props.onClassificationAdd()}
+                        onClickCapture={() => props.togglePanel("classification_add_form", true)}
                     />
                     <SpeedDialAction
                         key={"action_2"}
                         icon={<FileCopyIcon/>}
                         tooltipTitle={"Add Algorithm"}
-                        onClickCapture={() => props.onAlgorithmAdd()}
+                        onClickCapture={() => props.togglePanel("algorithm_add_form", true)}
                     />
                     <SpeedDialAction
                         key={"action_3"}
                         icon={<PlayCircleOutlineIcon/>}
                         tooltipTitle={"Add Implementation"}
-                        onClickCapture={() => props.onImplementationAdd()}
+                        onClickCapture={() => props.togglePanel("implementation_add_form", true)}
                     />
                 </CustomSpeedDial>
             

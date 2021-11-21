@@ -100,7 +100,8 @@ export default function OntologyViewer(props) {
 
     const ontologyHierarchy = useSelector(state =>  state.model.ontologyHierarchy);
     var expandedOntologyItems = useSelector(state =>  state.viewModel.expandedOntologyItems);
-    const selectedOntologyItem = useSelector(state => state.viewModel.selectOntologyItem);
+    const selectedOntologyItem = useSelector(state => state.viewModel.selectedOntologyItem);
+
     const dispatch = useDispatch();
 
     var expandItem = (id) => {

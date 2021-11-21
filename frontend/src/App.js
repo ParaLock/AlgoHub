@@ -17,88 +17,93 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import RequestController from './services/RequestService';
 import OntologyController from './controllers/OntologyController';
 import RequestService from './services/RequestService';
 import AuthController from "./controllers/AuthController";
-import PanelController from './controllers/PanelController';
 import store from './model/ModelProxy';
-import { Provider } from 'react-redux'
-import { updateOperationStatus } from "./model/ViewModel";
+import { updateNotificationQueue } from "./model/ViewModel";
+import { useSelector, useDispatch } from 'react-redux';
 
 Amplify.configure(awsconfig);
 
 function App() {
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
   var requestService = new RequestService();
-  var requestController = new RequestController();
   var authController = new AuthController();
-  var panelController = new PanelController();
   var ontologyController = new OntologyController(requestService);
 
-  requestController.registerAddRequestSuccessListener((res) => {
+  var authFormOpen = useSelector((state) => state.viewModel.openPanels.includes("auth_form"));
+  var notificationQueue = useSelector((state) => state.viewModel.notificationQueue);
+
+  requestService.registerAddRequestSuccessListener((res) => {
 
     ontologyController.expandItem(res.data.id);
   });
 
-  function handleOperationalStatus() {
+  React.useEffect(() => {
 
-    var statusList = store.getState().viewModel.operationStatus;
+    var temp = JSON.parse(JSON.stringify(notificationQueue));
+    var notificationsToRemove = [];
 
-    // for (const [statusName, status] of Object.entries(statusList)) {
+    for (var i = 0; i < temp.length; i++) {
 
-    //   if (status.status == "request_complete") {
+      var notification = temp[i];
 
-    //     enqueueSnackbar(status.msg,
-    //       {
-    //         anchorOrigin: {
-    //           vertical: 'bottom',
-    //           horizontal: 'right',
-    //         },
-    //         variant: status.type
-    //       });
-    //   }
+      if (notification.status == "request_complete") {
 
-    //   if (status.status == "loading_complete") {
+        enqueueSnackbar(notification.msg,
+          {
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'right',
+            },
+            variant: notification.type
+          });
 
-    //     closeSnackbar(status.widgetKey);
-    //     store.dispatch(updateOperationStatus({
-    //       name: statusName,
-    //       widgetKey: "",
-    //       status: "",
-    //       msg: "",
-    //       type: status.type
-    //     }))
-    //   }
+          notificationsToRemove.push(i);
+      }
 
-    //   if (status.status == "loading_started") {
+      if(notification.status == "loading_started" && notification.widgetKey == "") {
 
-    //     var key = enqueueSnackbar(status.msg,
-    //       {
-    //         anchorOrigin: {
-    //           vertical: 'bottom',
-    //           horizontal: 'right',
-    //         },
-    //         variant: status.type
-    //       });
+        var key = enqueueSnackbar(notification.msg,
+          {
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'right',
+            },
+            variant: notification.type,
+            persist: true
+          });
 
-    //     store.dispatch(updateOperationStatus({
-    //       name: statusName,
-    //       widgetKey: key,
-    //       status: "loading_started",
-    //       msg: "",
-    //       type: status.type
-    //     }))
-    //   }
-
-    // }
+        notification.widgetKey = key;
 
 
-  }
+        dispatch(updateNotificationQueue(temp))
 
-  store.subscribe(handleOperationalStatus)
+      }
+
+      if (notification.status == "loading_complete") {
+        console.log("LOADING COMPLETE!!!");
+        closeSnackbar(notification.widgetKey);
+        notificationsToRemove.push(i);
+      }
+
+    }
+
+    if(notificationsToRemove.length > 0) {
+
+      for(var i = 0; i < notificationsToRemove.length; i++) {
+
+        temp.splice(notificationsToRemove[i], 1)
+      }
+
+      dispatch(updateNotificationQueue(temp))
+    }
+
+  }, [notificationQueue]);
 
   React.useEffect(() => {
 
@@ -107,7 +112,7 @@ function App() {
   }, []);
 
   return (
-    <Provider store={store}>
+    
       <Router>
         <Switch>
           <Route path="/signin">
@@ -118,17 +123,16 @@ function App() {
           </Route>
           <Route path="/">
 
-            {panelController.panelOpen("validation_form") && <AmplifyAuthenticator />}
+            {authFormOpen && <AmplifyAuthenticator />}
             <MainPage
               authController={authController}
-              panelController={panelController}
               ontologyController={ontologyController}
+              requestService={requestService}
             >
             </MainPage>
           </Route>
         </Switch>
       </Router>
-    </Provider>
 
 
   );

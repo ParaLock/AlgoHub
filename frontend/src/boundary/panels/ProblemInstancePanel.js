@@ -21,7 +21,8 @@ const Wrapper = styled.div`
     margin: 5px;
     padding: 5px;
     font-size: 10pt;
-    height: 30%;
+    margin-bottom: 0px;
+    height: 100%;
     flex-direction: column;
     overflow: scroll;
     display:flex;
@@ -59,7 +60,7 @@ const ButtonWrapper = styled.div`
 
 export default function ProblemInstancePanel(props) {
 
-    var problemInstances = useSelector(state => state.model.selectedItem["problem_instances"] ?? []);
+    var problemInstances = useSelector(state => state.viewModel.selectedItem["problem_instances"] ?? []);
     var currentUser = useSelector(state => state.model.currentUser);
 
     return (
@@ -70,7 +71,7 @@ export default function ProblemInstancePanel(props) {
             </Typography>
             {currentUser && 
                 <ButtonWrapper>
-                    <IconButton color="inherit" size="large" onClick={() => props.onProblemInstanceAdd()}>
+                    <IconButton color="inherit" size="large" onClick={() => props.togglePanel("problem_instance_add_form")}>
                         <AddCircleOutlineIcon />
                     </IconButton>
                 </ButtonWrapper>

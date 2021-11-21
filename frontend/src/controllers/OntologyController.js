@@ -20,36 +20,43 @@ export default class OntologyController {
         this.requestService = requestService;
     }
 
-    selectOntologyItem(item) {
+    selectOntologyItem(item, excludedEndpoints = ["classifications/"]) {
+
+        var model = store.getState().model;
+        var viewModel = store.getState().viewModel;
 
         store.dispatch(updateSelectedOntologyItem(
             {
-                parent: null,
-                selectedItem: item
+                item: item,
+                ontology: model.ontologyHierarchy
             }
         ));
 
         store.dispatch(updateSelectedItem(
             {
                 name: item.typeName,
-                selectedItem: null
+                item: null
             }
         ));
 
-        var model = store.getState().model;
-        var temp = {...model.expandedOntologyItems}
+        var temp = {...viewModel.expandedOntologyItems}
         expandParents(temp, model.ontologyHierarchy, item);
         store.dispatch(updateExpanded(temp));
 
         var endpoint = item.typeName + "s/";
-        this.requestService.executeGetRequest((err, data) => {
-            
+
+        if(excludedEndpoints.includes(endpoint)) {
+            return;
+        }
+
+        this.requestService.executeGetRequest((err, res) => {
+
             if(err.length == 0) {
 
                 store.dispatch(updateSelectedItem(
                     {
                         name: item.typeName,
-                        item: data
+                        item: res
                     }
                 ));
 
@@ -101,7 +108,7 @@ export default class OntologyController {
 
                 var model = store.getState().model;
                 var temp = {...model.expandedOntologyItems}
-                expandParents(temp, model.classificationHierarchy, hierarchyElement[0]);
+                expandParents(temp, newHierarchy, hierarchyElement[0]);
                 store.dispatch(updateExpanded(temp));
             }
         })

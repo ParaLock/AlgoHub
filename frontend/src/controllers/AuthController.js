@@ -36,7 +36,7 @@ export default class Authcontroller {
     }
 
     logout() {
-
+        console.log("logout!!")
         Auth.signOut()
         store.dispatch(setPanelVisibility({
             name: "auth_form", 
@@ -45,7 +45,7 @@ export default class Authcontroller {
     }
 
     login() {
-
+        console.log("login!!")
         store.dispatch(setPanelVisibility({
             name: "auth_form", 
             state: true

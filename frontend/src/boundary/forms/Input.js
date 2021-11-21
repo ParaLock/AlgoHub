@@ -5,14 +5,20 @@ import { TextField } from '@material-ui/core';
 
 export default function Input(props) {
 
-    const { name, label, value,error=null, onChange } = props;
+    const { sx, name, label, value,error=null, onChange } = props;
     return (
         <TextField
             variant="outlined"
             label={label}
             name={name}
             value={value}
-            onChange={onChange}
+            sx={sx}
+            onChange={(e) => {
+
+                const {name, value} = e.target;
+                onChange(name, value)
+            
+            }}
             {...(error && {error:true,helperText:error})}
         />
     )

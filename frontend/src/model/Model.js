@@ -4,9 +4,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const ModelSlice = createSlice({
   name: 'model',
   initialState: {
-    selectedOntologyItem: {},
-    selectedItem: {},
-    currentUser: {},
+    currentUser: null,
     ontologyHierarchy: null
   },
   reducers: {
@@ -15,13 +13,10 @@ export const ModelSlice = createSlice({
     },
     updateOntology: (state, action) => {
         state.ontologyHierarchy = action.payload
-    },
-    updateSelectedItem: (state, action) => {
-        state.selectedItem = action.payload;
     }
   }
 })
 
 
-export const { updateUser, updateOntology, updateSelectedItems } = ModelSlice.actions
+export const { updateUser, updateOntology } = ModelSlice.actions
 export default ModelSlice.reducer

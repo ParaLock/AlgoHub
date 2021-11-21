@@ -13,11 +13,10 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import LoadingButton from '@mui/lab/LoadingButton';
-import useInput from "../hooks/useInput";
-import useError from "../hooks/useError";
-import { googlecode } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import {Validation, fieldValidatorCore} from "react-validation-framework";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+import { Form, useForm } from '../hooks/useForm';
+import Input from "./Input";
+import ListInput from "./ListInput";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -26,7 +25,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogActions-root': {
         padding: theme.spacing(1),
     },
-    "& .MuiPaper-root" : {
+    "& .MuiPaper-root": {
         height: "fit-content"
     }
 }));
@@ -56,62 +55,68 @@ const BootstrapDialogTitle = (props) => {
 };
 
 
-const FieldWrapper = styled('div')(({ theme }) => ({
-    
-    marginBottom: '50px'
-}));
-
 const GeneralInfo = styled('div')(({ theme }) => ({
-    
+
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: "50px"
+    marginBottom: "50px",
+    width: "100%"
 
 }));
 
+const initialFValues = {
+    name: "",
+    id: null
+}
 export default function ClassificationForm(props) {
 
     const [loading, setLoading] = React.useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
-    const [error, setError] = useState("");
+    const [requestError, setRequestError] = useState("");
 
-    const [parentClassificationId, setParentClassificationId] = useState("");
-    const [parentClassification, setParentClassification] = useState(null);
-    const classificationName = useInput("");
+    const validate = (fieldValues = values) => {
 
-    const [parentClassificationIdError, setParentClassificationIdError] = useState("");
-    const [classificationNameError, setClassificationNameError] = useState("");
+        let temp = { ...errors }
 
-    var handleSubmit = () => {
+        if ('name' in fieldValues) {
 
-        setLoading(true)
+            temp.name = fieldValues.name ? "" : "This field is required. ";
+            temp.name += !(fieldValues.name.length > 100) ? "" : "Classification name must be less then 100 characters.";
 
-        var errors = false
-
-        if(classificationName.value.length == 0) {
-
-            setClassificationNameError("Provide classification name.")
-            errors = true;
         }
+        temp.id = "";
 
-        if(classificationName.value.length > 100) {
+        setErrors({
+            ...temp
+        })
 
-            setClassificationNameError("Classification name must not be greater then 100 characters. Current size: " + classificationName.value.length);
-            errors = true;
-        }
+        if (fieldValues == values)
+            return Object.values(temp).every(x => x == "")
+    }
 
-        if(errors) {
+    const {
+        values,
+        setValues,
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm
+    } = useForm(initialFValues, true, validate);
 
-            setLoading(false)
-        }
-        
-        if(!errors) {
+    const handleSubmit = e => {
+        e.preventDefault()
+        if (validate()) {
 
-            this.props.requestService.executeAddRequest(
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
+
+            props.requestService.executeAddRequest(
                 (err) => {
-                    setError(err)
+                    setRequestError(err)
                     setLoading(false)
+                    setSubmitDisabled(false)
 
                     if (err.length == 0) {
 
@@ -120,12 +125,11 @@ export default function ClassificationForm(props) {
 
                 },
                 {
-                    parentClassificationId: parentClassificationId,
-                    classificationName: classificationName.value
-                }, 
-                "classifications", 
-                "/add"
-            )
+                    parentId: (values.id) ? values.id.id : null,
+                    name: values.name
+                },
+                "classifications",
+                "add");
         }
     }
 
@@ -144,44 +148,34 @@ export default function ClassificationForm(props) {
                     Classification Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
-                    <GeneralInfo>
-                        <Autocomplete
-                            sx={{width: "30%"}}
-                            id="combo-box-demo"
-                            getOptionLabel={(item) => item.name}
-                            options={parentClassificationOptions}
-                            renderInput={(params) => <TextField 
-                                {...params} 
-                                label="Parent Classification" 
-                                
-                                helperText={parentClassificationIdError}
-                                error={parentClassificationIdError.length > 0}
-                                onKeyUp={() => setParentClassificationIdError("")}
-                            
-                            />}
-                            onChange={(e, data) => {
 
-                                setParentClassificationIdError("")
-                                setParentClassification(data)
-                                if(data)
-                                    setParentClassificationId(data.id)
-                                else
-                                    setParentClassificationId("")
-                            }}
-                            value={parentClassification}
-                        />
-                        <TextField label="Classification Name"  
-                            sx={{width: "30%"}}
-                            {...classificationName}
-                            helperText={classificationNameError}
-                            error={classificationNameError.length > 0}
-                            onKeyUp={() => setClassificationNameError("")}
-                        />
-                    </GeneralInfo>
+                    <Form onSubmit={handleSubmit}>
+                        <GeneralInfo>
+                            <ListInput
+
+                                label="Parent Id"
+                                name="id"
+                                value={values.id}
+                                options={parentClassificationOptions}
+                                error={errors.id}
+                                onChange={handleInputChange}
+
+                            />
+                            <Input
+                                label="Classification Name"
+                                name="name"
+                                value={values.name}
+                                error={errors.name}
+                                sx={{ width: "30%", marginRight: "100px" }}
+                                onChange={handleInputChange}
+                            />
+
+                        </GeneralInfo>
+                    </Form>
 
 
                 </DialogContent>
-                <font color="red">{ error.length > 0 && error}</font>
+                <font color="red">{requestError.length > 0 && requestError}</font>
                 <DialogActions>
 
                     <LoadingButton

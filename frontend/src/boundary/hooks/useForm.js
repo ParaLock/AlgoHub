@@ -9,8 +9,10 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
     const [values, setValues] = useState(initialFValues);
     const [errors, setErrors] = useState({});
 
-    const handleInputChange = e => {
-        const { name, value } = e.target
+    const handleInputChange = (name, value) => {
+
+        console.log(name, value)
+
         setValues({
             ...values,
             [name]: value
@@ -40,7 +42,9 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
 const useStyles = makeStyles(theme => ({
     root: {
         '& .MuiFormControl-root': {
-            width: '80%',
+            width: '100%',
+            height: "100%",
+            display: "flex",
             margin: theme.spacing(1)
         }
     }
@@ -51,7 +55,13 @@ export function Form(props) {
     const classes = useStyles();
     const { children, ...other } = props;
     return (
-        <form className={classes.root} autoComplete="off" {...other}>
+        <form style={
+            {
+                width: "100%",
+                display: "flex",
+                height: "100%"
+            
+            }} className={classes.root} autoComplete="off" {...other}>
             {props.children}
         </form>
     )

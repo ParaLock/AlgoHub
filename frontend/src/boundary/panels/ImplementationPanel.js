@@ -29,9 +29,9 @@ const Wrapper = styled.div`
     margin: 5px;
     margin-bottom: 0px;
     display: flex;
-    flex-grow: 1;
-    height: 100%;
     flex-direction: column;
+    height: 100%;
+    overflow: scroll;
 `;
 
 const ButtonWrapper = styled.div`
@@ -49,7 +49,7 @@ export default function ImplementationPanel(props) {
     const [loadingFile, setLoadingFile] = useState(false)
     const [fileCache, setFileCache] = useState({});
 
-    const implementation = useSelector(state => (state.model.selectedItem["implementation"]))
+    const implementation = useSelector(state => (state.viewModel.selectedItem["implementation"]))
 
     React.useEffect(() => {
 
@@ -57,7 +57,7 @@ export default function ImplementationPanel(props) {
         setLoadingFile(true)
 
         var cache = { ...fileCache }
-        
+
         if (!implementation)
             return
 
@@ -67,7 +67,7 @@ export default function ImplementationPanel(props) {
 
             if (cache[filename] === undefined) {
 
-                if (props.implementation.filename) {
+                if (implementation.filename) {
                     axios.get(Config.S3_PATH + "implementations/" + filename)
                         .then(res => {
                             if (res.data) {
@@ -107,9 +107,9 @@ export default function ImplementationPanel(props) {
         axios.get(url, {
             responseType: 'blob',
         })
-            .then((res) => {
-                fileDownload(res.data, filename)
-            })
+        .then((res) => {
+            fileDownload(res.data, filename)
+        })
     }
 
     return (

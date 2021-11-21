@@ -3,7 +3,7 @@ import awsconfig from '../aws-exports';
 import { Config } from "../boundary/common/Config"
 
 import store from '../model/ModelProxy';
-import { updateOperationStatus } from "../model/ViewModel";
+import { enqueueNotification } from "../model/ViewModel";
 
 export default class RequestService {
 
@@ -23,11 +23,13 @@ export default class RequestService {
 
         var model = store.getState().model;
 
+        data.authorId = model.currentUser.username;
+
         axios.post(Config.API_PATH + object + "/" + endpoint,
             data,
             {
                 headers: {
-                    'Authorization': model.currentUser.token ?? ""
+                    'Authorization': (model.currentUser) ? (model.currentUser.token) : ""
                 }
             }
         ).then(res => {
@@ -36,7 +38,7 @@ export default class RequestService {
 
             if (res.data.statusCode == "400" || res.data.statusCode == 400) {
 
-                store.dispatch(updateOperationStatus({
+                store.dispatch(enqueueNotification({
                     name: "add_request_status",
                     widgetKey: "",
                     status: "request_complete",
@@ -48,7 +50,7 @@ export default class RequestService {
 
             } else {
 
-                store.dispatch(updateOperationStatus({
+                store.dispatch(enqueueNotification({
                     name: "add_request_status",
                     widgetKey: "",
                     status: "request_complete",
@@ -66,7 +68,7 @@ export default class RequestService {
 
         }).catch((err) => {
 
-            store.dispatch(updateOperationStatus({
+            store.dispatch(enqueueNotification({
                 name: "add_request_status",
                 widgetKey: "",
                 status: "request_complete",
@@ -83,7 +85,7 @@ export default class RequestService {
         var model = store.getState().model;
         axios.get(Config.API_PATH + url, {
             headers: {
-                'Authorization': model.currentUser.token ?? ""
+                'Authorization': (model.currentUser) ? (model.currentUser.token) : ""
             }
         })
             .then(res => {

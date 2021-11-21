@@ -37,7 +37,7 @@ const AlgorithmDescription = styled.div`
 
 export default function AlgorithmPanel(props) {
 
-    const algorithm = useSelector(state => state.model.selectedItem["algorithm"]);
+    const algorithm = useSelector(state => state.viewModel.selectedItem["algorithm"]);
 
     return (
 

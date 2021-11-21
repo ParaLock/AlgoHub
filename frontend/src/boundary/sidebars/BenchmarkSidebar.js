@@ -40,15 +40,15 @@ export default function BenchmarkSidebar(props) {
     
     console.log(props)
 
-    var benchmarks = useSelector(state => state.model.selectedItem["benchmark"] ?? []);
-    var currentUser = useSelector(state => state.viewModel.currentUser);
+    var benchmarks = useSelector(state => state.viewModel.selectedItem["benchmark"] ?? []);
+    var currentUser = useSelector(state => state.model.currentUser);
     
     return (
 
         <BenchmarkSidebarWrapper open={props.open}>
 
             <ButtonWrapper>
-                <IconButton color="inherit" size="large" onClick={() => props.onBenchmarkAdd()}>
+                <IconButton color="inherit" size="large" onClick={() => props.togglePanel("benchmark_add_form", true)}>
                     <AddCircleOutlineIcon />
                 </IconButton>
             </ButtonWrapper>

@@ -8,22 +8,24 @@ export default function ListInput(props) {
     const { name, options, label, item, value, error = null, onChange, onChangeItem } = props;
     return (
         <Autocomplete
+        
             sx={{ width: "30%" }}
             disablePortal
             id="combo-box-demo"
             getOptionLabel={(item) => item.name}
             options={options}
             renderInput={(params) => <TextField
+                variant="outlined"
                 {...params}
                 name={name}
-                value={value}
-                onChange={onChange}
+                label={label}
                 {...(error && {error:true,helperText:error})}
 
             />
             }
-            onChange={onChangeItem}
-            value={item}
+  
+            onChange={(e, val) => onChange(name, val)}
+            value={value}
 
 
         />

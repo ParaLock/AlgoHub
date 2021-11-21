@@ -5,11 +5,13 @@ export const ViewModelSlice = createSlice({
   name: 'view_model',
   initialState: {
     selectedOntologyItem: null,
+    selectedOntologyItemParent: null,
     selectedOntologyItemType: "",
     selectedItem: {},
     expandedOntologyItems: {},
     openPanels: [],
     operationStatus: {},
+    notificationQueue: [],
     loadingStatus: {},
     headerTitle: "Welcome to AlgoHub"
   },
@@ -23,7 +25,7 @@ export const ViewModelSlice = createSlice({
         }
     },
     setPanelVisibility: (state, action) => {
-
+      console.log(action)
         state.openPanels = state.openPanels.filter((item) => item != action.payload.name);
 
         if(action.payload.state) {
@@ -39,32 +41,32 @@ export const ViewModelSlice = createSlice({
       state.expandedOntologyItems[action.payload] = !state.expandedOntologyItems[action.payload];
 
     },
-    updateOperationStatus: (state, action) => {
-
-      state.operationStatus[action.payload.name] = {
-        ...state.operationStatus[action.payload.name],
-        ...action.payload
-      }
-
-    },
     updateSelectedOntologyItem: (state, action) => {
 
-      var parent = action.payload.parent;
+      var selected = action.payload.item;
+      var ontologyHierarchy = action.payload.ontology;
+
       var title = "";
-
-      if(parent) {
-        title = parent.name;
-      }
-
-      var selected = action.payload.selectedItem;
-
       if(selected) {
+
+        var parentCandidates = ontologyHierarchy.filter((item) => item.id == selected.parentId);
+        if(parentCandidates.length > 0) {
+
+          var parent = parentCandidates[0];
+    
+          if(parent) {
+            title = parent.name;
+          }
+
+        }
+
         title += "." + selected.name;
+  
+        state.selectedOntologyItemType = selected.typeName;
+        state.headerTitle = title;
       }
 
-      state.selectedOntologyItemType = selected.typeName;
 
-      state.headerTitle = title;
       state.selectedOntologyItem = selected;
     },
     updateExpanded: (state, action) => {
@@ -72,6 +74,24 @@ export const ViewModelSlice = createSlice({
       state.expandedOntologyItems = action.payload;
 
     }, 
+    updateNotificationQueue: (state, action) => {
+
+      state.notificationQueue = action.payload;
+
+    },
+    enqueueNotification: (state, action) => {
+
+      state.notificationQueue.push(action.payload);
+    },
+    updateNotificationStatus: (state, action) => {
+
+      var notification = state.notificationQueue.find((item) => item.name == action.payload.name);
+
+      if(notification) {
+          notification.status = action.payload.status;
+      }
+
+    },
     updateSelectedItem: (state, action) => {
 
       state.selectedItem[action.payload.name] = action.payload.item;
@@ -89,11 +109,13 @@ export const {
                 togglePanelVisibility, 
                 setPanelVisibility,
                 updateExpandedOntologyItems,
-                updateOperationStatus,
                 updateExpanded,
                 updateSelectedItem,
                 updateSelectedOntologyItem,
                 updateLoadingStatus,
-                toggleOntologyItem
+                toggleOntologyItem,
+                updateNotificationQueue,
+                updateNotificationStatus,
+                enqueueNotification
 } = ViewModelSlice.actions
 export default ViewModelSlice.reducer

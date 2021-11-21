@@ -11,7 +11,7 @@ import styled from 'styled-components';
 
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-
+import { useSelector, useDispatch } from 'react-redux'
 import { Resizable } from "re-resizable";
 
 const Wrapper = styled.div`
@@ -59,7 +59,8 @@ const ButtonWrapper = styled.div`
 
 export default function ProblemInstancePanel(props) {
 
-    var problemInstances = props.model.selectedItem["problem_instances"] ?? [];
+    var problemInstances = useSelector(state => state.model.selectedItem["problem_instances"] ?? []);
+    var currentUser = useSelector(state => state.model.currentUser);
 
     return (
 
@@ -67,7 +68,7 @@ export default function ProblemInstancePanel(props) {
             <Typography variant="h6" align="center" component="div" gutterBottom>
             Problem Instances
             </Typography>
-            {props.model.currentUser && 
+            {currentUser && 
                 <ButtonWrapper>
                     <IconButton color="inherit" size="large" onClick={() => props.onProblemInstanceAdd()}>
                         <AddCircleOutlineIcon />
@@ -76,7 +77,7 @@ export default function ProblemInstancePanel(props) {
             }
 
             {
-                props.problemInstances.map((item) => {
+                problemInstances.map((item) => {
 
 
                     return <ProblemInstanceWrapper>
@@ -99,7 +100,7 @@ export default function ProblemInstancePanel(props) {
                         </table>
                         <br />
 
-                        {props.models.currentUser && 
+                        {currentUser && 
                         
                             <ButtonWrapper>
                                 <IconButton color="inherit" size="small">

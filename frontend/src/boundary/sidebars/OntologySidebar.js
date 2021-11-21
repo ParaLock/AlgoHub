@@ -21,6 +21,9 @@ import { useSnackbar } from 'notistack';
 import OntologyTreeViewer from '../panels/OntologyTreeViewer';
 import Switch from '@mui/material/Switch';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import { useSelector, useDispatch } from 'react-redux'
+import { updateOperationStatus,updateLoadingStatus } from "../../model/ViewModel";
+
 const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
     '& .MuiSpeedDial-actions': {
         zIndex: 9999,
@@ -66,39 +69,45 @@ const SwitchContainer = styled.div`
 
 export default function OntologySidebar(props) {
 
-    const [isOntologyLoading,setisOntologyLoading] = useState(true);
-    const [ontologyStatusKey, setOntologyStatusKey] = useState("");
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const [showTreeView, setShowTreeView] = useState(false);
+    const dispatch = useDispatch();
+
+    const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy);
+    const currentUser = useSelector(state => state.model.currentUser);
+    const isOntologyLoading = useSelector(state => state.viewModel.loadingStatus["ontology_loading"])
 
     React.useEffect(() => {
 
-        console.log("Ontology sidebar update: ", props.model)
+        if(!ontologyHierarchy) {
 
-        if(!props.model.ontologyHierarchy) {
-
-            const key = enqueueSnackbar('Loading Hierarchy...', 
-            {
-                anchorOrigin: {
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                },
-                variant: 'info',
-                persist: true,
-            });
-
-            setOntologyStatusKey(key)
-            setisOntologyLoading(true)
+            dispatch(updateOperationStatus({
+                name: "loading_hierarchy",
+                status: "loading_started",
+                msg: "Loading Hierarchy...",
+                type: "info"
+            }))
         
+            dispatch(updateLoadingStatus({
+                name: "loading_hierarchy",
+                state: true
+            }))
+
         } else {
 
-            closeSnackbar(ontologyStatusKey)
+            dispatch(updateOperationStatus({
+                name: "loading_hierarchy",
+                status: "loading_complete",
+                msg: "Loading Hierarchy...",
+                type: "info"
+            }))
 
-            setOntologyStatusKey("")
-            setisOntologyLoading(false)
+            dispatch(updateLoadingStatus({
+                name: "loading_hierarchy",
+                state: false
+            }))
         }
         
-    }, [props.model.ontologyHierarchy]);
+    }, [ontologyHierarchy]);
 
     return (
 
@@ -112,12 +121,12 @@ export default function OntologySidebar(props) {
         <OntologySidebarWrapper open={props.open}>
             <ButtonWrapper>
                 <span>
-                    { props.model.currentUser &&
+                    { currentUser &&
                         <IconButton color="inherit" size="large" onClick={() => props.onOntologyMerge()}>
                             <MergeTypeIcon />
                         </IconButton>
                     }
-                    { props.model.currentUser &&
+                    { currentUser &&
                         <IconButton color="inherit" size="large" onClick={() => props.onAlgorithmReclassify()}>
                             <DriveFileMoveIcon />
                         </IconButton>
@@ -129,7 +138,7 @@ export default function OntologySidebar(props) {
                 </span>
             <span>
 
-            { props.model.currentUser &&
+            { currentUser &&
             
                 <CustomSpeedDial
                     ariaLabel="SpeedDial playground example"
@@ -177,21 +186,14 @@ export default function OntologySidebar(props) {
 
                 <OntologyTreeViewer
                     onSelect={(item)=> { props.ontologyController.selectOntologyItem(item)}} 
-                    enableRemove={props.model.currentUser}
-                    model={props.model}
-                    selected={props.model.selectedOntologyItem} 
-                    ontologyData={props.model.ontologyHierarchy}
+                    enableRemove={currentUser}
                 />
             }
 
             { !showTreeView && 
                 <OntologyViewer 
-                        onSelect={(item)=> { props.ontologyController.selectOntologyItem(item)} } 
-                        enableRemove={props.model.currentUser}
-                        model={props.model}
-                        selected={props.model.selectedOntologyItem} 
-                        ontologyData={props.model.ontologyHierarchy}
-                        expandedOntologyItems={props.model.expandedOntologyItems}
+                    onSelect={(item)=> { props.ontologyController.selectOntologyItem(item)} } 
+                    enableRemove={currentUser}
                 />
             }
         </OntologySidebarWrapper></Resizable>

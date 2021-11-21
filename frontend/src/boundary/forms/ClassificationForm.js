@@ -17,6 +17,7 @@ import useInput from "../hooks/useInput";
 import useError from "../hooks/useError";
 import { googlecode } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {Validation, fieldValidatorCore} from "react-validation-framework";
+import { useSelector, useDispatch } from 'react-redux'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -128,7 +129,7 @@ export default function ClassificationForm(props) {
         }
     }
 
-    var parentClassificationOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.typeName == "classification") : [];
+    var parentClassificationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "classification"));
 
     return (
         <div>

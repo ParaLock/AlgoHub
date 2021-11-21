@@ -13,7 +13,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import LoadingButton from '@mui/lab/LoadingButton';
-
+import { useSelector, useDispatch } from 'react-redux';
 import useInput from "../hooks/useInput";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -82,6 +82,8 @@ export default function AlgorithmForm(props) {
 
     const [parentClassificationId, setParentClassificationId] = useState("");
 
+    const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy)
+
     var handleSubmit = () => {
 
         setLoading(true)
@@ -147,7 +149,7 @@ export default function AlgorithmForm(props) {
 
     }
 
-    var classificationOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.typeName == "classification") : [];
+    var classificationOptions = (ontologyHierarchy) ? ontologyHierarchy.filter((item) => item.typeName == "classification") : [];
 
     return (
         <div>

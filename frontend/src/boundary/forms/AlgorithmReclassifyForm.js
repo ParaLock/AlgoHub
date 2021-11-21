@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import { useSelector, useDispatch } from 'react-redux'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -67,8 +67,8 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 export default function ClassificationForm(props) {
 
-    var algorithmOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.type == "algorithm") : [];
-    var classificationOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.type == "classification") : [];
+    const algorithmOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.type == "algorithm") )
+    const classificationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.type == "classification") )
 
     return (
         <div>

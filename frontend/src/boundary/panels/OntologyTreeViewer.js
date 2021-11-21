@@ -4,6 +4,9 @@ import Graph from "react-graph-vis";
 import debounce from 'lodash.debounce';
 import 'vis-network/dist/dist/vis-network.min.css';
 import { toPlainObject } from "lodash";
+
+import { useSelector, useDispatch } from 'react-redux'
+
 export default function OntologyTreeViewer(props) {
 
     const [network, setNetwork] = useState(null)
@@ -106,7 +109,7 @@ export default function OntologyTreeViewer(props) {
     var fitNetwork = () => {
 
         if(network) {
-            if(props.selected.id) {
+            if(props.selected && props.selected.id) {
 
                 network.setSelection({
                     nodes: [
@@ -122,16 +125,17 @@ export default function OntologyTreeViewer(props) {
 
     React.useEffect(() => {
         fitNetwork()
-
     }, [network]);
+
+    const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy);
+
     React.useEffect(() => {
 
-        if(!props.model.ontologyHierarchy) {
+        if(!ontologyHierarchy) {
             return;
         }
 
-        console.log(props)
-        var nodes = props.model.ontologyHierarchy.map((item) => {
+        var nodes = ontologyHierarchy.map((item) => {
             return {
                 label: item.name,
                 id: item.id,
@@ -146,10 +150,10 @@ export default function OntologyTreeViewer(props) {
 
         var edges = []
 
-        for(var i in props.model.ontologyHierarchy) {
+        for(var i in ontologyHierarchy) {
 
-            var item = props.model.ontologyHierarchy[i];
-            var parent = props.model.ontologyHierarchy.filter((p) => p.id == item.parentId);
+            var item = ontologyHierarchy[i];
+            var parent = ontologyHierarchy.filter((p) => p.id == item.parentId);
             console.log(parent)
             if(parent.length > 0) {
 
@@ -186,7 +190,7 @@ export default function OntologyTreeViewer(props) {
         )
 
         debouncedFit()
-    }, [props.model.ontologyHierarchy ?? []]);
+    }, [ontologyHierarchy ?? []]);
 
     const events = {
         select: function (event) {

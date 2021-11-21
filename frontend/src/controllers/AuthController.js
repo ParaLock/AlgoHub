@@ -5,8 +5,8 @@ import axios from 'axios';
 import awsconfig from '../aws-exports';
 import {updateUser} from "../model/Model";
 import {setPanelVisibility} from "../model/ViewModel";
-import {store} from "../model/ModelProxy";
-
+import store from "../model/ModelProxy";
+import { useSelector, useDispatch } from 'react-redux'
 export default class Authcontroller {
 
     constructor() {

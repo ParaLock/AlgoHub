@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import modelReducer from './Model'
-import viewModelReducer from './ModelView'
+import viewModelReducer from './ViewModel'
 
 export default configureStore({
   reducer: {

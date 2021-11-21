@@ -7,11 +7,10 @@ import { updateOperationStatus } from "../model/ViewModel";
 
 export default class RequestService {
 
-    constructor(model) {
+    constructor() {
 
         this.addRequestSuccessListeners = []
         this.getRequestListeners = []
-        this.model = model;
     }
 
     registerAddRequestSuccessListener(cb) {
@@ -22,11 +21,13 @@ export default class RequestService {
 
     executeAddRequest(cb, data, object, endpoint) {
 
+        var model = store.getState().model;
+
         axios.post(Config.API_PATH + object + "/" + endpoint,
             data,
             {
                 headers: {
-                    'Authorization': this.model.currentUser.token ?? ""
+                    'Authorization': model.currentUser.token ?? ""
                 }
             }
         ).then(res => {
@@ -79,10 +80,10 @@ export default class RequestService {
     }
 
     executeGetRequest(cb, url) {
-
+        var model = store.getState().model;
         axios.get(Config.API_PATH + url, {
             headers: {
-                'Authorization': this.model.currentUser.token ?? ""
+                'Authorization': model.currentUser.token ?? ""
             }
         })
             .then(res => {

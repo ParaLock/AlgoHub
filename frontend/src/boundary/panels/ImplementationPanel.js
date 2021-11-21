@@ -17,6 +17,7 @@ import { Config } from "../common/Config"
 import axios from 'axios';
 import { saveAs } from "file-saver";
 import fileDownload from 'js-file-download'
+import { useSelector, useDispatch } from 'react-redux'
 
 const Wrapper = styled.div`
 
@@ -48,18 +49,19 @@ export default function ImplementationPanel(props) {
     const [loadingFile, setLoadingFile] = useState(false)
     const [fileCache, setFileCache] = useState({});
 
+    const implementation = useSelector(state => (state.model.selectedItem["implementation"]))
+
     React.useEffect(() => {
 
         setSourceCode("")
         setLoadingFile(true)
 
         var cache = { ...fileCache }
-
-        var implementation = props.model.selectedItem["implementation"];
+        
         if (!implementation)
             return
 
-        var filename = props.model.selectedItem["implementation"].filename;
+        var filename = implementation.filename;
 
         try {
 
@@ -93,9 +95,8 @@ export default function ImplementationPanel(props) {
 
         setFileCache(cache)
 
-    }, [props.model.selectedItem["implementation"]]);
+    }, [implementation]);
 
-    var implementation = props.model.selectedItem["implementation"];
     var lang = (implementation) ? implementation.programmingLanguage.toLowerCase() : "text"
 
     var handleDownload = (url, filename) => {

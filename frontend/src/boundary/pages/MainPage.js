@@ -22,6 +22,7 @@ import { useSnackbar } from 'notistack';
 import Typography from '@mui/material/Typography';
 import { Resizable } from "re-resizable";
 import { HeadphonesBatteryOutlined } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 
 const Wrapper = styled.div`
       
@@ -70,13 +71,14 @@ export default function MainPage(props) {
 
     const [topPanelHeight, setTopPanelHeight] = useState(800);
 
-    var title = props.ontologyController.getSelectedItemKey();
+    var title = useSelector(state => state.viewModel.headerTitle);
+    var selectedItemType = useSelector(state => state.viewModel.selectedOntologyItemType)
 
     return (
 
         <Wrapper>
 
-            <HeadphonesBatteryOutlined
+            <Header
                 authController={props.authController}
                 formController={props.formController}
             />
@@ -98,7 +100,7 @@ export default function MainPage(props) {
 
 
 
-                    {props.ontologyController.getSelectedType() == "algorithm" && <Resizable
+                    {selectedItemType == "algorithm" && <Resizable
                         enable={{
                             top: false,
                             right: false,
@@ -119,7 +121,7 @@ export default function MainPage(props) {
                         />
                     </Resizable>}
 
-                    {props.ontologyController.getSelectedType() == "implementation" && <Resizable
+                    {selectedItemType == "implementation" && <Resizable
                         enable={{
                             top: false,
                             right: false,
@@ -141,7 +143,7 @@ export default function MainPage(props) {
 
                     </Resizable>}
                     <Seperator />
-                    {props.ontologyController.getSelectedType() == "implementation" &&
+                    {selectedItemType == "implementation" &&
                         <ProblemInstancePanel
                             formController={props.formController}
                             ontologyController={props.ontologyController}

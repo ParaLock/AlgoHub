@@ -4,7 +4,8 @@ import { expandParents } from '../boundary/common/Common';
 export const ViewModelSlice = createSlice({
   name: 'view_model',
   initialState: {
-    selectedOntologyItem: {},
+    selectedOntologyItem: null,
+    selectedOntologyItemType: "",
     selectedItem: {},
     expandedOntologyItems: {},
     openPanels: [],
@@ -33,6 +34,11 @@ export const ViewModelSlice = createSlice({
 
         state.expandedOntologyItems = action.payload;
     },
+    toggleOntologyItem: (state, action) => {
+
+      state.expandedOntologyItems[action.payload] = !state.expandedOntologyItems[action.payload];
+
+    },
     updateOperationStatus: (state, action) => {
 
       state.operationStatus[action.payload.name] = {
@@ -55,6 +61,8 @@ export const ViewModelSlice = createSlice({
       if(selected) {
         title += "." + selected.name;
       }
+
+      state.selectedOntologyItemType = selected.typeName;
 
       state.headerTitle = title;
       state.selectedOntologyItem = selected;
@@ -82,6 +90,10 @@ export const {
                 setPanelVisibility,
                 updateExpandedOntologyItems,
                 updateOperationStatus,
-                updateExpanded
+                updateExpanded,
+                updateSelectedItem,
+                updateSelectedOntologyItem,
+                updateLoadingStatus,
+                toggleOntologyItem
 } = ViewModelSlice.actions
 export default ViewModelSlice.reducer

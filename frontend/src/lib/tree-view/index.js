@@ -8,7 +8,6 @@ import * as Icons from './icons'
 import IconButton from '@mui/material/IconButton';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-
 const styles = {
   tree: {
     position: 'relative',
@@ -69,7 +68,7 @@ export default class Tree extends React.PureComponent {
 
     var result = (this.props.children && this.setState(state => ({ immediate: false })))
 
-    this.props.expandedOntologyItems[this.props.item.id] = !this.props.expandedOntologyItems[this.props.item.id];
+    this.props.toggleExpanded(this.props.item.id);
 
     this.forceUpdate();
   }
@@ -98,12 +97,8 @@ export default class Tree extends React.PureComponent {
     const {  visible, immediate } = this.state
     const { enableRemove, expandedOntologyItems, item, children, content, type, style, canHide, springConfig } = this.props
 
-    // if(!(item.id in expandedOntologyItems)) {
-
-    //   expandedOntologyItems[item.id] = false; 
-    // }
-
     var open = expandedOntologyItems[item.id];
+    var selected = (this.props.selected) ? (this.props.selected.id == item.id) : false;
 
     const Icon =
       Icons[`${children ? (open ? 'Minus' : 'Plus') : 'Close'}SquareO`]
@@ -130,7 +125,7 @@ export default class Tree extends React.PureComponent {
 
         <ContentWrapper 
           onClick={() => this.props.onSelect(item)} 
-          selected={this.props.selected.id == item.id}
+          selected={selected}
         > 
 
           {content}

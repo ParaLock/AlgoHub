@@ -24,7 +24,7 @@ import AuthController from "./controllers/AuthController";
 import PanelController from './controllers/PanelController';
 import store from './model/ModelProxy';
 import { Provider } from 'react-redux'
-import {updateOperationStatus} from "../model/ViewModel";
+import { updateOperationStatus } from "./model/ViewModel";
 
 Amplify.configure(awsconfig);
 
@@ -43,59 +43,62 @@ function App() {
     ontologyController.expandItem(res.data.id);
   });
 
-  function handleViewModelUpdate() {
+  function handleOperationalStatus() {
 
     var statusList = store.getState().viewModel.operationStatus;
-    var status = statusList["hierarchy_loading"];
-    
-    if(status.status == "request_complete") {
 
-      this.enqueueSnackbar(status.msg,
-        {
-            anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'right',
-            },
-            variant: status.type
-        });
-    }
+    // for (const [statusName, status] of Object.entries(statusList)) {
 
-    if(status.status == "loading_complete") {
+    //   if (status.status == "request_complete") {
 
-      closeSnackbar(status.widgetKey);
-      store.dispatch(updateOperationStatus({
-        name: "hierarchy_loading",
-        widgetKey: "",
-        status: "",
-        msg: "",
-        type: status.type
-      }))
-    }
+    //     enqueueSnackbar(status.msg,
+    //       {
+    //         anchorOrigin: {
+    //           vertical: 'bottom',
+    //           horizontal: 'right',
+    //         },
+    //         variant: status.type
+    //       });
+    //   }
 
-    if(status.status == "loading_started") {
+    //   if (status.status == "loading_complete") {
 
-      var key = this.enqueueSnackbar(status.msg,
-      {
-          anchorOrigin: {
-              vertical: 'bottom',
-              horizontal: 'right',
-          },
-          variant: status.type
-      });
+    //     closeSnackbar(status.widgetKey);
+    //     store.dispatch(updateOperationStatus({
+    //       name: statusName,
+    //       widgetKey: "",
+    //       status: "",
+    //       msg: "",
+    //       type: status.type
+    //     }))
+    //   }
 
-      store.dispatch(updateOperationStatus({
-        name: "hierarchy_loading",
-        widgetKey: key,
-        status: "loading_started",
-        msg: "",
-        type: status.type
-      }))
-    }
+    //   if (status.status == "loading_started") {
+
+    //     var key = enqueueSnackbar(status.msg,
+    //       {
+    //         anchorOrigin: {
+    //           vertical: 'bottom',
+    //           horizontal: 'right',
+    //         },
+    //         variant: status.type
+    //       });
+
+    //     store.dispatch(updateOperationStatus({
+    //       name: statusName,
+    //       widgetKey: key,
+    //       status: "loading_started",
+    //       msg: "",
+    //       type: status.type
+    //     }))
+    //   }
+
+    // }
 
 
   }
 
-  store.subscribe(handleViewModelUpdate)
+  store.subscribe(handleOperationalStatus)
 
   React.useEffect(() => {
 

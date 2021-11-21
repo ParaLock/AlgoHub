@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import { useSelector, useDispatch } from 'react-redux'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -86,8 +86,7 @@ const ResultsInfomation = styled('div')(({ theme }) => ({
 
 export default function BenchmarkForm(props) {
 
-
-    var algorithmOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.type == "algorithm") : [];
+    const algorithmOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.type == "algorithm"));
 
     return (
         <div>

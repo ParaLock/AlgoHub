@@ -22,7 +22,7 @@ import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 import { useHistory } from 'react-router-dom';
 import Amplify, { Auth } from 'aws-amplify';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 
 const Wrapper = styled.div`
 
@@ -62,13 +62,13 @@ export default function Header(props) {
           }
 
           { !currentUser && 
-              <Button onClick={() => props.onLogin()}  color="inherit">
+              <Button onClick={() => props.authController.login()}  color="inherit">
                 Login
               </Button>
           }
 
           { currentUser && 
-              <Button onClick={() => props.onLogout()}  color="inherit">
+              <Button onClick={() => props.authController.logout()}  color="inherit">
                 Logout
               </Button>
           }

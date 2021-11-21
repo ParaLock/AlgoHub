@@ -10,7 +10,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useSelector, useDispatch } from 'react-redux'
-
 const Wrapper = styled.div`
     height: 100%;
     border-radius: 5px;
@@ -50,7 +49,7 @@ export default function AlgorithmPanel(props) {
                 <Typography variant="h7" align="center" component="div" gutterBottom>
                 Description
                 </Typography>         
-                {!algorithm && <CircularProgress/>}{algorithm.description}
+                {!algorithm && <CircularProgress/>}{algorithm && algorithm.description}
             </AlgorithmDescription>
             
         </Wrapper>

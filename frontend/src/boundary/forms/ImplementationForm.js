@@ -17,6 +17,7 @@ import {decode as base64_decode, encode as base64_encode} from 'base-64';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
 import SendIcon from '@mui/icons-material/Send';
+import { useSelector, useDispatch } from 'react-redux'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -199,7 +200,7 @@ export default function ImplementationForm(props) {
 
     }
 
-    var algorithmOptions = (props.model.ontologyHierarchy) ? props.model.ontologyHierarchy.filter((item) => item.typeName == "algorithm") : [];
+    var algorithmOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm"));
 
     return (
         <div>

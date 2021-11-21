@@ -1,7 +1,7 @@
 import { expandParents } from "../boundary/common/Common";
 import axios from 'axios';
 import {Config} from "../boundary/common/Config"
-
+import { useSelector, useDispatch } from 'react-redux'
 import store from '../model/ModelProxy';
 import {
         updateSelectedOntologyItem,
@@ -38,7 +38,7 @@ export default class OntologyController {
 
         var model = store.getState().model;
         var temp = {...model.expandedOntologyItems}
-        expandParents(temp, model.classificationHierarchy, item);
+        expandParents(temp, model.ontologyHierarchy, item);
         store.dispatch(updateExpanded(temp));
 
         var endpoint = item.typeName + "s/";
@@ -101,7 +101,7 @@ export default class OntologyController {
 
                 var model = store.getState().model;
                 var temp = {...model.expandedOntologyItems}
-                expandParents(temp, model.classificationHierarchy, item);
+                expandParents(temp, model.classificationHierarchy, hierarchyElement[0]);
                 store.dispatch(updateExpanded(temp));
             }
         })

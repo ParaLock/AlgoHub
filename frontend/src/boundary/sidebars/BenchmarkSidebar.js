@@ -5,7 +5,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import IconButton from '@mui/material/IconButton';
 import BenchmarkEntry from '../common/BenchmarkEntry';
 import { Resizable } from "re-resizable";
-
+import { useSelector, useDispatch } from 'react-redux'
 const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
     width: 25%;
@@ -40,8 +40,9 @@ export default function BenchmarkSidebar(props) {
     
     console.log(props)
 
-    var benchmarks = props.model.selectedItem["benchmark"] ?? [];
-
+    var benchmarks = useSelector(state => state.model.selectedItem["benchmark"] ?? []);
+    var currentUser = useSelector(state => state.viewModel.currentUser);
+    
     return (
 
         <BenchmarkSidebarWrapper open={props.open}>
@@ -56,7 +57,7 @@ export default function BenchmarkSidebar(props) {
 
             {benchmarks.map((item) => { 
 
-                    return <BenchmarkEntry enableRemove={props.model.currentUser} benchmark={item}/> 
+                    return <BenchmarkEntry enableRemove={currentUser} benchmark={item}/> 
                 })
             }
              

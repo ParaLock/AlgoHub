@@ -153,9 +153,10 @@ export default function ClassificationForm(props) {
                         <GeneralInfo>
                             <ListInput
 
-                                label="Parent Id"
+                                label="Parent Classification"
                                 name="id"
                                 value={values.id}
+                                sx={{width: "50%", marginRight: "50px" }}
                                 options={parentClassificationOptions}
                                 error={errors.id}
                                 onChange={handleInputChange}
@@ -166,7 +167,7 @@ export default function ClassificationForm(props) {
                                 name="name"
                                 value={values.name}
                                 error={errors.name}
-                                sx={{ width: "30%", marginRight: "100px" }}
+                                sx={{ width: "50%"}}
                                 onChange={handleInputChange}
                             />
 

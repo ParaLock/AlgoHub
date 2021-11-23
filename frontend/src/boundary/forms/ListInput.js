@@ -5,11 +5,11 @@ import { TextField } from '@material-ui/core';
 import Autocomplete from '@mui/material/Autocomplete';
 export default function ListInput(props) {
 
-    const { name, options, label, item, value, error = null, onChange, onChangeItem } = props;
+    const { sx = {}, name, options, label, item, value, error = null, onChange, onChangeItem } = props;
     return (
         <Autocomplete
         
-            sx={{ width: "30%" }}
+            sx={sx}
             disablePortal
             id="combo-box-demo"
             getOptionLabel={(item) => item.name}

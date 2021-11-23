@@ -67,9 +67,9 @@ export default function ProblemInstancePanel(props) {
 
         <Wrapper>
             <Typography variant="h6" align="center" component="div" gutterBottom>
-            Problem Instances
+                Problem Instances
             </Typography>
-            {currentUser && 
+            {currentUser &&
                 <ButtonWrapper>
                     <IconButton color="inherit" size="large" onClick={() => props.togglePanel("problem_instance_add_form")}>
                         <AddCircleOutlineIcon />
@@ -95,14 +95,14 @@ export default function ProblemInstancePanel(props) {
                             </tr>
                             <tr>
                                 <td>
-                                    <Button size="small"  variant="contained">DOWNLOAD</Button>
+                                    <Button size="small" variant="contained">DOWNLOAD</Button>
                                 </td>
                             </tr>
                         </table>
                         <br />
 
-                        {currentUser && 
-                        
+                        {currentUser &&
+
                             <ButtonWrapper>
                                 <IconButton color="inherit" size="small">
                                     <HighlightOffIcon />

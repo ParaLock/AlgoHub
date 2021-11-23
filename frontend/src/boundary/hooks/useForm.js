@@ -44,7 +44,6 @@ const useStyles = makeStyles(theme => ({
         '& .MuiFormControl-root': {
             width: '100%',
             height: "100%",
-            display: "flex",
             margin: theme.spacing(1)
         }
     }
@@ -58,7 +57,6 @@ export function Form(props) {
         <form style={
             {
                 width: "100%",
-                display: "flex",
                 height: "100%"
             
             }} className={classes.root} autoComplete="off" {...other}>

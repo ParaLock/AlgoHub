@@ -15,7 +15,7 @@ public class ProblemInstanceAddRequest {
     private String datasetFilename;
     private String datasetSize;
     private String problemType;
-    private String implementationId;
+    private String algorithmId;
     private String authorId;
 
     @Override

@@ -37,10 +37,10 @@ public class ProblemInstanceAddHandler implements RequestHandler<ProblemInstance
         final String datasetFilename = request.getDatasetFilename();
         final String datasetSize = request.getDatasetSize();
         final String problemType = request.getProblemType();
-        final String implementationId = request.getImplementationId();
+        final String algorithmId = request.getAlgorithmId();
         final String authorId = request.getAuthorId();
 
-        final String query = "INSERT INTO problem_instance (id, dataset_filename, dataset_size, problem_type, implementation_id, author_id) VALUES (?, ?, ?, ?, ?, ?)";
+        final String query = "INSERT INTO problem_instance (id, dataset_filename, dataset_size, problem_type, algorithm_id, author_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)
@@ -51,7 +51,7 @@ public class ProblemInstanceAddHandler implements RequestHandler<ProblemInstance
             preparedStatement.setString(2, datasetFilename);
             preparedStatement.setString(3, datasetSize);
             preparedStatement.setString(4, problemType);
-            preparedStatement.setString(5, implementationId);
+            preparedStatement.setString(5, algorithmId);
             preparedStatement.setString(6, authorId);
 
             final int rowsAffected = preparedStatement.executeUpdate();

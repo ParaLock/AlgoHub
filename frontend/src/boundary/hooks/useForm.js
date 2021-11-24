@@ -1,7 +1,7 @@
 //Credit: https://github.com/CodAffection/Material-UI-Form-Design-and-Validation/blob/master/src/components/useForm.js
 
 import React, { useState } from 'react'
-import { makeStyles } from "@material-ui/core";
+import TextField from '@mui/material/TextField';
 
 export function useForm(initialFValues, validateOnChange = false, validate) {
 
@@ -38,20 +38,8 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
     }
 }
 
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        '& .MuiFormControl-root': {
-            width: '100%',
-            height: "100%",
-            margin: theme.spacing(1)
-        }
-    }
-}))
-
 export function Form(props) {
 
-    const classes = useStyles();
     const { children, ...other } = props;
     return (
         <form style={
@@ -59,7 +47,7 @@ export function Form(props) {
                 width: "100%",
                 height: "100%"
             
-            }} className={classes.root} autoComplete="off" {...other}>
+            }} autoComplete="off" {...other}>
             {props.children}
         </form>
     )

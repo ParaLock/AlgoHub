@@ -76,7 +76,7 @@ export default class RequestService {
                 type: "error"
             }))
 
-            cb("error")
+            cb(err)
         })
 
     }

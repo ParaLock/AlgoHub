@@ -44,11 +44,10 @@ export default function AlgorithmPanel(props) {
         <Wrapper>
             
 
-
             <AlgorithmDescription>   
-                <Typography variant="h7" align="center" component="div" gutterBottom>
-                Description
-                </Typography>         
+            <Typography variant="h6" align="center" component="div" gutterBottom>
+                Algorithm
+            </Typography>
                 {!algorithm && <CircularProgress/>}{algorithm && algorithm.description}
             </AlgorithmDescription>
             

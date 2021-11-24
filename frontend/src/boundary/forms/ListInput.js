@@ -1,7 +1,7 @@
 //Credit: https://github.com/CodAffection/Material-UI-Form-Design-and-Validation/blob/master/src/components/controls/Input.js
 
 import React from 'react'
-import { TextField } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 export default function ListInput(props) {
 

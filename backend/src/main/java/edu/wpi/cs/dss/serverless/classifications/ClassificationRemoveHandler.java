@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class ClassificationRemoveHandler implements RequestHandler<GenericRemoveRequest, GenericResponse> {
+
     private LambdaLogger logger;
 
     @Override
@@ -27,7 +28,7 @@ public class ClassificationRemoveHandler implements RequestHandler<GenericRemove
         return response;
     }
 
-    private GenericResponse remove(GenericRemoveRequest request){
+    private GenericResponse remove(GenericRemoveRequest request) {
         final String id = request.getId();
         final String query = "DELETE FROM classification WHERE id=?";
 
@@ -42,7 +43,8 @@ public class ClassificationRemoveHandler implements RequestHandler<GenericRemove
             logger.log("Delete classification statement has affected " + rowsAffected + " rows!");
 
             return GenericResponse.builder()
-                    .statusCode(HttpStatus.SUCCESS.getValue()).build();
+                    .statusCode(HttpStatus.SUCCESS.getValue())
+                    .build();
 
         } catch (SQLException e) {
             e.printStackTrace();

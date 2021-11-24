@@ -13,7 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class AlgorithmRemoveHandler implements RequestHandler<GenericRemoveRequest,GenericResponse> {
+public class AlgorithmRemoveHandler implements RequestHandler<GenericRemoveRequest, GenericResponse> {
+
     private LambdaLogger logger;
 
     @Override
@@ -25,10 +26,9 @@ public class AlgorithmRemoveHandler implements RequestHandler<GenericRemoveReque
         logger.log("Sent a remove algorithm response to AWS Lambda:\n" + response);
 
         return response;
-
     }
 
-    private GenericResponse remove(GenericRemoveRequest request){
+    private GenericResponse remove(GenericRemoveRequest request) {
         final String id = request.getId();
         final String query = "DELETE FROM algorithm WHERE id=?";
 
@@ -43,7 +43,8 @@ public class AlgorithmRemoveHandler implements RequestHandler<GenericRemoveReque
             logger.log("Delete algorithm statement has affected " + rowsAffected + " rows!");
 
             return GenericResponse.builder()
-                    .statusCode(HttpStatus.SUCCESS.getValue()).build();
+                    .statusCode(HttpStatus.SUCCESS.getValue())
+                    .build();
 
         } catch (SQLException e) {
             e.printStackTrace();

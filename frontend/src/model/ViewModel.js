@@ -13,7 +13,8 @@ export const ViewModelSlice = createSlice({
     operationStatus: {},
     notificationQueue: [],
     loadingStatus: {},
-    headerTitle: "Welcome to AlgoHub"
+    headerTitle: "Welcome to AlgoHub",
+    removeRequest: null
   },
   reducers: {
     togglePanelVisibility: (state, action) => {
@@ -100,6 +101,10 @@ export const ViewModelSlice = createSlice({
     updateLoadingStatus: (state, action) => {
 
       state.loadingStatus[action.payload.name] = action.payload.state;
+    },
+    updateRemoveRequest :(state, action) => {
+
+      state.removeRequest = action.payload;
     }
   }
 })
@@ -116,6 +121,7 @@ export const {
                 toggleOntologyItem,
                 updateNotificationQueue,
                 updateNotificationStatus,
-                enqueueNotification
+                enqueueNotification,
+                updateRemoveRequest
 } = ViewModelSlice.actions
 export default ViewModelSlice.reducer

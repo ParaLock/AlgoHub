@@ -22,7 +22,7 @@ export default class Authcontroller {
 
                 var authToken = authData.signInUserSession.idToken.jwtToken
 
-                var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
+                var groups = authData.signInUserSession.idToken.payload["cognito:groups"] ?? []
                 var userId = authData.attributes.sub
 
                 store.dispatch(updateUser({

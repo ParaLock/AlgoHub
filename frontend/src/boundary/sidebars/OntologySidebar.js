@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import OntologyViewer from '../panels/OntologyViewer';
 import IconButton from '@mui/material/IconButton';
 
-import { styled as material_styled} from '@mui/material/styles';
+import { styled as material_styled } from '@mui/material/styles';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import MergeTypeIcon from '@mui/icons-material/MergeType';
 import StarsIcon from '@mui/icons-material/Stars';
@@ -22,7 +22,7 @@ import OntologyTreeViewer from '../panels/OntologyTreeViewer';
 import Switch from '@mui/material/Switch';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import { useSelector, useDispatch } from 'react-redux'
-import { enqueueNotification, updateNotificationStatus, updateLoadingStatus } from "../../model/ViewModel";
+import { enqueueNotification, updateNotificationStatus, updateLoadingStatus, updateRemoveRequest } from "../../model/ViewModel";
 
 const CustomSpeedDial = material_styled(SpeedDial)(({ theme }) => ({
     '& .MuiSpeedDial-actions': {
@@ -80,7 +80,7 @@ export default function OntologySidebar(props) {
 
     React.useEffect(() => {
 
-        if(!ontologyHierarchy) {
+        if (!ontologyHierarchy) {
 
             dispatch(enqueueNotification({
                 name: "loading_hierarchy",
@@ -89,7 +89,7 @@ export default function OntologySidebar(props) {
                 msg: "Loading Hierarchy...",
                 type: "info"
             }))
-        
+
             dispatch(updateLoadingStatus({
                 name: "loading_hierarchy",
                 state: true
@@ -109,96 +109,106 @@ export default function OntologySidebar(props) {
                 state: false
             }))
         }
-        
+
     }, [ontologyHierarchy]);
+
+    var onRemove = (item) => {
+
+        console.log(item)
+        dispatch(updateRemoveRequest(
+            {
+                msg: "Are you sure you want to remove " + item.typeName + "?",
+                item: item
+            }
+        ))
+    }
 
     return (
 
         <Resizable
-        enable={{ top:false, right:true, bottom:false, left:true, topRight:false, bottomRight:false, bottomLeft:false, topLeft:false }}
-        defaultSize={{
-            width:"20%",
-            height:"100%",
-        }}
+            enable={{ top: false, right: true, bottom: false, left: true, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+            defaultSize={{
+                width: "20%",
+                height: "100%",
+            }}
         >
-        <OntologySidebarWrapper open={props.open} scrollEnabled={!showTreeView}>
-            <ButtonWrapper>
-                <span>
-                    { currentUser &&
-                        <IconButton color="inherit" size="large" onClick={() => props.togglePanel("classification_merge_form", true)}>
-                            <MergeTypeIcon />
-                        </IconButton>
-                    }
-                    { currentUser &&
-                        <IconButton color="inherit" size="large" onClick={() => props.togglePanel("algorithm_reclassify_form", true)}>
-                            <DriveFileMoveIcon />
-                        </IconButton>
-                    }
-                    <IconButton color="inherit" size="large" onClick={() => props.togglePanel("algorithm_ranking_panel", true)}>
-                        <StarsIcon />
-                    </IconButton>
-                    
-                </span>
-            <span>
+            <OntologySidebarWrapper open={props.open} scrollEnabled={!showTreeView}>
+                {currentUser &&
+                    <span>
+                        <ButtonWrapper>
+                            <span>
+                                {currentUser &&
+                                    <IconButton color="inherit" size="large" onClick={() => props.togglePanel("classification_merge_form", true)}>
+                                        <MergeTypeIcon />
+                                    </IconButton>
+                                }
+                                {currentUser &&
+                                    <IconButton color="inherit" size="large" onClick={() => props.togglePanel("algorithm_reclassify_form", true)}>
+                                        <DriveFileMoveIcon />
+                                    </IconButton>
+                                }
 
-            { currentUser &&
-            
-                <CustomSpeedDial
-                    ariaLabel="SpeedDial playground example"
-                    direction="down"
-                    sx="sm"
-                    
-                    FabProps={{sx: {width: "40px", height: "10px", marginTop: "2px"}}}
-                    icon={<SpeedDialIcon />}
-                >
-                    <SpeedDialAction
-                        key={"action_1"}
-                        icon={<CategoryIcon/>}
-                        tooltipTitle={"Add Classification"}
-                        onClickCapture={() => props.togglePanel("classification_add_form", true)}
+                            </span>
+
+
+
+                            <CustomSpeedDial
+                                ariaLabel="SpeedDial playground example"
+                                direction="down"
+                                sx="sm"
+
+                                FabProps={{ sx: { width: "40px", height: "10px", marginTop: "2px" } }}
+                                icon={<SpeedDialIcon />}
+                            >
+                                <SpeedDialAction
+                                    key={"action_1"}
+                                    icon={<CategoryIcon />}
+                                    tooltipTitle={"Add Classification"}
+                                    onClickCapture={() => props.togglePanel("classification_add_form", true)}
+                                />
+                                <SpeedDialAction
+                                    key={"action_2"}
+                                    icon={<FileCopyIcon />}
+                                    tooltipTitle={"Add Algorithm"}
+                                    onClickCapture={() => props.togglePanel("algorithm_add_form", true)}
+                                />
+                                <SpeedDialAction
+                                    key={"action_3"}
+                                    icon={<PlayCircleOutlineIcon />}
+                                    tooltipTitle={"Add Implementation"}
+                                    onClickCapture={() => props.togglePanel("implementation_add_form", true)}
+                                />
+                            </CustomSpeedDial>
+
+
+
+                        </ButtonWrapper>                </span>
+
+                }
+                <SwitchContainer>
+
+                    Tree View
+                    <Switch
+                        onClick={() => setShowTreeView(!showTreeView)}
                     />
-                    <SpeedDialAction
-                        key={"action_2"}
-                        icon={<FileCopyIcon/>}
-                        tooltipTitle={"Add Algorithm"}
-                        onClickCapture={() => props.togglePanel("algorithm_add_form", true)}
+                </SwitchContainer>
+                {isOntologyLoading && <CircularProgress />}
+                {showTreeView &&
+
+                    <OntologyTreeViewer
+                        onSelect={(item) => { props.ontologyController.selectOntologyItem(item) }}
+                        enableRemove={currentUser}
+                        onRemove={onRemove}
                     />
-                    <SpeedDialAction
-                        key={"action_3"}
-                        icon={<PlayCircleOutlineIcon/>}
-                        tooltipTitle={"Add Implementation"}
-                        onClickCapture={() => props.togglePanel("implementation_add_form", true)}
+                }
+
+                {!showTreeView &&
+                    <OntologyViewer
+                        onSelect={(item) => { props.ontologyController.selectOntologyItem(item) }}
+                        enableRemove={currentUser}
+                        onRemove={onRemove}
                     />
-                </CustomSpeedDial>
-            
-            }
-
-            
-            </span>
-     
-            </ButtonWrapper>
-            <SwitchContainer>
-
-                Tree View
-                <Switch 
-                    onClick={() => setShowTreeView(!showTreeView)}
-                />
-            </SwitchContainer>
-            {isOntologyLoading && <CircularProgress />}
-            { showTreeView &&
-
-                <OntologyTreeViewer
-                    onSelect={(item)=> { props.ontologyController.selectOntologyItem(item)}} 
-                    enableRemove={currentUser}
-                />
-            }
-
-            { !showTreeView && 
-                <OntologyViewer 
-                    onSelect={(item)=> { props.ontologyController.selectOntologyItem(item)} } 
-                    enableRemove={currentUser}
-                />
-            }
-        </OntologySidebarWrapper></Resizable>
+                }
+            </OntologySidebarWrapper></Resizable>
     )
 }

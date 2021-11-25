@@ -23,7 +23,8 @@ import Typography from '@mui/material/Typography';
 import { Resizable } from "re-resizable";
 import { HeadphonesBatteryOutlined } from '@mui/icons-material';
 import { useSelector,useDispatch } from 'react-redux';
-import { setPanelVisibility } from "../../model/ViewModel";
+import { setPanelVisibility, updateRemoveRequest } from "../../model/ViewModel";
+import RemoveDialog from '../forms/RemoveDialog';
 
 const Wrapper = styled.div`
       
@@ -69,9 +70,10 @@ export default function MainPage(props) {
     var selectedItemType = useSelector(state => state.viewModel.selectedOntologyItemType)
     var openPanels = useSelector(state => state.viewModel.openPanels);
     const dispatch = useDispatch();
-
+    
     const [topPanelHeight, setTopPanelHeight] = useState(800);
 
+    
     var togglePanel = (name, state = undefined) => {
 
         if(state != undefined) {
@@ -83,7 +85,7 @@ export default function MainPage(props) {
                 }
             ))
         } else {
-            
+
             dispatch(setPanelVisibility(
                 {
                     name: name,
@@ -161,6 +163,7 @@ export default function MainPage(props) {
                 />
 
             </ContentWrapper>
+    
 
             <ClassificationForm
                 open={openPanels.includes("classification_add_form")}

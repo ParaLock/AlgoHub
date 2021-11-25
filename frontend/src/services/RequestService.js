@@ -10,13 +10,19 @@ export default class RequestService {
     constructor() {
 
         this.addRequestSuccessListeners = []
+        this.removeRequestSuccessListeners = []
+        
         this.getRequestListeners = []
     }
 
     registerAddRequestSuccessListener(cb) {
 
         this.addRequestSuccessListeners.push(cb)
+    }
 
+    registerRemoveRequestSuccessListener(cb) {
+
+        this.removeRequestSuccessListeners.push(cb)
     }
 
     executeAddRequest(cb, data, object, endpoint) {
@@ -106,5 +112,70 @@ export default class RequestService {
 
                 cb("error", null)
             })
+    }
+
+    executeRemoveRequest(cb, object, id) {
+
+        console.log("Executing remove request: ", id)
+
+        var model = store.getState().model;
+        var data = {};
+
+        data.authorId = model.currentUser.username;
+        data.id = id;
+
+        axios.post(Config.API_PATH + object + "s" + "/remove",
+            data,
+            {
+                headers: {
+                    'Authorization': (model.currentUser) ? (model.currentUser.token) : ""
+                }
+            }
+        ).then(res => {
+
+            console.log("RemoveRequest: ", res)
+
+            if (res.data.statusCode == "400" || res.data.statusCode == 400) {
+
+                store.dispatch(enqueueNotification({
+                    name: "add_request_status",
+                    widgetKey: "",
+                    status: "request_complete",
+                    msg: "Failed to remove " + object + "\n" + "error: " + res.data.error,
+                    type: "error"
+                }))
+
+                cb(res.data.error)
+
+            } else {
+
+                store.dispatch(enqueueNotification({
+                    name: "add_request_status",
+                    widgetKey: "",
+                    status: "request_complete",
+                    msg: "Removed " + object + " successfully!",
+                    type: "success"
+                }))
+
+                for (var i in this.addRequestSuccessListeners) {
+
+                    this.addRequestSuccessListeners[i](res)
+                }
+
+                cb("")
+            }
+
+        }).catch((err) => {
+
+            store.dispatch(enqueueNotification({
+                name: "add_request_status",
+                widgetKey: "",
+                status: "request_complete",
+                msg: "Failed to remove " + object + "\n",
+                type: "error"
+            }))
+
+            cb(err)
+        })
     }
 }

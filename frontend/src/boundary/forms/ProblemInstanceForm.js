@@ -202,9 +202,11 @@ export default function ProblemInstanceForm(props) {
 
         if (validate() && fileContents !="") {
 
-            setLoading(true)
-            setSubmitDisabled(true)
-            setRequestError("")
+            // setLoading(true)
+            // setSubmitDisabled(true)
+            // setRequestError("")
+
+            console.log(values, fileContents)
 
             var fileExt = filename.split('.').pop();
 

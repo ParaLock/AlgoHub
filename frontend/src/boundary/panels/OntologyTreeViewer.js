@@ -20,8 +20,8 @@ export default function OntologyTreeViewer(props) {
         interaction: { hover: true },
         manipulation: {
             initiallyActive: true,
-            deleteNode: (props.enableRemove) ? (node, cb) => {
-
+            deleteNode: (props.enableRemove) ? function(node, cb) {
+                
                 handleNodeDelete(node, cb)
             } : false,
             deleteEdge: false,
@@ -47,15 +47,16 @@ export default function OntologyTreeViewer(props) {
         height: "100%"
     };
 
-    const handleNodeDelete = (node, cb) => {
+    const handleNodeDelete = (items, cb) => {
 
-        console.log(props.selected)
-        // var deletedNode = network.body.nodes[nodes[0]];
-        // if(deletedNode.options.actualNode) {
-
-        //     console.log(deletedNode)
-        //     //props.onRemove(deletedNode.options.actualNode);
-        // }
+        var nodes = items.nodes;
+        if(nodes.length > 0) {
+            var clickedNode = network.body.nodes[nodes[0]].options.actualNode;
+            console.log("node to remove: ",clickedNode)
+            if(clickedNode) {
+                props.onRemove(clickedNode);
+            }
+        }
 
         cb([])
     }
@@ -105,15 +106,16 @@ export default function OntologyTreeViewer(props) {
             
         }
     }
+    const selected = useSelector(state => state.viewModel.selectedOntologyItem);
 
     var fitNetwork = () => {
 
         if(network) {
-            if(props.selected && props.selected.id) {
+            if(selected && selected.id) {
 
                 network.setSelection({
                     nodes: [
-                        props.selected.id
+                        selected.id
                     ]
                 })
             }
@@ -210,7 +212,7 @@ export default function OntologyTreeViewer(props) {
         },
         deleteNode: function(event) {
 
-            console.log(event)
+            
         }
     };
     return (

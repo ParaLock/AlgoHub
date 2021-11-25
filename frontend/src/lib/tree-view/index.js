@@ -95,7 +95,7 @@ export default class Tree extends React.PureComponent {
 
   render() {
     const {  visible, immediate } = this.state
-    const { enableRemove, expandedOntologyItems, item, children, content, type, style, canHide, springConfig } = this.props
+    const { onRemove, enableRemove, expandedOntologyItems, item, children, content, type, style, canHide, springConfig } = this.props
 
     var open = expandedOntologyItems[item.id];
     var selected = (this.props.selected) ? (this.props.selected.id == item.id) : false;
@@ -134,7 +134,10 @@ export default class Tree extends React.PureComponent {
           
         </ContentWrapper>
           
-        {enableRemove && <IconButton color="inherit" size="small">
+        {enableRemove && <IconButton 
+                onClick={() => onRemove(item)}
+                color="inherit" 
+                size="small">
               <HighlightOffIcon />
             </IconButton>}
         {!enableRemove && <Placeholder/>}

@@ -21,8 +21,9 @@ import OntologyController from './controllers/OntologyController';
 import RequestService from './services/RequestService';
 import AuthController from "./controllers/AuthController";
 import store from './model/ModelProxy';
-import { updateNotificationQueue, updateSelectedOntologyItem } from "./model/ViewModel";
+import { updateNotificationQueue, updateSelectedOntologyItem,updateRemoveRequest } from "./model/ViewModel";
 import { useSelector, useDispatch } from 'react-redux';
+import RemoveDialog from "./boundary/forms/RemoveDialog"
 
 Amplify.configure(awsconfig);
 
@@ -37,6 +38,7 @@ function App() {
 
   var authFormOpen = useSelector((state) => state.viewModel.openPanels.includes("auth_form"));
   var notificationQueue = useSelector((state) => state.viewModel.notificationQueue);
+  var removeRequest = useSelector(state => state.viewModel.removeRequest)
 
   requestService.registerAddRequestSuccessListener((res) => {
 
@@ -119,26 +121,35 @@ function App() {
 
   return (
     
-      <Router>
-        <Switch>
-          <Route path="/signin">
-            <SignInPage />
-          </Route>
-          <Route path="/accounts">
-            <AccountManagementPage />
-          </Route>
-          <Route path="/">
+    <>    
+        <RemoveDialog
+          open={removeRequest}
+          removeRequest={removeRequest}
+          onClose={() => dispatch(updateRemoveRequest(null))}
+          requestService={requestService}
+        />
 
-            {authFormOpen && <AmplifyAuthenticator />}
-            <MainPage
-              authController={authController}
-              ontologyController={ontologyController}
-              requestService={requestService}
-            >
-            </MainPage>
-          </Route>
-        </Switch>
-      </Router>
+        <Router>
+          <Switch>
+            <Route path="/signin">
+              <SignInPage />
+            </Route>
+            <Route path="/accounts">
+              <AccountManagementPage />
+            </Route>
+            <Route path="/">
+
+              {authFormOpen && <AmplifyAuthenticator />}
+              <MainPage
+                authController={authController}
+                ontologyController={ontologyController}
+                requestService={requestService}
+              >
+              </MainPage>
+            </Route>
+          </Switch>
+        </Router>
+      </>
 
 
   );

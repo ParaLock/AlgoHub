@@ -1,7 +1,7 @@
 import React, { useState, useReducer } from 'react';
 import Tree from '../../lib/tree-view/index';
 import { useSelector, useDispatch } from 'react-redux';
-import {selectOntologyItem, toggleOntologyItem} from "../../model/ViewModel";
+import {selectOntologyItem, toggleOntologyItem, updateRemoveRequest} from "../../model/ViewModel";
 import store from '../../model/ModelProxy';
 
 const treeStyles = {
@@ -32,7 +32,7 @@ function getOntology(ontologyData) {
 }
 
 
-function TreeWrapper({ toggleExpanded, enableRemove, expandedOntologyItems, onSelect, selected, treeData, parentId = 0, level = 0 }) {
+function TreeWrapper({ onRemove, toggleExpanded, enableRemove, expandedOntologyItems, onSelect, selected, treeData, parentId = 0, level = 0 }) {
 
     const items = treeData
     .filter((item) => item.parentId == parentId)
@@ -63,6 +63,7 @@ function TreeWrapper({ toggleExpanded, enableRemove, expandedOntologyItems, onSe
                                 onSelect={(i) => onSelect(i)}
                                 expandedOntologyItems={expandedOntologyItems} 
                                 toggleExpanded={toggleExpanded}
+                                onRemove={onRemove}
                             >
                                 <TreeWrapper 
                                                 enableRemove={enableRemove}
@@ -73,6 +74,7 @@ function TreeWrapper({ toggleExpanded, enableRemove, expandedOntologyItems, onSe
                                                 parentId={item.id} 
                                                 level={level + 1} 
                                                 toggleExpanded={toggleExpanded}
+                                                onRemove={onRemove}
                                 />
                         </Tree>
 
@@ -88,6 +90,7 @@ function TreeWrapper({ toggleExpanded, enableRemove, expandedOntologyItems, onSe
                                     key={key}
                                     expandedOntologyItems={expandedOntologyItems} 
                                     toggleExpanded={toggleExpanded}
+                                    onRemove={onRemove}
                             />
                 }
             })}
@@ -112,12 +115,13 @@ export default function OntologyViewer(props) {
     return (
         <div>
             <TreeWrapper 
-                        expandedOntologyItems={expandedOntologyItems} 
-                        onSelect={(item) => props.onSelect(item)} 
-                        enableRemove={props.enableRemove}
-                        selected={selectedOntologyItem} 
-                        treeData={getOntology(ontologyHierarchy)}
-                        toggleExpanded={expandItem}
+                expandedOntologyItems={expandedOntologyItems} 
+                onSelect={(item) => props.onSelect(item)} 
+                enableRemove={props.enableRemove}
+                selected={selectedOntologyItem} 
+                treeData={getOntology(ontologyHierarchy)}
+                toggleExpanded={expandItem}
+                onRemove={props.onRemove}
             />
         </div>
     );

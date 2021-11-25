@@ -42,6 +42,7 @@ export default class Authcontroller {
             name: "auth_form", 
             state: false
         }));
+        store.dispatch(updateUser(null));
     }
 
     login() {

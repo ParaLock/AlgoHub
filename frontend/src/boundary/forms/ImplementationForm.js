@@ -93,15 +93,7 @@ export default function ImplementationForm(props) {
     const [fileContents, setFileContents] = useState("")
     const [requestError, setRequestError] = useState("")
     const [submitDisabled, setSubmitDisabled] = useState(false);
-    const [implementationParentAlgorithmId, setImplementationParentAlgorithmId] = useState("");
-    const [implementationParentAlgorithmName, setImplementationParentAlgorithmName] = useState("");
     const [loading, setLoading] = React.useState(false);
-    const implementationLanguageName = useInput("");
-    const [implementationParentAlgorithm, setImplementationParentAlgorithm] = useState(null);
-
-    const [fileContentsError, setFileContentsError] = useState("")
-    const [implementationLanguageNameError, setImplementationLanguageNameError] = useState("")
-    const [implementationParentError, setImplementationParentError] = useState("")
     const [filename, setFilename] = useState("");
 
 
@@ -117,8 +109,6 @@ export default function ImplementationForm(props) {
 
         if ('parent' in fieldValues) {
 
-            //temp.language = fieldValues.language ? "" : "This field is required. ";
-            
             temp.parent = (fieldValues.parent) ? "" : "Implementation must have parent algorithm.";
         }
 
@@ -210,14 +200,14 @@ export default function ImplementationForm(props) {
 
                 },
                 {
-                    implementationCode: fileContents,
+                    sourceCodeBase64: fileContents,
                     name: values.language,
-                    parentId: values.parent.id,
-                    parentName: values.parent.name,
-                    fileExtension: fileExt
+                    algorithmId: values.parent.id,
+                    algorithmName: values.parent.name,
+                    extension: fileExt
                 }, 
                 "implementations", 
-                "/add"
+                "add"
             )
         }
     }

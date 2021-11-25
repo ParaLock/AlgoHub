@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -12,7 +12,16 @@ import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import { useSelector, useDispatch } from 'react-redux'
+import useInput from "../hooks/useInput";
+import {decode as base64_decode, encode as base64_encode} from 'base-64';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
+import SendIcon from '@mui/icons-material/Send';
+import { useSelector, useDispatch } from 'react-redux';
+import { Form, useForm } from '../hooks/useForm';
+import Input from "./Input";
+import ListInput from "./ListInput";
+import { isNumeric,powerOfTwo } from '../common/Common';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -60,15 +69,171 @@ const GeneralInfo = styled('div')(({ theme }) => ({
     
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: "50px"
+    marginBottom: "50px",
+    gap: "40px"
 
 }));
 
+const SourceCodeUpload = styled('div')(({ theme }) => ({
+    
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: "50px"
+
+}));
+
+const initialFValues = {
+    parent: null,
+    name: "",
+    datasetSize: ""
+}
+
 export default function ProblemInstanceForm(props) {
 
-    var parentAlgorithmOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm"));
- 
+    const [fileUploadMsg, setFileUploadMsg] = useState("") 
+    const [fileContents, setFileContents] = useState("")
+    const [requestError, setRequestError] = useState("")
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+    const [loading, setLoading] = React.useState(false);
+    const [filename, setFilename] = useState("");
+
+    const validate = (fieldValues = values) => {
+
+        let temp = { ...errors }
+
+        if ('name' in fieldValues) {
+
+            temp.name = fieldValues.name ? "" : "This field is required. ";
+            temp.name += !(fieldValues.name.length > 100) ? "" : "Problem instance name must be less then 100 characters.";
+        }
+
+        if ('parent' in fieldValues) {
+
+            temp.parent = (fieldValues.parent) ? "" : "Problem instance must have parent algorithm.";
+        }
+
+        if ('datasetSize' in fieldValues) {
+
+            temp.datasetSize = (fieldValues.datasetSize) ? "" : "Problem instance must have valid size.";
+            
+            var num = parseInt(fieldValues.datasetSize);
+            console.log(num === NaN)
+
+            if(isNaN(num)) {
+
+                temp.datasetSize = "Size must be a number";
+
+            } else {
+
+                if(!powerOfTwo(num)) {
+                    temp.datasetSize = "Size must be a power of two";
+                }
+            }
+        }
+
+        setErrors({
+            ...temp
+        })
+
+        if (fieldValues == values)
+            return Object.values(temp).every(x => x == "")
+    }
+
+    const {
+        values,
+        setValues,
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm
+    } = useForm(initialFValues, true, validate);
+
+
+    function cleanString(input) {
+        var output = "";
+        for (var i=0; i<input.length; i++) {
+            if (input.charCodeAt(i) <= 127) {
+                output += input.charAt(i);
+            }
+        }
+        return output;
+    }
+
+    var processFileUpload = async (e) => {
+        e.preventDefault()
+        const reader = new FileReader()
+        reader.onload = async (e) => { 
+          
+            var text = (e.target.result)
+
+            try {
+
+                text = cleanString(text)
+
+                setFileContents(base64_encode(text))
+                setSubmitDisabled(false)
+                setRequestError("")
+
+            } catch(e) {
+
+                setFileUploadMsg("Failed to upload file. " + e)
+                setSubmitDisabled(true)
+                setRequestError("Please upload a valid file")
+            }
+        };
+
+        if(e.target.files[0]) {
+
+            setFileUploadMsg(e.target.files[0].name)
+            setFilename(e.target.files[0].name)
+            reader.readAsText(e.target.files[0])
+        }
+    }
+
+    const handleSubmit = e => {
+
+        e.preventDefault()
+
+        if(fileContents == "") {
+            setFileUploadMsg("Please upload file.")
+            setSubmitDisabled(true)
+        }
+
+        if (validate() && fileContents !="") {
+
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
+
+            var fileExt = filename.split('.').pop();
+
+            // props.requestService.executeAddRequest(
+            //     (err) => {
+            //         setRequestError(err)
+            //         setLoading(false)
+
+            //         if (err.length == 0) {
+
+            //             props.onClose()
+            //         }
+
+            //     },
+            //     {
+            //         // sourceCodeBase64: fileContents,
+            //         // name: values.language,
+            //         // algorithmId: values.parent.id,
+            //         // algorithmName: values.parent.name,
+            //         // extension: fileExt
+            //     }, 
+            //     "problem_instances", 
+            //     "add"
+            // )
+        }
+    }
+
+    var algorithmOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm"));
+
     return (
         <div>
             <BootstrapDialog
@@ -83,29 +248,66 @@ export default function ProblemInstanceForm(props) {
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <GeneralInfo>
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={parentAlgorithmOptions}
-                        renderInput={(params) => <TextField {...params} 
-                        label="Parent Algorithm Name" />}
+ 
+                        <ListInput
+
+                            label="Parent Algorithm"
+                            name="parent"
+                            value={values.parent}
+                            sx={{width: "50%", marginRight: "50px" }}
+                            options={algorithmOptions}
+                            error={errors.parent}
+                            onChange={handleInputChange}
+
                         />
-                        <TextField label="Problem Instance Name"  
-                            sx={{width: "30%"}}
+                        <Input
+                            label="name"
+                            name="name"
+                            value={values.name}
+                            error={errors.name}
+                            sx={{ width: "50%", marginRight: "50px"}}
+                            onChange={handleInputChange}
                         />
-                        <TextField label="Dataset Size"  
-                            sx={{width: "30%"}}
+                        <Input
+                            label="dataset Size"
+                            name="datasetSize"
+                            value={values.datasetSize}
+                            error={errors.datasetSize}
+                            sx={{ width: "50%"}}
+                            onChange={handleInputChange}
                         />
                     </GeneralInfo>
 
+                    <SourceCodeUpload>
+                        <label htmlFor="dataset_upload">
+                            <input
+                                style={{ display: 'none' }}
+                                id="dataset_upload"
+                                name="dataset"
+                                type="file"
+                                onChange={(e) => processFileUpload(e)}
+                                
+                            />
+                            <Button color="primary" variant="contained" component="span">
+                                Upload Dataset
+                            </Button>
+                            {fileUploadMsg}
+                        </label>
+                    </SourceCodeUpload>
 
                 </DialogContent>
+                <font color="red">{ requestError.length > 0 && requestError}</font>
                 <DialogActions>
-                    <Button autoFocus onClick={() => props.onClose()}>
+
+                    <LoadingButton
+                        onClick={handleSubmit}
+                        loading={loading}
+                        disabled={submitDisabled}
+                        loadingPosition="center"
+                        variant="contained"
+                    >
                         Create
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </BootstrapDialog>
         </div>

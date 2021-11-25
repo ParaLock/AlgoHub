@@ -83,7 +83,7 @@ export default function MainPage(props) {
                 }
             ))
         } else {
-            console.log("test", openPanels);
+            
             dispatch(setPanelVisibility(
                 {
                     name: name,
@@ -111,7 +111,6 @@ export default function MainPage(props) {
                 />
                 <InnerContentWrapper>
                     <PanelTitle>
-
                         <Typography variant="h6" align="center" component="div" gutterBottom>
                             {title}
                         </Typography>

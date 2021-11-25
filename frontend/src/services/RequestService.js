@@ -21,6 +21,8 @@ export default class RequestService {
 
     executeAddRequest(cb, data, object, endpoint) {
 
+        console.log("Executing add request: ", data)
+
         var model = store.getState().model;
 
         data.authorId = model.currentUser.username;
@@ -82,6 +84,7 @@ export default class RequestService {
     }
 
     executeGetRequest(cb, url) {
+
         var model = store.getState().model;
         axios.get(Config.API_PATH + url, {
             headers: {

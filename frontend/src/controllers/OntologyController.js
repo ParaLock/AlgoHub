@@ -13,6 +13,8 @@ import {
     updateOntology
 } from "../model/Model";
 
+import history from "../boundary/common/History"
+
 export default class OntologyController {
 
     constructor(requestService) {
@@ -20,7 +22,36 @@ export default class OntologyController {
         this.requestService = requestService;
     }
 
+    getInitiallySelected() {
+
+        var model = store.getState().model;
+        
+        if(!model.ontologyHierarchy)
+            return null;
+        
+        var currentUrlParams = new URLSearchParams(window.location.search);
+        var id = currentUrlParams.get('selected');
+        var model = store.getState().model;
+        var item = null;
+        var candidates = model.ontologyHierarchy.filter((val) => val.id == id);
+
+        if(candidates.length > 0) {
+            item = candidates[0];
+        }
+
+        return item;
+    }
+
+    setInitiallySelected(id) {
+
+        let currentUrlParams = new URLSearchParams(window.location.search);
+        currentUrlParams.set('selected', id);
+        history.push(window.location.pathname + "?" + currentUrlParams.toString());
+    }
+
     selectOntologyItem(item, excludedEndpoints = ["classifications/"]) {
+
+        this.setInitiallySelected(item.id)
 
         var model = store.getState().model;
         var viewModel = store.getState().viewModel;

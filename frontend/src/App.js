@@ -21,7 +21,7 @@ import OntologyController from './controllers/OntologyController';
 import RequestService from './services/RequestService';
 import AuthController from "./controllers/AuthController";
 import store from './model/ModelProxy';
-import { updateNotificationQueue } from "./model/ViewModel";
+import { updateNotificationQueue, updateSelectedOntologyItem } from "./model/ViewModel";
 import { useSelector, useDispatch } from 'react-redux';
 
 Amplify.configure(awsconfig);
@@ -107,7 +107,13 @@ function App() {
 
   React.useEffect(() => {
 
-    ontologyController.updateOntology();
+    ontologyController.updateOntology(() => {
+      var initiallySelected = ontologyController.getInitiallySelected()
+
+      if(initiallySelected) {
+        ontologyController.selectOntologyItem(initiallySelected);
+      }
+    });
 
   }, []);
 

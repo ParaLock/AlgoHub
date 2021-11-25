@@ -13,7 +13,7 @@ export default function Input(props) {
             multiline={multiline}
             rows={rows}
             value={value}
-            sx={sx}
+            sx={{...sx, marginBottom: "10px"}}
             onChange={(e) => {
 
                 const {name, value} = e.target;

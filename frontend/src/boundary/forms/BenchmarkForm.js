@@ -152,26 +152,35 @@ export default function BenchmarkForm(props) {
 
             console.log(values)
 
+            props.requestService.executePostRequest(
+                (err) => {
+                    setRequestError(err)
+                    setLoading(false)
+                    setSubmitDisabled(false)
 
+                    if (err.length == 0) {
 
-            // props.requestService.executeAddRequest(
-            //     (err) => {
-            //         setRequestError(err)
-            //         setLoading(false)
-            //         setSubmitDisabled(false)
+                        props.onClose()
+                    }
 
-            //         if (err.length == 0) {
-
-            //             props.onClose()
-            //         }
-
-            //     },
-            //     {
-            //         parentId: (values.id) ? values.id.id : null,
-            //         name: values.name
-            //     },
-            //     "classifications",
-            //     "add");
+                },
+                {
+                    implementationId: (values.parentImplementation) ? values.parentImplementation.id : null,
+                    problemInstanceId: (values.parentProblemInstance) ? values.parentProblemInstance.id : null,
+                    memory: values.memory,
+                    cpuName: values.cpuName,
+                    cpuThreads: values.cpuThreads,
+                    cpuCores: values.cpuCores,
+                    cpuL1Cache: values.l1Cache,
+                    cpuL2Cache: values.l2Cache,
+                    cpuL3Cache: values.l3Cache,
+                    executiontime: values.execTime,
+                    memoryUsage: values.memUsage
+                },
+                "benchmarks/add",
+                "Failed to create benchmark.",
+                "Created benchmark successfully!"
+                );
         }
     }
 

@@ -112,7 +112,7 @@ export default function ClassificationForm(props) {
             setSubmitDisabled(true)
             setRequestError("")
 
-            props.requestService.executeAddRequest(
+            props.requestService.executePostRequest(
                 (err) => {
                     setRequestError(err)
                     setLoading(false)
@@ -128,8 +128,10 @@ export default function ClassificationForm(props) {
                     parentId: (values.id) ? values.id.id : null,
                     name: values.name
                 },
-                "classifications",
-                "add");
+                "implementations/add",
+                "Failed to create implementation.",
+                "Created implementation successfully!"
+                );
         }
     }
 

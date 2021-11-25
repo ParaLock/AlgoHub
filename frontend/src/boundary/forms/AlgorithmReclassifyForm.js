@@ -116,6 +116,28 @@ export default function AlgorithmReclassifyForm(props) {
             setSubmitDisabled(true)
             setRequestError("")
 
+
+            props.requestService.executePostRequest(
+                (err) => {
+                    setRequestError(err)
+                    setLoading(false)
+                    setSubmitDisabled(false)
+
+                    if (err.length == 0) {
+
+                        props.onClose()
+                    }
+
+                },
+                {
+                    algorithmId: (values.algorithm) ? values.algorithm.id : null,
+                    newClassification: (values.parentClassification) ? values.parentClassification.id : null
+                },
+                "algorithms/reclassify",
+                "Failed to reclassify algorithm.",
+                "Reclassified algorithm successfully!"
+                );
+
             console.log(values)
         }
     }

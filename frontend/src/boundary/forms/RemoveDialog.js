@@ -10,7 +10,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 export default function RemoveDialog(props) {
 
   const [loading, setLoading] = React.useState(false);
-
+  const [requestError, setRequestError] = React.useState("");
   const handleClose = () => {
     props.onClose();
   };
@@ -19,16 +19,25 @@ export default function RemoveDialog(props) {
 
     setLoading(true)
 
-    console.log(props.removeRequest);
+    props.requestService.executePostRequest(
+      (err) => {
+          console.log(err)
+          setLoading(false)
 
-    props.requestService.executeRemoveRequest((err, res) => {
+          if (err.length == 0) {
 
-  
-      setLoading(false)
-      handleClose();
-      
+              props.onClose();
+              handleClose();
+          }
 
-    }, props.removeRequest.item.typeName, props.removeRequest.item.id) 
+      },
+      {
+          id: props.removeRequest.item.id,
+      },
+      props.removeRequest.item.typeName + "s" + "/remove",
+      "Failed to remove " + props.removeRequest.item.typeName,
+      "Removed " + props.removeRequest.item.typeName + " successfully."
+  );
     
   }
 

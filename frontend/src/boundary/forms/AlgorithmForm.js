@@ -132,7 +132,7 @@ export default function AlgorithmForm(props) {
             setSubmitDisabled(true)
             setRequestError("")
 
-            props.requestService.executeAddRequest(
+            props.requestService.executePostRequest(
                 (err) => {
                     setRequestError(err)
                     setLoading(false)
@@ -149,8 +149,9 @@ export default function AlgorithmForm(props) {
                     name: values.name,
                     description: values.description
                 },
-                "algorithms",
-                "add");
+                "algorithms/add",
+                "Failed to create algorithm.",
+                "Created algorithm successfully!");
         }
     }
 

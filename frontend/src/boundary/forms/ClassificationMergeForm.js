@@ -17,7 +17,7 @@ import { Form, useForm } from '../hooks/useForm';
 import Input from "./Input";
 import ListInput from "./ListInput";
 import LoadingButton from '@mui/lab/LoadingButton';
-import { isNumeric,powerOfTwo,validateStr, validateNum } from '../common/Common';
+import { isNumeric, powerOfTwo, validateStr, validateNum } from '../common/Common';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -26,7 +26,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogActions-root': {
         padding: theme.spacing(1),
     },
-    "& .MuiPaper-root" : {
+    "& .MuiPaper-root": {
         height: "fit-content"
     }
 }));
@@ -59,12 +59,12 @@ const BootstrapDialogTitle = (props) => {
 
 
 const FieldWrapper = styled('div')(({ theme }) => ({
-    
+
     marginBottom: '50px'
 }));
 
 const GeneralInfo = styled('div')(({ theme }) => ({
-    
+
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -82,20 +82,64 @@ export default function ClassificationMergeForm(props) {
     const [loading, setLoading] = React.useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [requestError, setRequestError] = useState("");
-    
+
     var classificationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "classification"));
 
     const handleSubmit = e => {
         e.preventDefault()
         if (validate()) {
 
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
+
             console.log(values)
 
-            if(values.classificationA.id == values.classificationB.id) {
-                
-                setRequestError("Classifications cannot be the same.")
-            }
-            
+            props.requestService.executePostRequest(
+                (err) => {
+
+                    setRequestError(err)
+
+                    if (err.length == 0) {
+
+                        props.onClose();
+                        props.requestService.executePostRequest(
+                            (err) => {
+
+                                setRequestError(err)
+                                setLoading(false)
+                                setSubmitDisabled(false)
+
+                                if (err.length == 0) {
+
+                                    props.onClose();
+                                }
+
+                            },
+                            {
+                                id: values.classificationA.id,
+                            },
+                            "classifications/remove",
+                            "Failed to merge classifications.",
+                            "Merged classifications successfully!"
+                        );
+                    } else {
+
+                        setRequestError(err)
+                        setLoading(false)
+                        setSubmitDisabled(false)
+                    }
+
+                },
+                {
+                    classificationA: values.classificationA.id,
+                    classificationB: values.classificationB.id
+
+                },
+                "classifications/merge",
+                "Failed to merge classifications.",
+                ""
+            );
         }
     }
 
@@ -104,8 +148,8 @@ export default function ClassificationMergeForm(props) {
 
         let temp = { ...errors }
 
-        validateStr(fieldValues,temp, "classificationA");
-        validateStr(fieldValues,temp, "classificationB");
+        validateStr(fieldValues, temp, "classificationA");
+        validateStr(fieldValues, temp, "classificationB");
 
         setRequestError("")
 
@@ -117,7 +161,7 @@ export default function ClassificationMergeForm(props) {
             return Object.values(temp).every(x => x == "")
     }
 
-    
+
     const {
         values,
         setValues,
@@ -138,7 +182,7 @@ export default function ClassificationMergeForm(props) {
                 fullWidth="true"
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => props.onClose()}>
-                   Classification Merge Form
+                    Classification Merge Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
 
@@ -149,7 +193,7 @@ export default function ClassificationMergeForm(props) {
                             label="Classification A"
                             name="classificationA"
                             value={values.classificationA}
-                            sx={{width: "50%", marginRight: "10px",marginLeft: "10px" }}
+                            sx={{ width: "50%", marginRight: "10px", marginLeft: "10px" }}
                             options={classificationOptions}
                             error={errors.classificationA}
                             onChange={handleInputChange}
@@ -161,7 +205,7 @@ export default function ClassificationMergeForm(props) {
                             label="Classification B"
                             name="classificationB"
                             value={values.classificationB}
-                            sx={{width: "50%", marginRight: "50px" ,marginLeft: "10px"}}
+                            sx={{ width: "50%", marginRight: "50px", marginLeft: "10px" }}
                             options={classificationOptions}
                             error={errors.classificationB}
                             onChange={handleInputChange}

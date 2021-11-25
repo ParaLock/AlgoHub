@@ -25,15 +25,15 @@ export default class RequestService {
         this.removeRequestSuccessListeners.push(cb)
     }
 
-    executeAddRequest(cb, data, object, endpoint) {
+    executePostRequest(cb, data, endpoint, errMsg, successMsg) {
 
-        console.log("Executing add request: ", data)
+        console.log("Executing post request: ", data)
 
         var model = store.getState().model;
 
         data.authorId = model.currentUser.username;
 
-        axios.post(Config.API_PATH + object + "/" + endpoint,
+        axios.post(Config.API_PATH + endpoint,
             data,
             {
                 headers: {
@@ -46,25 +46,32 @@ export default class RequestService {
 
             if (res.data.statusCode == "400" || res.data.statusCode == 400) {
 
-                store.dispatch(enqueueNotification({
-                    name: "add_request_status",
-                    widgetKey: "",
-                    status: "request_complete",
-                    msg: "Failed to create " + object + "\n" + "error: " + res.data.error,
-                    type: "error"
-                }))
+                if(errMsg.length > 0) {
+
+                    store.dispatch(enqueueNotification({
+                        name: "add_request_status",
+                        widgetKey: "",
+                        status: "request_complete",
+                        msg: errMsg,
+                        type: "error"
+                    }))
+                }
+
 
                 cb(res.data.error)
 
             } else {
 
-                store.dispatch(enqueueNotification({
-                    name: "add_request_status",
-                    widgetKey: "",
-                    status: "request_complete",
-                    msg: "Created " + object + " successfully!",
-                    type: "success"
-                }))
+                if(successMsg.length > 0) {
+
+                    store.dispatch(enqueueNotification({
+                        name: "add_request_status",
+                        widgetKey: "",
+                        status: "request_complete",
+                        msg: successMsg,
+                        type: "success"
+                    }))
+                }
 
                 for (var i in this.addRequestSuccessListeners) {
 
@@ -76,13 +83,16 @@ export default class RequestService {
 
         }).catch((err) => {
 
-            store.dispatch(enqueueNotification({
-                name: "add_request_status",
-                widgetKey: "",
-                status: "request_complete",
-                msg: "Failed to create " + object + "\n",
-                type: "error"
-            }))
+            if(errMsg.length > 0) {
+
+                store.dispatch(enqueueNotification({
+                    name: "add_request_status",
+                    widgetKey: "",
+                    status: "request_complete",
+                    msg: errMsg,
+                    type: "error"
+                }))
+            }
 
             cb(err)
         })
@@ -112,70 +122,5 @@ export default class RequestService {
 
                 cb("error", null)
             })
-    }
-
-    executeRemoveRequest(cb, object, id) {
-
-        console.log("Executing remove request: ", id)
-
-        var model = store.getState().model;
-        var data = {};
-
-        data.authorId = model.currentUser.username;
-        data.id = id;
-
-        axios.post(Config.API_PATH + object + "s" + "/remove",
-            data,
-            {
-                headers: {
-                    'Authorization': (model.currentUser) ? (model.currentUser.token) : ""
-                }
-            }
-        ).then(res => {
-
-            console.log("RemoveRequest: ", res)
-
-            if (res.data.statusCode == "400" || res.data.statusCode == 400) {
-
-                store.dispatch(enqueueNotification({
-                    name: "add_request_status",
-                    widgetKey: "",
-                    status: "request_complete",
-                    msg: "Failed to remove " + object + "\n" + "error: " + res.data.error,
-                    type: "error"
-                }))
-
-                cb(res.data.error)
-
-            } else {
-
-                store.dispatch(enqueueNotification({
-                    name: "add_request_status",
-                    widgetKey: "",
-                    status: "request_complete",
-                    msg: "Removed " + object + " successfully!",
-                    type: "success"
-                }))
-
-                for (var i in this.addRequestSuccessListeners) {
-
-                    this.addRequestSuccessListeners[i](res)
-                }
-
-                cb("")
-            }
-
-        }).catch((err) => {
-
-            store.dispatch(enqueueNotification({
-                name: "add_request_status",
-                widgetKey: "",
-                status: "request_complete",
-                msg: "Failed to remove " + object + "\n",
-                type: "error"
-            }))
-
-            cb(err)
-        })
     }
 }

@@ -202,35 +202,36 @@ export default function ProblemInstanceForm(props) {
 
         if (validate() && fileContents !="") {
 
-            // setLoading(true)
-            // setSubmitDisabled(true)
-            // setRequestError("")
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
 
             console.log(values, fileContents)
 
             var fileExt = filename.split('.').pop();
 
-            // props.requestService.executeAddRequest(
-            //     (err) => {
-            //         setRequestError(err)
-            //         setLoading(false)
+            props.requestService.executePostRequest(
+                (err) => {
+                    setRequestError(err)
+                    setLoading(false)
+                    setSubmitDisabled(false)
 
-            //         if (err.length == 0) {
+                    if (err.length == 0) {
 
-            //             props.onClose()
-            //         }
+                        props.onClose()
+                    }
 
-            //     },
-            //     {
-            //         // sourceCodeBase64: fileContents,
-            //         // name: values.language,
-            //         // algorithmId: values.parent.id,
-            //         // algorithmName: values.parent.name,
-            //         // extension: fileExt
-            //     }, 
-            //     "problem_instances", 
-            //     "add"
-            // )
+                },
+                {
+                    sourceCodeBase64: fileContents,
+                    problemType: values.name,
+                    algorithmId: values.parent.id,
+                    datasetSize: values.datasetSize
+                }, 
+                "problem_instances/add", 
+                "Failed to create problem instance.",
+                "Created problem instance successfully!"
+            )
         }
     }
 

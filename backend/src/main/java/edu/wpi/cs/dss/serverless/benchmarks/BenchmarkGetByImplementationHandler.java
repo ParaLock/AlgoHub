@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BenchmarkGetByImplementation implements RequestHandler<BenchmarkGetByImplementationRequest, GenericResponse> {
+public class BenchmarkGetByImplementationHandler implements RequestHandler<BenchmarkGetByImplementationRequest, GenericResponse> {
 
     private LambdaLogger logger;
 

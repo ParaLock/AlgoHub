@@ -49,9 +49,10 @@ public class BenchmarkGetByImplementation implements RequestHandler<BenchmarkGet
 
             preparedStatement.setString(1, implementationId);
 
+            ArrayList<Benchmark> benchmarks = new ArrayList<Benchmark>();
+
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
 
-                ArrayList<Benchmark> benchmarks = new ArrayList<Benchmark>();
 
                 while (resultSet.next()) {
 

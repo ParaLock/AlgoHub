@@ -83,8 +83,8 @@ public class BenchmarkGetByImplementationHandler implements RequestHandler<Bench
                             cpuL2Cache,
                             cpuL3Cache,
                             executionTime,
-                            memoryUsage,
                             executionDate.toString(),
+                            memoryUsage,
                             authorId
                     ));
 

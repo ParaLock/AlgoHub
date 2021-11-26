@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class Benchmark {
     private String id;
     private String implementationId;
@@ -22,37 +23,4 @@ public class Benchmark {
     private String executionDate;
     private int memoryUsage;
     private String authorId;
-
-    public Benchmark(
-                        String id,
-                        String implementationId,
-                        String problemInstanceId,
-                        int memory,
-                        String cpuName,
-                        int cpuThreads,
-                        int cpuCores,
-                        int cpuL1Cache,
-                        int cpuL2Cache,
-                        int cpuL3Cache,
-                        int executionTime,
-                        int memoryUsage,
-                        String executionDate,
-                        String authorId
-                    )
-    {
-        this.id = id;
-        this.implementationId = implementationId;
-        this.problemInstanceId = problemInstanceId;
-        this.memory = memory;
-        this.cpuName = cpuName;
-        this.cpuThreads = cpuThreads;
-        this.cpuCores = cpuCores;
-        this.cpuL1Cache = cpuL1Cache;
-        this.cpuL2Cache = cpuL2Cache;
-        this.cpuL3Cache = cpuL3Cache;
-        this.executiontime = executionTime;
-        this.memoryUsage = memoryUsage;
-        this.authorId = authorId;
-        this.executionDate = executionDate;
-    }
 }

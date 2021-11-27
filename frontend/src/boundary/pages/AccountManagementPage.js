@@ -13,48 +13,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import BasicHeader from '../BasicHeader';
 import GenericListItem from '../common/GenericListItem';
 import { enqueueNotification, updateNotificationStatus, updateLoadingStatus, updateRemoveRequest } from "../../model/ViewModel";
-
-var allUsers = [
-    "John smith",
-    "Jane",
-    "Jen",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-    "John smith",
-
-    "John smith",
-    "John smith"
-
-]
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Wrapper = styled.div`
       
@@ -110,6 +69,7 @@ export default function AccountManagementPage(props) {
     const currentUser = useSelector(state => state.model.currentUser);
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
+    const [loadingUsers, setLoadingUsers] = useState(false);
     const [userActivity, setUserActivity] = useState({
         "classifications": {
             title: "Classifications",
@@ -187,7 +147,21 @@ export default function AccountManagementPage(props) {
 
         if(currentUser && currentUser.groups.includes("admins")) {
 
-            setUsers(allUsers);
+            
+            setLoadingUsers(true)
+
+            props.requestService.executeGetRequest((err, res) => {
+
+                console.log(err)
+                console.log(res)
+                
+                if(err.length == 0) {
+
+                    setLoadingUsers(false)
+                    setUsers(res.users);
+
+                }
+            }, "users/"); 
         }
 
         if(currentUser && !currentUser.groups.includes("admins")) {
@@ -195,6 +169,7 @@ export default function AccountManagementPage(props) {
             setUsers([currentUser.username]);
             setSelectedUser(currentUser.username)
         }
+
 
     }, []);
 
@@ -204,6 +179,7 @@ export default function AccountManagementPage(props) {
             <BasicHeader title="Account Management" />
             <ContentWrapper>
                 <UserList 
+                    isLoading={loadingUsers}
                     users={users} 
                     onSelected={(item) => selectUser(item)} 
                     onRemove={removeUser}

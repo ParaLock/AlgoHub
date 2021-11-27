@@ -20,11 +20,6 @@ export default class RequestService {
         this.addRequestSuccessListeners.push(cb)
     }
 
-    registerRemoveRequestSuccessListener(cb) {
-
-        this.removeRequestSuccessListeners.push(cb)
-    }
-
     executePostRequest(cb, data, endpoint, errMsg, successMsg) {
 
         console.log("Executing post request: ", data)

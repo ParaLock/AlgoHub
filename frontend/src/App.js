@@ -135,7 +135,9 @@ function App() {
               <SignInPage />
             </Route>
             <Route path="/accounts">
-              <AccountManagementPage />
+              <AccountManagementPage 
+              requestService={requestService}
+               />
             </Route>
             <Route path="/">
 

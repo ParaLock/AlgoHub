@@ -128,10 +128,10 @@ export default function ClassificationForm(props) {
                     parentId: (values.id) ? values.id.id : null,
                     name: values.name
                 },
-                "implementations/add",
+                "classifications/add",
                 "Failed to create implementation.",
                 "Created implementation successfully!"
-                );
+            );
         }
     }
 

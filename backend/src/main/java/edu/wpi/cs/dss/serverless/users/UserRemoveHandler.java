@@ -5,7 +5,6 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.users.http.UserGetAllRequest;
 import edu.wpi.cs.dss.serverless.users.http.UserGetAllResponse;
 import edu.wpi.cs.dss.serverless.users.http.UserRemoveRequest;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
@@ -15,46 +14,38 @@ import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
-import java.util.ArrayList;
-
-public class UserGetAllHandler implements RequestHandler<UserGetAllRequest, GenericResponse> {
+public class UserRemoveHandler implements RequestHandler<UserRemoveRequest, GenericResponse> {
 
     private LambdaLogger logger;
 
     @Override
-    public GenericResponse handleRequest(UserGetAllRequest request, Context context) {
+    public GenericResponse handleRequest(UserRemoveRequest request, Context context) {
         logger = context.getLogger();
-        logger.log("Received an list users request from AWS Lambda:\n" + request);
+        logger.log("Received an delete user request from AWS Lambda:\n" + request);
 
         // save problem instance to the database
-        final GenericResponse response = listUsers(request);
-        logger.log("Sent list users response to AWS Lambda:\n" + response);
+        final GenericResponse response = deleteUser(request);
+        logger.log("Sent an delete user response to AWS Lambda:\n" + response);
 
         return response;
     }
 
-    private GenericResponse listUsers(UserGetAllRequest request) {
+    private GenericResponse deleteUser(UserRemoveRequest request) {
 
+        final String username = request.getAuthorId();
         AWSCognitoIdentityProvider provider = AWSCognitoIdentityProviderClientBuilder.defaultClient();
 
         try {
-
             String poolId = System.getenv("USER_POOL_ID");
-            ListUsersRequest listRequest = new ListUsersRequest();
-            listRequest.setUserPoolId(poolId);
+            AdminDeleteUserRequest req = new AdminDeleteUserRequest();
+            req.setUsername(username);
+            req.setUserPoolId(poolId);
 
-            ArrayList<String> users = new ArrayList<String>();
+            provider.adminDeleteUser(req);
 
-            ListUsersResult response = provider.listUsers(listRequest);
-            response.getUsers().forEach(user -> {
-                        users.add(user.getUsername());
-                    }
-            );
-
-            return UserGetAllResponse.builder()
+            return GenericResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())
                     .error("")
-                    .users(users)
                     .build();
 
         } catch (Exception e){
@@ -62,7 +53,8 @@ public class UserGetAllHandler implements RequestHandler<UserGetAllRequest, Gene
         }
         return GenericResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                .error("Failed to retrieve user.")
+                .error("Failed to delete user.")
                 .build();
+
     }
 }

@@ -44,6 +44,7 @@ public class ClassificationRemoveHandler implements RequestHandler<GenericRemove
 
             return GenericResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())
+                    .error("")
                     .build();
 
         } catch (SQLException e) {

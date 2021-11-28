@@ -12,10 +12,8 @@ import lombok.SneakyThrows;
 @NoArgsConstructor
 public class ClassificationMergeRequest {
 
-    private String sourceId; // tlc 1
-    private String targetId; // tlc 2
-    // 1 option result of tlc1 to tlc2 is tlc1 becomes a child of tlc2
-    // 2 option result of tlc1 to tlc2 is children of tlc1 become children of tlc2, and tlc1 is empty
+    private String sourceId;
+    private String targetId;
 
     @Override
     @SneakyThrows

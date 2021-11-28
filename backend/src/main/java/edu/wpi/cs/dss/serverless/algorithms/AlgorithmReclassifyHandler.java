@@ -5,7 +5,6 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetResponse;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmReclassifyRequest;
-import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmReclassifyResponse;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
@@ -13,7 +12,6 @@ import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AlgorithmReclassifyHandler implements RequestHandler<AlgorithmReclassifyRequest, GenericResponse> {
@@ -48,28 +46,12 @@ public class AlgorithmReclassifyHandler implements RequestHandler<AlgorithmRecla
             preparedStatement.setString(1, newClassificationId);
             preparedStatement.setString(2, oldClassificationId);
 
-            try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    final String id = resultSet.getString(1);
-                    final String name = resultSet.getString(2);
-                    final String description = resultSet.getString(3);
-                    final String classificationId = resultSet.getString(4);
-                    final String authorId = resultSet.getString(5);
-
-                    return AlgorithmReclassifyResponse.builder()
-                            .statusCode(HttpStatus.SUCCESS.getValue())
-                            .classificationId(classificationId)
-                            .authorId(authorId)
-                            .description(description)
-                            .name(name)
-                            .id(id)
-                            .build();
-                }
-            }
+            int rowsAffected = preparedStatement.executeUpdate();
+            logger.log("Reclassify statement has affected " + rowsAffected + " rows!");
 
             return GenericResponse.builder()
-                    .error(ErrorMessage.ALGORITHM_RECLASSIFICATION_EXCEPTION.getValue())
-                    .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                    .error("")
+                    .statusCode(HttpStatus.SUCCESS.getValue())
                     .build();
 
         } catch (SQLException e) {

@@ -12,10 +12,11 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserRemoveRequest {
+public class UserRemoveDataRequest {
 
     String authorId;
     String username;
+
 
     @Override
     @SneakyThrows

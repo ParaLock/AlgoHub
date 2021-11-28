@@ -17,23 +17,23 @@ import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 import java.util.ArrayList;
 
-public class UserGetAllHandler implements RequestHandler<UserGetAllRequest, GenericResponse> {
+public class UserGetAllHandler implements RequestHandler<UserGetAllRequest, UserGetAllResponse> {
 
     private LambdaLogger logger;
 
     @Override
-    public GenericResponse handleRequest(UserGetAllRequest request, Context context) {
+    public UserGetAllResponse handleRequest(UserGetAllRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received an list users request from AWS Lambda:\n" + request);
 
         // save problem instance to the database
-        final GenericResponse response = listUsers(request);
+        final UserGetAllResponse response = listUsers(request);
         logger.log("Sent list users response to AWS Lambda:\n" + response);
 
         return response;
     }
 
-    private GenericResponse listUsers(UserGetAllRequest request) {
+    private UserGetAllResponse listUsers(UserGetAllRequest request) {
 
         AWSCognitoIdentityProvider provider = AWSCognitoIdentityProviderClientBuilder.defaultClient();
 
@@ -59,8 +59,9 @@ public class UserGetAllHandler implements RequestHandler<UserGetAllRequest, Gene
 
         } catch (Exception e){
             e.printStackTrace();
+
         }
-        return GenericResponse.builder()
+        return UserGetAllResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.getValue())
                 .error("Failed to retrieve user.")
                 .build();

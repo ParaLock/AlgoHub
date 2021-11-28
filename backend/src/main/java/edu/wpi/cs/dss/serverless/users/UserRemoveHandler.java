@@ -32,7 +32,7 @@ public class UserRemoveHandler implements RequestHandler<UserRemoveRequest, Gene
 
     private GenericResponse deleteUser(UserRemoveRequest request) {
 
-        final String username = request.getAuthorId();
+        final String username = request.getUsername();
         AWSCognitoIdentityProvider provider = AWSCognitoIdentityProviderClientBuilder.defaultClient();
 
         try {

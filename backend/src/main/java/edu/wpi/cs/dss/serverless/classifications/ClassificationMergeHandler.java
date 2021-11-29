@@ -11,6 +11,7 @@ import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ClassificationMergeHandler implements RequestHandler<ClassificationMergeRequest, GenericResponse> {
@@ -31,17 +32,32 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
     private GenericResponse merge(ClassificationMergeRequest request) {
         final String sourceId = request.getSourceId();
         final String targetId = request.getTargetId();
-        final String query = "UPDATE algorithm SET classification_id=? WHERE classification_id=?";
+
+        final String updateClassificationsQuery = "UPDATE classification SET parent_id=? WHERE parent_id=?";
+        final String countRelatedClassificationsQuery = "SELECT count(*) FROM classification WHERE parent_id=?";
+        final String updateAlgorithmsQuery = "UPDATE algorithm SET classification_id=? WHERE classification_id=?";
 
         try (final Connection connection = DataSource.getConnection(logger);
-             final PreparedStatement preparedStatement = connection.prepareStatement(query)
+             final PreparedStatement updateAlgorithmsPreparedStatement = connection.prepareStatement(updateAlgorithmsQuery);
+             final PreparedStatement updateClassificationsPreparedStatement = connection.prepareStatement(updateClassificationsQuery);
+             final PreparedStatement countRelatedClassificationsPreparedStatement = connection.prepareStatement(countRelatedClassificationsQuery)
         ) {
             logger.log("Successfully connected to db!");
 
-            preparedStatement.setString(1, targetId);
-            preparedStatement.setString(2, sourceId);
+            final long relatedClassifications = countRelatedClassifications(sourceId, countRelatedClassificationsPreparedStatement);
+            logger.log("Amount of related classifications = " + relatedClassifications);
 
-            final int rowsAffected = preparedStatement.executeUpdate();
+            final int rowsAffected;
+            if (relatedClassifications == 0) {
+                updateAlgorithmsPreparedStatement.setString(1, targetId);
+                updateAlgorithmsPreparedStatement.setString(2, sourceId);
+                rowsAffected = updateAlgorithmsPreparedStatement.executeUpdate();
+            } else {
+                updateClassificationsPreparedStatement.setString(1, targetId);
+                updateClassificationsPreparedStatement.setString(2, sourceId);
+                rowsAffected = updateClassificationsPreparedStatement.executeUpdate();
+            }
+
             logger.log("Merge classification statement has affected " + rowsAffected + " rows!");
 
             return GenericResponse.builder()
@@ -57,5 +73,20 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
                     .error(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue())
                     .build();
         }
+    }
+
+    private long countRelatedClassifications(String id, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, id);
+
+        final long relatedClassifications;
+        try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                relatedClassifications = resultSet.getLong(1);
+            } else {
+                relatedClassifications = 0L;
+            }
+        }
+
+        return relatedClassifications;
     }
 }

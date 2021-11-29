@@ -34,28 +34,43 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
         final String targetId = request.getTargetId();
 
         final String updateClassificationsQuery = "UPDATE classification SET parent_id=? WHERE parent_id=?";
+        final String countRelatedAlgorithmsQuery = "SELECT count(*) FROM algorithm WHERE classification_id=?";
         final String countRelatedClassificationsQuery = "SELECT count(*) FROM classification WHERE parent_id=?";
         final String updateAlgorithmsQuery = "UPDATE algorithm SET classification_id=? WHERE classification_id=?";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement updateAlgorithmsPreparedStatement = connection.prepareStatement(updateAlgorithmsQuery);
              final PreparedStatement updateClassificationsPreparedStatement = connection.prepareStatement(updateClassificationsQuery);
+             final PreparedStatement countRelatedAlgorithmsPreparedStatement = connection.prepareStatement(countRelatedAlgorithmsQuery);
              final PreparedStatement countRelatedClassificationsPreparedStatement = connection.prepareStatement(countRelatedClassificationsQuery)
         ) {
             logger.log("Successfully connected to db!");
 
-            final long relatedClassifications = countRelatedClassifications(sourceId, countRelatedClassificationsPreparedStatement);
+            final long relatedClassifications = countRelated(sourceId, countRelatedClassificationsPreparedStatement);
             logger.log("Amount of related classifications = " + relatedClassifications);
 
+            final long relatedAlgorithms = countRelated(sourceId, countRelatedAlgorithmsPreparedStatement);
+            logger.log("Amount of related classifications = " + relatedAlgorithms);
+
             final int rowsAffected;
-            if (relatedClassifications == 0) {
+            if (relatedClassifications > 0 && relatedAlgorithms > 0) {
+                updateClassificationsPreparedStatement.setString(1, targetId);
+                updateClassificationsPreparedStatement.setString(2, sourceId);
+                final int affectedClassifications = updateClassificationsPreparedStatement.executeUpdate();
+
                 updateAlgorithmsPreparedStatement.setString(1, targetId);
                 updateAlgorithmsPreparedStatement.setString(2, sourceId);
-                rowsAffected = updateAlgorithmsPreparedStatement.executeUpdate();
-            } else {
+                final int affectedAlgorithms = updateAlgorithmsPreparedStatement.executeUpdate();
+
+                rowsAffected = affectedClassifications + affectedAlgorithms;
+            } else if (relatedClassifications > 0 && relatedAlgorithms == 0){
                 updateClassificationsPreparedStatement.setString(1, targetId);
                 updateClassificationsPreparedStatement.setString(2, sourceId);
                 rowsAffected = updateClassificationsPreparedStatement.executeUpdate();
+            } else {
+                updateAlgorithmsPreparedStatement.setString(1, targetId);
+                updateAlgorithmsPreparedStatement.setString(2, sourceId);
+                rowsAffected = updateAlgorithmsPreparedStatement.executeUpdate();
             }
 
             logger.log("Merge classification statement has affected " + rowsAffected + " rows!");
@@ -75,18 +90,18 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
         }
     }
 
-    private long countRelatedClassifications(String id, PreparedStatement preparedStatement) throws SQLException {
+    private long countRelated(String id, PreparedStatement preparedStatement) throws SQLException {
         preparedStatement.setString(1, id);
 
-        final long relatedClassifications;
+        final long result;
         try (final ResultSet resultSet = preparedStatement.executeQuery()) {
             if (resultSet.next()) {
-                relatedClassifications = resultSet.getLong(1);
+                result = resultSet.getLong(1);
             } else {
-                relatedClassifications = 0L;
+                result = 0L;
             }
         }
 
-        return relatedClassifications;
+        return result;
     }
 }

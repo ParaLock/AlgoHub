@@ -50,7 +50,7 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
             logger.log("Amount of related classifications = " + relatedClassifications);
 
             final long relatedAlgorithms = countRelated(sourceId, countRelatedAlgorithmsPreparedStatement);
-            logger.log("Amount of related classifications = " + relatedAlgorithms);
+            logger.log("Amount of related algorithms = " + relatedAlgorithms);
 
             final int rowsAffected;
             if (relatedClassifications > 0 && relatedAlgorithms > 0) {

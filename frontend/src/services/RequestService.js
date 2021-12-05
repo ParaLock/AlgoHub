@@ -47,7 +47,7 @@ export default class RequestService {
                         name: "add_request_status",
                         widgetKey: "",
                         status: "request_complete",
-                        msg: errMsg,
+                        msg: errMsg + " Details: " + res.data.error ?? "None",
                         type: "error"
                     }))
                 }

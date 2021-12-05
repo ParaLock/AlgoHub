@@ -92,7 +92,7 @@ export default class OntologyController {
                 ));
 
             }
-          }, endpoint + item.id) 
+          }, endpoint + item.id); 
 
     }
 

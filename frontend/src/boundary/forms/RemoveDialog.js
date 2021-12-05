@@ -6,11 +6,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { useSelector, useDispatch } from 'react-redux';
 
 export default function RemoveDialog(props) {
 
   const [loading, setLoading] = React.useState(false);
   const [requestError, setRequestError] = React.useState("");
+  const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy);
+  const selectedItem = useSelector(state => state.viewModel.selectedOntologyItem);
+  
+
   const handleClose = () => {
     props.onClose();
   };
@@ -18,6 +23,18 @@ export default function RemoveDialog(props) {
   const performDelete = () => {
 
     setLoading(true)
+
+    var parent = null;
+
+    if(selectedItem) {
+
+      var candidates = ontologyHierarchy.filter((item) => item.id == selectedItem.parentId)
+      if(candidates.length > 0) {
+        parent = candidates[0];
+      }
+    }
+
+    props.ontologyController.selectOntologyItem(parent);
 
     props.requestService.executePostRequest(
       (err) => {

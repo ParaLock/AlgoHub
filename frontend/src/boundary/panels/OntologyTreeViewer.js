@@ -37,7 +37,7 @@ export default function OntologyTreeViewer(props) {
             hierarchical: {
                 "direction": "UD",
                 "sortMethod": "directed",
-                "nodeSpacing": 150,
+                "nodeSpacing": 300,
                 "shakeTowards": "roots"
             }
         },

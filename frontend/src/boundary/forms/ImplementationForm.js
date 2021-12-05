@@ -188,7 +188,7 @@ export default function ImplementationForm(props) {
 
             var fileExt = filename.split('.').pop();
 
-            props.requestService.executeAddRequest(
+            props.requestService.executePostRequest(
                 (err) => {
                     setRequestError(err)
                     setLoading(false)
@@ -205,10 +205,11 @@ export default function ImplementationForm(props) {
                     algorithmId: values.parent.id,
                     algorithmName: values.parent.name,
                     extension: fileExt
-                }, 
-                "implementations", 
-                "add"
-            )
+                },
+                "implementations/add",
+                "Failed to create algorithm.",
+                "Created algorithm successfully!"
+            );
         }
     }
 

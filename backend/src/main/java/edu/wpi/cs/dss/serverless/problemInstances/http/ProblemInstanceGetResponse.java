@@ -15,7 +15,7 @@ public class ProblemInstanceGetResponse extends GenericResponse {
     private final String datasetFilename;
     private final String datasetSize;
     private final String problemType;
-    private final String implementationId;
+    private final String algorithmId;
     private final String authorId;
 
     @Override

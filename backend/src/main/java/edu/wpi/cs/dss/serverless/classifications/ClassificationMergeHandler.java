@@ -33,12 +33,14 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
         final String sourceId = request.getSourceId();
         final String targetId = request.getTargetId();
 
+        final String deleteSourceClassificationQuery = "DELETE FROM classification WHERE id=?";
         final String updateClassificationsQuery = "UPDATE classification SET parent_id=? WHERE parent_id=?";
         final String updateAlgorithmsQuery = "UPDATE algorithm SET classification_id=? WHERE classification_id=?";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement updateAlgorithmsPreparedStatement = connection.prepareStatement(updateAlgorithmsQuery);
-             final PreparedStatement updateClassificationsPreparedStatement = connection.prepareStatement(updateClassificationsQuery)
+             final PreparedStatement updateClassificationsPreparedStatement = connection.prepareStatement(updateClassificationsQuery);
+             final PreparedStatement deleteSourceClassificationPreparedStatement = connection.prepareStatement(deleteSourceClassificationQuery)
         ) {
             logger.log("Successfully connected to db!");
 
@@ -50,7 +52,10 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
             updateAlgorithmsPreparedStatement.setString(2, sourceId);
             final int affectedAlgorithms = updateAlgorithmsPreparedStatement.executeUpdate();
 
-            logger.log("Merge classification statement has affected " + (affectedAlgorithms + affectedClassifications) + " rows!");
+            deleteSourceClassificationPreparedStatement.setString(1, sourceId);
+            final int affectedRemoveClassifications = deleteSourceClassificationPreparedStatement.executeUpdate();
+
+            logger.log("Merge classification statement has affected " + (affectedAlgorithms + affectedClassifications + affectedRemoveClassifications) + " rows!");
 
             return GenericResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())

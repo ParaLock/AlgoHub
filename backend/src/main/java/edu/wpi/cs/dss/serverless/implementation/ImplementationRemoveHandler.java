@@ -51,6 +51,7 @@ public class ImplementationRemoveHandler implements RequestHandler<Implementatio
 
             return GenericResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())
+                    .error("")
                     .build();
 
         } catch (SQLException e) {

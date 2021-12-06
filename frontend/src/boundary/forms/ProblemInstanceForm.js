@@ -228,7 +228,7 @@ export default function ProblemInstanceForm(props) {
                     algorithmId: values.parent.id,
                     datasetSize: values.datasetSize
                 }, 
-                "problem_instances/add", 
+                "problemInstances/add", 
                 "Failed to create problem instance.",
                 "Created problem instance successfully!"
             )

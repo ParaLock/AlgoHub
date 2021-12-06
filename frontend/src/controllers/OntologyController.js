@@ -51,6 +51,16 @@ export default class OntologyController {
 
     selectOntologyItem(item, excludedEndpoints = ["classifications/"]) {
 
+        if(!item.id) {
+
+            this.setInitiallySelected(null);
+
+            store.dispatch(updateSelectedOntologyItem(null));
+            store.dispatch(updateSelectedItem(item));
+
+            return;
+        }
+
         this.setInitiallySelected(item.id)
 
         var model = store.getState().model;

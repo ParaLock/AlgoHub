@@ -20,15 +20,17 @@ export default function RemoveDialog(props) {
     props.onClose();
   };
 
-  const performDelete = () => {
+  const performDelete = (props) => {
 
     setLoading(true)
 
-    var parent = null;
+    var item = props.removeRequest.item;
+    var parent = {typeName: item.typeName};
+    console.log("Executing delete: ", item);
 
-    if(selectedItem) {
+    if(item) {
 
-      var candidates = ontologyHierarchy.filter((item) => item.id == selectedItem.parentId)
+      var candidates = ontologyHierarchy.filter((candidate) => candidate.id == item.parentId)
       if(candidates.length > 0) {
         parent = candidates[0];
       }
@@ -77,7 +79,7 @@ export default function RemoveDialog(props) {
         </DialogContent>
         <DialogActions>
         <LoadingButton
-              onClick={()=> {performDelete()}}
+              onClick={()=> {performDelete(props)}}
               loading={loading}
               loadingPosition="center"
               variant="contained"

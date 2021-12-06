@@ -151,7 +151,8 @@ export default function AlgorithmForm(props) {
                 },
                 "algorithms/add",
                 "Failed to create algorithm.",
-                "Created algorithm successfully!");
+                "Created algorithm successfully!"
+            );
         }
     }
 

@@ -37,7 +37,7 @@ export default class RequestService {
             }
         ).then(res => {
 
-            console.log("AddRequest: ", res)
+            console.log("PostRequest: Req Success: ", res)
 
             if (res.data.statusCode == "400" || res.data.statusCode == 400) {
 
@@ -73,10 +73,12 @@ export default class RequestService {
                     this.addRequestSuccessListeners[i](res)
                 }
 
-                cb("")
+                cb("",res.data)
             }
 
         }).catch((err) => {
+
+            console.log("PostRequest: Req Failure: ", err)
 
             if(errMsg.length > 0) {
 
@@ -114,7 +116,7 @@ export default class RequestService {
                     cb(res.data.error ?? "error", null)
                 }
             }).catch(res => {
-
+                console.log(res)
                 cb("error", null)
             })
     }

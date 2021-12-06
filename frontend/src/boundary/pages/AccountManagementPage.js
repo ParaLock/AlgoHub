@@ -9,7 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
 import UserList from '../sidebars/UserList';
 import Typography from '@mui/material/Typography';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import BasicHeader from '../BasicHeader';
 import GenericListItem from '../common/GenericListItem';
 import { enqueueNotification, updateNotificationStatus, updateLoadingStatus, updateRemoveRequest } from "../../model/ViewModel";
@@ -70,49 +70,7 @@ export default function AccountManagementPage(props) {
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
-    const [userActivity, setUserActivity] = useState({
-        "classifications": {
-            title: "Classifications",
-            items: [
-                {
-                    id: "test1",
-                    name: "test1",
-                    typeName: "classification"
-                }
-            ]
-        },
-        "implementations": {
-            title: "Implementations",
-            items: [
-                {
-                    id: "abc123",
-                    name: "abc123",
-                    typeName: "implementation"
-                }
-            ]
-
-        },
-        "algorithms": {
-            title: "Algorithms",
-            items: [
-                {
-                    id: "111",
-                    name: "111",
-                    typeName: "algorithm"
-                }
-            ]
-        },
-        "problem_instances": {
-            title: "Problem Instances",
-            items: [
-                {
-                    id: "222",
-                    name: "222",
-                    typeName: "problem_instance"
-                }
-            ]
-        }
-    });
+    const [userActivity, setUserActivity] = useState(null);
 
     var removeUser = (user) => {
         console.log(user)
@@ -138,36 +96,76 @@ export default function AccountManagementPage(props) {
         ))
     }
 
+    var updateUserActivity = (data) => {
+
+        var activity = {};
+
+        setUserActivity(null);
+
+        for(var i in data) {
+
+            var act = data[i];
+
+            console.log(act)
+            if(!(act.typeName in Object.keys(activity))) {
+                activity[act.typeName] = {title: act.typeName + "s", items: []}
+            }
+            activity[act.typeName].items.push(act);
+        }
+
+        console.log(activity)
+
+        setUserActivity(activity)
+
+    }
+
     var selectUser = (user) => {
         console.log(user);
+
+        props.requestService.executePostRequest(
+            (err, data) => {
+
+                if (err.length == 0) {
+                    updateUserActivity(data.activity)
+                }
+
+            },
+            {
+                username: selectedUser
+            },
+            "users/activity",
+            "",
+            ""
+        );
+        
+
         setSelectedUser(user)
     }
 
     React.useEffect(() => {
 
-        if(currentUser && currentUser.groups.includes("admins")) {
+        if (currentUser && currentUser.groups.includes("admins")) {
 
-            
             setLoadingUsers(true)
 
             props.requestService.executeGetRequest((err, res) => {
 
                 console.log(err)
                 console.log(res)
-                
-                if(err.length == 0) {
+
+                if (err.length == 0) {
 
                     setLoadingUsers(false)
                     setUsers(res.users);
 
                 }
-            }, "users/"); 
+            }, "users/all_registered");
         }
 
-        if(currentUser && !currentUser.groups.includes("admins")) {
+        if (currentUser && !currentUser.groups.includes("admins")) {
 
             setUsers([currentUser.username]);
-            setSelectedUser(currentUser.username)
+            selectUser(currentUser.username)
         }
 
 
@@ -178,17 +176,18 @@ export default function AccountManagementPage(props) {
         <Wrapper>
             <BasicHeader title="Account Management" />
             <ContentWrapper>
-                <UserList 
+                <UserList
                     isLoading={loadingUsers}
-                    users={users} 
-                    onSelected={(item) => selectUser(item)} 
+                    users={users}
+                    onSelected={(item) => selectUser(item)}
                     onRemove={removeUser}
                     selectedUser={selectedUser}
+                    currentUser={currentUser}
                     enableRemove={currentUser && currentUser.groups.includes("admins")}
                 />
                 <InnerContentWrapper>
                     {
-                        Object.keys(userActivity).map((key) => {
+                        userActivity && Object.keys(userActivity).map((key) => {
 
                             var item = userActivity[key];
 
@@ -197,9 +196,9 @@ export default function AccountManagementPage(props) {
                                     {item.title}
                                 </Typography>
                                 {
-                                    item.items.map((listItem)=> {
+                                    item.items.map((listItem) => {
                                         return <GenericListItem
-                                            onSelected={(item) => {}} 
+                                            onSelected={(item) => { }}
                                             onRemove={removeItem}
                                             title={listItem.name}
                                             item={listItem}

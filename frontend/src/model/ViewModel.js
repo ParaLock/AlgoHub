@@ -44,6 +44,15 @@ export const ViewModelSlice = createSlice({
     },
     updateSelectedOntologyItem: (state, action) => {
 
+      if(!action.payload) {
+        state.headerTitle = "Welcome to AlgoHub";
+        state.selectedOntologyItemType = "";
+        state.selectedOntologyItem = null;
+
+        return;
+
+      }
+
       var selected = action.payload.item;
       var ontologyHierarchy = action.payload.ontology;
 
@@ -94,6 +103,11 @@ export const ViewModelSlice = createSlice({
 
     },
     updateSelectedItem: (state, action) => {
+
+      if(!action.payload.item) {
+
+        state.selectedItem[action.payload.name] = null;
+      }
 
       state.selectedItem[action.payload.name] = action.payload.item;
 

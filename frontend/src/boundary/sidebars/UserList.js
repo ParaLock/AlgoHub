@@ -39,7 +39,7 @@ export default function UserList(props) {
                                                     title={item} 
                                                     item={item}
                                                     onRemove={props.onRemove}
-                                                    enableRemove={props.enableRemove}
+                                                    enableRemove={props.enableRemove && props.currentUser.username != item}
                                         />)
             }
 

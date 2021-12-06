@@ -118,7 +118,9 @@ export default function OntologySidebar(props) {
         dispatch(updateRemoveRequest(
             {
                 msg: "Are you sure you want to remove " + item.typeName + "?",
-                item: item
+                item: item,
+                state: "pending",
+                initiator: "ontology_sidebar"
             }
         ))
     }

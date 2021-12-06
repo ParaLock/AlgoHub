@@ -103,26 +103,7 @@ export default function ClassificationMergeForm(props) {
                     if (err.length == 0) {
 
                         props.onClose();
-                        props.requestService.executePostRequest(
-                            (err) => {
 
-                                setRequestError(err)
-                                setLoading(false)
-                                setSubmitDisabled(false)
-
-                                if (err.length == 0) {
-
-                                    props.onClose();
-                                }
-
-                            },
-                            {
-                                id: values.classificationA.id,
-                            },
-                            "classifications/remove",
-                            "Failed to merge classifications.",
-                            "Merged classifications successfully!"
-                        );
                     } else {
 
                         setRequestError(err)
@@ -132,8 +113,8 @@ export default function ClassificationMergeForm(props) {
 
                 },
                 {
-                    classificationA: values.classificationA.id,
-                    classificationB: values.classificationB.id
+                    sourceId: values.classificationA.id,
+                    targetId: values.classificationB.id
 
                 },
                 "classifications/merge",

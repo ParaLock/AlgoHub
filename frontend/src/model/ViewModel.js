@@ -14,7 +14,7 @@ export const ViewModelSlice = createSlice({
     notificationQueue: [],
     loadingStatus: {},
     headerTitle: "Welcome to AlgoHub",
-    removeRequest: null
+    removeRequest: {}
   },
   reducers: {
     togglePanelVisibility: (state, action) => {

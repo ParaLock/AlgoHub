@@ -123,9 +123,8 @@ function App() {
     
     <>    
         <RemoveDialog
-          open={removeRequest}
+          open={removeRequest.item}
           removeRequest={removeRequest}
-          onClose={() => dispatch(updateRemoveRequest(null))}
           requestService={requestService}
           ontologyController={ontologyController}
         />

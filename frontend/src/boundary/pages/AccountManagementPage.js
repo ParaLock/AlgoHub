@@ -14,7 +14,6 @@ import BasicHeader from '../BasicHeader';
 import GenericListItem from '../common/GenericListItem';
 import { enqueueNotification, updateNotificationStatus, updateLoadingStatus, updateRemoveRequest } from "../../model/ViewModel";
 import CircularProgress from '@mui/material/CircularProgress';
-
 const Wrapper = styled.div`
       
     display: flex;
@@ -67,10 +66,13 @@ export default function AccountManagementPage(props) {
 
     const dispatch = useDispatch();
     const currentUser = useSelector(state => state.model.currentUser);
+    const removeRequest  = useSelector(state => state.viewModel.removeRequest);
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
     const [userActivity, setUserActivity] = useState(null);
+    const [loadingActivity, setLoadingActivity] = useState(false);
+    
 
     var removeUser = (user) => {
         console.log(user)
@@ -80,18 +82,20 @@ export default function AccountManagementPage(props) {
                 item: {
                     id: user,
                     typeName: "user"
-                }
+                },
+                initiator: "account_man"
             }
         ))
 
     }
 
     var removeItem = (item) => {
-        console.log(item)
+        
         dispatch(updateRemoveRequest(
             {
                 msg: "Are you sure you want to remove " + item.typeName + "?",
-                item: item
+                item: item,
+                initiator: "account_man"
             }
         ))
     }
@@ -115,32 +119,48 @@ export default function AccountManagementPage(props) {
 
         console.log(activity)
 
-        setUserActivity(activity)
+        if(data && data.length > 0)
+            setUserActivity(activity)
 
     }
 
     var selectUser = (user) => {
         console.log(user);
+        setSelectedUser(user)
+        setLoadingActivity(true);
+        updateUserActivity(null)
 
         props.requestService.executePostRequest(
             (err, data) => {
 
                 if (err.length == 0) {
+                    setLoadingActivity(false)
                     updateUserActivity(data.activity)
                 }
 
             },
             {
-                username: selectedUser
+                username: user
             },
             "users/activity",
             "",
             ""
         );
         
-
-        setSelectedUser(user)
     }
+
+    React.useEffect(() => {
+
+        console.log("AccountManPage: RemoveRequest changed: ", removeRequest)
+
+        if(removeRequest.initiator == "account_man" && removeRequest.state == "complete") {
+            
+            console.log("Did stuff!!!!")
+            selectUser(selectedUser)
+        }
+    
+    }, [removeRequest]);
+    
 
     React.useEffect(() => {
 
@@ -175,6 +195,7 @@ export default function AccountManagementPage(props) {
 
         <Wrapper>
             <BasicHeader title="Account Management" />
+
             <ContentWrapper>
                 <UserList
                     isLoading={loadingUsers}
@@ -211,6 +232,11 @@ export default function AccountManagementPage(props) {
                         })
 
                     }
+                    <Typography variant="h6" align="center" component="div" gutterBottom>
+                                        
+                        {loadingActivity && <CircularProgress/>}
+                        { (!userActivity && !loadingActivity) && <div>None</div>}
+                    </Typography>
                 </InnerContentWrapper>
             </ContentWrapper>
         </Wrapper>

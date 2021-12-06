@@ -6,6 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { updateRemoveRequest } from '../../model/ViewModel';
 import { useSelector, useDispatch } from 'react-redux';
 
 export default function RemoveDialog(props) {
@@ -13,11 +14,12 @@ export default function RemoveDialog(props) {
   const [loading, setLoading] = React.useState(false);
   const [requestError, setRequestError] = React.useState("");
   const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy);
+  const dispatch = useDispatch();
   const selectedItem = useSelector(state => state.viewModel.selectedOntologyItem);
   
 
-  const handleClose = () => {
-    props.onClose();
+  const handleClose = (err) => {
+
   };
 
   const performDelete = (props) => {
@@ -42,10 +44,17 @@ export default function RemoveDialog(props) {
       (err) => {
           console.log(err)
           setLoading(false)
+          
+          dispatch(updateRemoveRequest(
+            { ...props.removeRequest,
+              msg: "",
+              item: null,
+              state: "complete"
+            }
+          ))
 
           if (err.length == 0) {
 
-              props.onClose();
               handleClose();
           }
 
@@ -74,7 +83,7 @@ export default function RemoveDialog(props) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {props.removeRequest && props.removeRequest.msg}
+            {props.removeRequest.item && props.removeRequest.msg}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

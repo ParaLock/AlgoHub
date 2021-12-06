@@ -4,16 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.problemInstances.model.ProblemInstance;
-import lombok.*;
+import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
-import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@Setter
 @SuperBuilder
 public class ProblemInstanceGetByAlgorithmResponse extends GenericResponse {
 
-    ArrayList<ProblemInstance> problemInstances;
+    private final List<ProblemInstance> problemInstances;
 
     @Override
     @SneakyThrows

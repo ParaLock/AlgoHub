@@ -35,7 +35,8 @@ public class UserActivityHandler implements RequestHandler<UserActivityRequest, 
     }
 
     private GenericResponse getActivity(UserActivityRequest request) {
-        final String authorId = request.getAuthorId();
+
+        final String username = request.getUsername();
         final String activityQuery = "SELECT id, name, 'classification' AS type FROM classification WHERE author_id=?" +
                 " UNION " +
                 "SELECT id, name, 'algorithm' AS type FROM algorithm WHERE author_id=?" +
@@ -51,11 +52,11 @@ public class UserActivityHandler implements RequestHandler<UserActivityRequest, 
         {
             logger.log("Successfully connected to db!");
 
-            activityPreparedStatement.setString(1, authorId);
-            activityPreparedStatement.setString(2, authorId);
-            activityPreparedStatement.setString(3, authorId);
-            activityPreparedStatement.setString(4, authorId);
-            activityPreparedStatement.setString(5, authorId);
+            activityPreparedStatement.setString(1, username);
+            activityPreparedStatement.setString(2, username);
+            activityPreparedStatement.setString(3, username);
+            activityPreparedStatement.setString(4, username);
+            activityPreparedStatement.setString(5, username);
 
             final List<UserActivity> activity = new ArrayList<>();
             try (final ResultSet resultSet = activityPreparedStatement.executeQuery()) {

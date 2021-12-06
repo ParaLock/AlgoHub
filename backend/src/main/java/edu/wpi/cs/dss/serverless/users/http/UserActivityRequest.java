@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 public class UserActivityRequest {
 
     private String authorId;
+    private String username;
 
     @Override
     @SneakyThrows

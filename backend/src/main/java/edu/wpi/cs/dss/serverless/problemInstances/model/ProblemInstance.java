@@ -16,7 +16,7 @@ public class ProblemInstance {
     private String datasetFilename;
     private int datasetSize;
     private String problemType;
-    private String implementationId;
+    private String algorithmId;
     private String authorId;
 
     @Override

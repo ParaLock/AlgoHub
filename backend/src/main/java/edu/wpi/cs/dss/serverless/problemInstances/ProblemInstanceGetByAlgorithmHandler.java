@@ -56,7 +56,7 @@ public class ProblemInstanceGetByAlgorithmHandler implements RequestHandler<Prob
                     final String datasetFileName = resultSet.getString(2);
                     final int datasetSize = resultSet.getInt(3);
                     final String problemType = resultSet.getString(4);
-                    final String implementationId = resultSet.getString(5);
+                    final String algoId = resultSet.getString(5);
                     final String authorId = resultSet.getString(6);
 
                     problemInstances.add(new ProblemInstance(
@@ -64,7 +64,7 @@ public class ProblemInstanceGetByAlgorithmHandler implements RequestHandler<Prob
                             datasetFileName,
                             datasetSize,
                             problemType,
-                            implementationId,
+                            algoId,
                             authorId
                     ));
                 }

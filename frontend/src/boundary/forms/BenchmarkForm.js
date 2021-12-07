@@ -196,12 +196,18 @@ export default function BenchmarkForm(props) {
         }
     }
 
-    const implementationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "implementation"));
+    var implementationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "implementation"));
     var algorithms = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm"));
+
+    var modifiedImplementationOptions = [...implementationOptions].map((item) => {
+        return {...item, name: algorithms.filter((a) => a.id == item.parentId)[0].name + "-" + item.name}
+    })
+
+
+
     React.useEffect(() => {
 
         if(values.parentImplementation) {
-
 
             var candidates = algorithms.filter((item) => item.id == values.parentImplementation.parentId)
 
@@ -256,7 +262,7 @@ export default function BenchmarkForm(props) {
                             name="parentImplementation"
                             value={values.parentImplementation}
                             sx={{ width: "50%", marginRight: "50px" }}
-                            options={implementationOptions}
+                            options={modifiedImplementationOptions}
                             error={errors.parentImplementation}
                             onChange={handleInputChange}
 

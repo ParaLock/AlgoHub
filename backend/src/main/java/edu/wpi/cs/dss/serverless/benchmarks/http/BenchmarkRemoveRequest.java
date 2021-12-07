@@ -13,7 +13,7 @@ import lombok.SneakyThrows;
 public class BenchmarkRemoveRequest {
 
     private String id;
-    private int authorId;
+    private String authorId;
 
     @Override
     @SneakyThrows

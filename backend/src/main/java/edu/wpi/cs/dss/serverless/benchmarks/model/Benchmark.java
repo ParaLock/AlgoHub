@@ -24,4 +24,5 @@ public class Benchmark {
     private int memoryUsage;
     private String authorId;
     private String problemType;
+    private int datasetSize;
 }

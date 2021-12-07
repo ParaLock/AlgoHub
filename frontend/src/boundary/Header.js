@@ -28,15 +28,10 @@ const Wrapper = styled.div`
 
     color: rgba(0, 0, 0, 0.87);
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
-    background-color: #1976d2;
+    background-color: #ac2b37;
     color: #fff;
 
 `;
-
-const CustomToolbar = material_styled(Toolbar)(({ theme }) => ({
-
-}));
-
 
 export default function Header(props) {
 
@@ -45,7 +40,7 @@ export default function Header(props) {
 
   return (
       <Wrapper>
-      <CustomToolbar variant="dense">
+      <Toolbar variant="dense">
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             AlgoHub 
@@ -75,7 +70,7 @@ export default function Header(props) {
 
           
           
-        </CustomToolbar>
+        </Toolbar>
       </Wrapper>
 
   );

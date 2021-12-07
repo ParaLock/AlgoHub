@@ -5,13 +5,33 @@ import App from './App';
 import { SnackbarProvider } from "notistack";
 import store from './model/ModelProxy';
 import { Provider } from 'react-redux'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+export const themeOptions = createTheme({
+  palette: {
+    type: 'dark',
+    primary: {
+      main: '#ac2b37',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+});
+
 
 ReactDOM.render(
-  <SnackbarProvider maxSnack={10} preventDuplicate>
-    <Provider store={store}>
-      <App />
-    </Provider>
-    </SnackbarProvider>,
+  <ThemeProvider theme={themeOptions}>
+
+    <SnackbarProvider
+      maxSnack={10}
+      preventDuplicate
+    >
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </SnackbarProvider>
+  </ThemeProvider>,
   document.getElementById('root')
 );
 

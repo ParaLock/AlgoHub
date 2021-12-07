@@ -19,23 +19,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BenchmarkGetByImplementationHandler implements RequestHandler<BenchmarkGetByImplementationRequest, GenericResponse> {
+public class BenchmarkGetByImplementationHandler implements RequestHandler<BenchmarkGetByImplementationRequest, BenchmarkGetByImplementationResponse> {
 
     private LambdaLogger logger;
 
     @Override
-    public GenericResponse handleRequest(BenchmarkGetByImplementationRequest request, Context context) {
+    public BenchmarkGetByImplementationResponse handleRequest(BenchmarkGetByImplementationRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received a get benchmark request from AWS Lambda: \n" + request);
 
         // find algorithm by id
-        final GenericResponse response = findById(request);
+        final BenchmarkGetByImplementationResponse response = findById(request);
         logger.log("Sent a get benchmark response to AWS Lambda:\n" + response);
 
         return response;
     }
 
-    private GenericResponse findById(BenchmarkGetByImplementationRequest request) {
+    private BenchmarkGetByImplementationResponse findById(BenchmarkGetByImplementationRequest request) {
         // extracting implementation id from get implementation request
         final String implementationId = request.getId();
 
@@ -100,7 +100,7 @@ public class BenchmarkGetByImplementationHandler implements RequestHandler<Bench
         } catch (SQLException e) {
             e.printStackTrace();
             logger.log(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue());
-            return GenericResponse.builder()
+            return BenchmarkGetByImplementationResponse.builder()
                     .statusCode(HttpStatus.BAD_REQUEST.getValue())
                     .error(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue())
                     .build();

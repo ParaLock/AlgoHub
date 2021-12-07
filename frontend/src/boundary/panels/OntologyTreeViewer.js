@@ -81,11 +81,11 @@ export default function OntologyTreeViewer(props) {
 
         if(type=="classification") {
 
-            return "#2196F3"
+            return "#ac2b37"
         }
 
         if(type=="implementation") {
-            return "#F4511E"
+            return "#2196F3"
             
         }
     }

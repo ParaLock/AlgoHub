@@ -56,7 +56,7 @@ const ButtonWrapper = styled.div`
     justify-content: space-between;
     flex-direction: row;
     border-radius: 0px 10px 10px 5px;
-    border: 1px solid #1976d2;
+    border: 1px solid #ac2b37;
 `;
 
 const SwitchContainer = styled.div`

@@ -29,7 +29,7 @@ const ButtonWrapper = styled.div`
     display: flex;
     height: 4%;
     border-radius: 0px 10px 10px 5px;
-    border: 1px solid #1976d2;
+    border: 1px solid #ac2b37;
     margin-bottom: 10px;
 `;
 

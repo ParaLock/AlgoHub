@@ -57,7 +57,7 @@ function TreeWrapper({ onRemove, toggleExpanded, enableRemove, expandedOntologyI
                                 selected={selected} 
                                 enableRemove={enableRemove}
                                 content={item.name} 
-                                style={{...style, color:"#6652ff"}} 
+                                style={{...style, color:"#ac2b37"}} 
                                 key={key}
                                 item={item}
                                 onSelect={(i) => onSelect(i)}

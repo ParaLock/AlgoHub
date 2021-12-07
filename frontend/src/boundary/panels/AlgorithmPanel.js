@@ -46,7 +46,7 @@ export default function AlgorithmPanel(props) {
 
             <AlgorithmDescription>   
             <Typography variant="h6" align="center" component="div" gutterBottom>
-                Algorithm
+                Algorithm Description
             </Typography>
                 {!algorithm && <CircularProgress/>}{algorithm && algorithm.description}
             </AlgorithmDescription>

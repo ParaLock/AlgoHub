@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { updateRemoveRequest } from '../../model/ViewModel';
+import { updateRemoveRequest, updateCachedSet } from '../../model/ViewModel';
 import { useSelector, useDispatch } from 'react-redux';
 
 export default function RemoveDialog(props) {
@@ -16,10 +16,21 @@ export default function RemoveDialog(props) {
   const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy);
   const dispatch = useDispatch();
   const selectedItem = useSelector(state => state.viewModel.selectedOntologyItem);
+  const cachedSets = useSelector(state => state.viewModel.cachedSets);
   
+  var endpointAliases = {
+    "problem_instance": "problemInstance"
+  }
 
   const handleClose = (err) => {
 
+    dispatch(updateRemoveRequest(
+      { ...props.removeRequest,
+        msg: "",
+        item: null,
+        state: "cancelled"
+      }
+    ))
   };
 
   const performDelete = (props) => {
@@ -38,10 +49,17 @@ export default function RemoveDialog(props) {
       }
     }
 
-    props.ontologyController.selectOntologyItem(parent);
+    if(item.typeName == "classification" || item.typeName == "algorithm" || item.typeName == "implementation")
+      props.ontologyController.selectOntologyItem(parent);
+
+    var objName = props.removeRequest.item.typeName;
+    if(Object.keys(endpointAliases).includes(objName)) {
+
+      objName = endpointAliases[objName]
+    }
 
     props.requestService.executePostRequest(
-      (err) => {
+      (err, data) => {
           console.log(err)
           setLoading(false)
           
@@ -55,6 +73,18 @@ export default function RemoveDialog(props) {
 
           if (err.length == 0) {
 
+              var oldCache = cachedSets[props.removeRequest.item.typeName]
+
+              if(oldCache ) {
+    
+                dispatch(updateCachedSet(
+                  { 
+                    name: props.removeRequest.item.typeName,
+                    state: oldCache.filter((item) => item.id != props.removeRequest.item.id)
+                  }
+                ))
+              }
+  
               handleClose();
           }
 
@@ -62,9 +92,9 @@ export default function RemoveDialog(props) {
       {
           id: props.removeRequest.item.id,
       },
-      props.removeRequest.item.typeName + "s" + "/remove",
-      "Failed to remove " + props.removeRequest.item.typeName,
-      "Removed " + props.removeRequest.item.typeName + " successfully."
+      objName + "s" + "/remove",
+      "Failed to remove " + objName,
+      "Removed " + objName + " successfully."
   );
     
   }

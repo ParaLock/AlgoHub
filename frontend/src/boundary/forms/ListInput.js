@@ -3,19 +3,21 @@
 import React from 'react'
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import { CircularProgress } from '@mui/material';
 export default function ListInput(props) {
 
-    const { loading, sx = {}, name, options, label, item, value, error = null, onChange, onChangeItem } = props;
+    const { disabled, sx = {}, name, options, label, item, value, error = null, onChange, onChangeItem } = props;
     return (
+
         <Autocomplete
 
-            loading={loading}
+            disabled={disabled}
             sx={sx}
             disablePortal
             id="combo-box-demo"
             getOptionLabel={(item) => item.name}
             options={options}
-            renderInput={(params) => <TextField
+            renderInput={(params) => <><TextField
                 variant="outlined"
                 {...params}
                 name={name}
@@ -23,6 +25,10 @@ export default function ListInput(props) {
                 {...(error && {error:true,helperText:error})}
 
             />
+
+            {disabled && <CircularProgress/>}
+            </>
+            
             }
   
             onChange={(e, val) => onChange(name, val)}

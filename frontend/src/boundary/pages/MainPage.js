@@ -152,6 +152,7 @@ export default function MainPage(props) {
                         <ProblemInstancePanel
                             ontologyController={props.ontologyController}
                             togglePanel={togglePanel}
+                            requestService={props.requestService}
                         />
                     }
 

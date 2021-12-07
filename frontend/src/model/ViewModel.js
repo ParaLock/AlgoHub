@@ -8,6 +8,7 @@ export const ViewModelSlice = createSlice({
     selectedOntologyItemParent: null,
     selectedOntologyItemType: "",
     selectedItem: {},
+    cachedSets: {},
     expandedOntologyItems: {},
     openPanels: [],
     operationStatus: {},
@@ -119,6 +120,13 @@ export const ViewModelSlice = createSlice({
     updateRemoveRequest :(state, action) => {
 
       state.removeRequest = action.payload;
+    },
+    updateCachedSet: (state, action) => {
+
+      if(!(action.payload.name in Object.keys(state.cachedSets))) 
+        state.cachedSets[action.payload.name] = []
+
+      state.cachedSets[action.payload.name] = action.payload.state;
     }
   }
 })
@@ -136,6 +144,7 @@ export const {
                 updateNotificationQueue,
                 updateNotificationStatus,
                 enqueueNotification,
-                updateRemoveRequest
+                updateRemoveRequest,
+                updateCachedSet
 } = ViewModelSlice.actions
 export default ViewModelSlice.reducer

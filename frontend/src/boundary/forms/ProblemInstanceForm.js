@@ -13,6 +13,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useInput from "../hooks/useInput";
+import { updateCachedSet } from '../../model/ViewModel';
 import {decode as base64_decode, encode as base64_encode} from 'base-64';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
@@ -97,6 +98,8 @@ export default function ProblemInstanceForm(props) {
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [loading, setLoading] = React.useState(false);
     const [filename, setFilename] = useState("");
+    const dispatch = useDispatch();
+
 
     const validate = (fieldValues = values) => {
 
@@ -218,6 +221,11 @@ export default function ProblemInstanceForm(props) {
 
                     if (err.length == 0) {
 
+                        dispatch(updateCachedSet({
+                            name: "problem_instance",
+                            state: null
+                        }));
+
                         props.onClose()
                     }
 
@@ -226,7 +234,8 @@ export default function ProblemInstanceForm(props) {
                     sourceCodeBase64: fileContents,
                     problemType: values.name,
                     algorithmId: values.parent.id,
-                    datasetSize: values.datasetSize
+                    datasetSize: values.datasetSize,
+                    datasetFilename: filename
                 }, 
                 "problemInstances/add", 
                 "Failed to create problem instance.",

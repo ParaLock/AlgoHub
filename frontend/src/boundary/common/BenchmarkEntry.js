@@ -62,13 +62,13 @@ export default function BenchmarkEntry(props) {
           <ContentWrapper>
 
             <InputSize>
-                        <i>Input Size</i>: {props.geinputSize} 
+                        <i>Input Size</i>: {props.benchmark.datasetSize} 
                         <br/>
-                        <i>Problem Instance</i>: {props.problemInstance}</InputSize>
+                        <i>Problem Instance</i>: {props.benchmark.problemType}</InputSize>
             
             { props.enableRemove &&
               <IconButton color="inherit" size="small">
-                  <HighlightOffIcon />
+                  <HighlightOffIcon onClick={props.onClick} />
               </IconButton>
             }
             

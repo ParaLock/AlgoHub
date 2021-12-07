@@ -7,6 +7,7 @@ import BenchmarkEntry from '../common/BenchmarkEntry';
 import { Resizable } from "re-resizable";
 import { useSelector, useDispatch } from 'react-redux'
 import { CircularProgress } from '@mui/material';
+import {updateCachedSet, updateRemoveRequest} from '../../model/ViewModel'
 const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
     width: 25%;
@@ -41,35 +42,75 @@ export default function BenchmarkSidebar(props) {
     
     var selectedItem = useSelector(state => state.viewModel.selectedOntologyItem);
     var currentUser = useSelector(state => state.model.currentUser);
-    const [benchmarks, setBenchmarks] = useState([]);
+    const dispatch = useDispatch();
+    const benchmarks = useSelector(state => state.viewModel.cachedSets["benchmark"]);
+
     const [loadingBenchmarks, setLoadingBenchmarks] = useState(false);
+
+    var updateBenchmarks = () => {
+        
+        dispatch(updateCachedSet({
+            name: "benchmark",
+            state: []
+        }))
+        setLoadingBenchmarks(true)
+
+        props.requestService.executePostRequest(
+            (err, data) => {
+
+                setLoadingBenchmarks(false)
+
+                if (err.length == 0) {
+
+                    dispatch(updateCachedSet({
+                        name: "benchmark",
+                        state: data.benchmarks
+                    }))
+                }
+
+            },
+            {
+                id: selectedItem.id
+            },
+            "benchmarks/by_implementation",
+            "",
+            "",
+            false
+        );
+    }
+
+    var deleteBenchmark = (benchmark) => {
+
+        dispatch(updateRemoveRequest(
+            {
+                msg: "Are you sure you want to remove benchmark?",
+                item: {
+                    id: benchmark.id,
+                    typeName: "benchmark"
+                },
+                initiator: "benchmark_sidebar"
+            }
+        ))
+    }
+
+    if(!benchmarks) {
+
+        if(selectedItem) {
+
+            updateBenchmarks();
+        }
+    }
 
     React.useEffect(() => {
 
         if(selectedItem && selectedItem.typeName == "implementation") {
+            updateBenchmarks();
 
-            setBenchmarks([])
-            setLoadingBenchmarks(true)
-
-            props.requestService.executePostRequest(
-                (err, data) => {
-
-                    setLoadingBenchmarks(false)
-
-                    if (err.length == 0) {
-
-                        setBenchmarks(data.benchmarks)
-                    }
-
-                },
-                {
-                    id: selectedItem.id
-                },
-                "benchmarks/by_implementation",
-                "",
-                "",
-                false
-            );
+        } else {
+            dispatch(updateCachedSet({
+                name: "benchmark",
+                state: []
+            }))
         }
     
     }, [selectedItem]);
@@ -78,17 +119,19 @@ export default function BenchmarkSidebar(props) {
 
         <BenchmarkSidebarWrapper open={props.open}>
 
+            {currentUser &&
             <ButtonWrapper>
                 <IconButton color="inherit" size="large" onClick={() => props.togglePanel("benchmark_add_form", true)}>
                     <AddCircleOutlineIcon />
                 </IconButton>
             </ButtonWrapper>
+            }
 
-            {benchmarks.length == 0 && !loadingBenchmarks && <MsgWrapper>No Benchmarks</MsgWrapper>}
+            {!benchmarks || benchmarks.length == 0 && !loadingBenchmarks && <MsgWrapper>No Benchmarks</MsgWrapper>}
             {loadingBenchmarks && <CircularProgress/>}
-            {benchmarks.map((item) => { 
+            {benchmarks && benchmarks.map((item) => { 
 
-                    return <BenchmarkEntry enableRemove={currentUser} benchmark={item}/> 
+                    return <BenchmarkEntry onClick={() => deleteBenchmark(item)} enableRemove={currentUser} benchmark={item}/> 
                 })
             }
              

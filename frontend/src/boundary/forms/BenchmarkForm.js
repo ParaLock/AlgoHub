@@ -14,10 +14,12 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useSelector, useDispatch } from 'react-redux';
+import { updateCachedSet } from '../../model/ViewModel';
 import { Form, useForm } from '../hooks/useForm';
 import Input from "./Input";
 import ListInput from "./ListInput";
 import { isNumeric, powerOfTwo, validateStr, validateNum } from '../common/Common';
+import { CircularProgress } from '@mui/material';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
         padding: theme.spacing(2),
@@ -110,6 +112,8 @@ export default function BenchmarkForm(props) {
     const [loadingProblemInstances, setLoadingProblemInstances] = useState(false);
     const [problemInstanceOptions, setProblemInstanceOptions] = useState(null);
 
+    const dispatch = useDispatch();
+
     const validate = (fieldValues = values) => {
 
         let temp = { ...errors }
@@ -162,6 +166,11 @@ export default function BenchmarkForm(props) {
 
                     if (err.length == 0) {
 
+                        dispatch(updateCachedSet({
+                            name: "benchmark",
+                            state: null
+                        }));
+
                         props.onClose()
                     }
 
@@ -179,7 +188,7 @@ export default function BenchmarkForm(props) {
                     executiontime: values.execTime,
                     memoryUsage: values.memUsage
                 },
-                "benchmark/add",
+                "benchmarks/add",
                 "Failed to create benchmark.",
                 "Created benchmark successfully!",
                 false
@@ -191,35 +200,37 @@ export default function BenchmarkForm(props) {
     var algorithms = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm"));
     React.useEffect(() => {
 
-        var candidates = algorithms.filter((item) => item.id == values.parentImplementation.parentId)
+        if(values.parentImplementation) {
 
-        if (candidates.length > 0) {
 
-            setLoadingProblemInstances(true)
+            var candidates = algorithms.filter((item) => item.id == values.parentImplementation.parentId)
 
-            props.requestService.executePostRequest(
-                (err, data) => {
-
-                    setLoadingProblemInstances(false)
-
-                    if (err.length == 0) {
-
-                        console.log("TEST!!!", data);
-
-                        setProblemInstanceOptions(data.problemInstances.map((item) =>{
-                            return {...item, name: item.problemType}
-                        } ))
-                    }
-
-                },
-                {
-                    id: candidates[0].id
-                },
-                "problemInstances/by_algorithm",
-                "",
-                "",
-                false
-            );
+            if (candidates.length > 0) {
+    
+                setLoadingProblemInstances(true)
+    
+                props.requestService.executePostRequest(
+                    (err, data) => {
+    
+                        setLoadingProblemInstances(false)
+    
+                        if (err.length == 0) {
+    
+                            setProblemInstanceOptions(data.problemInstances.map((item) =>{
+                                return {...item, name: item.problemType}
+                            } ))
+                        }
+    
+                    },
+                    {
+                        id: candidates[0].id
+                    },
+                    "problemInstances/by_algorithm",
+                    "",
+                    "",
+                    false
+                );
+            }
         }
 
     }, [values.parentImplementation]);
@@ -258,7 +269,7 @@ export default function BenchmarkForm(props) {
                             sx={{ width: "50%", marginRight: "50px" }}
                             options={problemInstanceOptions}
                             error={errors.parentProblemInstance}
-                            loading={loadingProblemInstances}
+                            disabled={loadingProblemInstances}
                             onChange={handleInputChange}
 
                         />

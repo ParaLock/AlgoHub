@@ -131,7 +131,7 @@ export default function AlgorithmReclassifyForm(props) {
                 },
                 {
                     algorithmId: (values.algorithm) ? values.algorithm.id : null,
-                    newClassification: (values.parentClassification) ? values.parentClassification.id : null
+                    newClassificationId: (values.parentClassification) ? values.parentClassification.id : null
                 },
                 "algorithms/reclassify",
                 "Failed to reclassify algorithm.",

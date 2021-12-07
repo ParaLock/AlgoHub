@@ -75,7 +75,7 @@ export default function AccountManagementPage(props) {
     
 
     var removeUser = (user) => {
-        console.log(user)
+        
         dispatch(updateRemoveRequest(
             {
                 msg: "Are you sure you want to remove the user " + user + "? Doing so will delete all objects created by said user.",
@@ -83,7 +83,12 @@ export default function AccountManagementPage(props) {
                     id: user,
                     typeName: "user"
                 },
-                initiator: "account_man"
+                state: "pending",
+                customData: {
+                    username: user
+                },
+                customEndpoint: "users/delete_user_data",
+                initiator: "account_man_user_remove"
             }
         ))
 
@@ -125,7 +130,7 @@ export default function AccountManagementPage(props) {
     }
 
     var selectUser = (user) => {
-        console.log(user);
+        
         setSelectedUser(user)
         setLoadingActivity(true);
         updateUserActivity(null)
@@ -149,6 +154,24 @@ export default function AccountManagementPage(props) {
         
     }
 
+    var updateUsers = () => {
+
+        setLoadingUsers(true)
+
+        props.requestService.executeGetRequest((err, res) => {
+
+            console.log(err)
+            console.log(res)
+
+            if (err.length == 0) {
+
+                setLoadingUsers(false)
+                setUsers(res.users);
+
+            }
+        }, "users/all_registered");
+    }
+
     React.useEffect(() => {
 
         console.log("AccountManPage: RemoveRequest changed: ", removeRequest)
@@ -159,27 +182,23 @@ export default function AccountManagementPage(props) {
             selectUser(selectedUser)
         }
     
+        if(removeRequest.initiator == "account_man_user_remove" && removeRequest.state == "complete") {
+            updateUsers();
+            setUserActivity(null);
+            setSelectedUser(null)
+
+        }
+
     }, [removeRequest]);
+    
+
     
 
     React.useEffect(() => {
 
         if (currentUser && currentUser.groups.includes("admins")) {
 
-            setLoadingUsers(true)
-
-            props.requestService.executeGetRequest((err, res) => {
-
-                console.log(err)
-                console.log(res)
-
-                if (err.length == 0) {
-
-                    setLoadingUsers(false)
-                    setUsers(res.users);
-
-                }
-            }, "users/all_registered");
+            updateUsers();
         }
 
         if (currentUser && !currentUser.groups.includes("admins")) {

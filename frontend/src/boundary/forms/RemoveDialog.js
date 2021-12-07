@@ -27,7 +27,6 @@ export default function RemoveDialog(props) {
     dispatch(updateRemoveRequest(
       { ...props.removeRequest,
         msg: "",
-        item: null,
         state: "cancelled"
       }
     ))
@@ -58,6 +57,22 @@ export default function RemoveDialog(props) {
       objName = endpointAliases[objName]
     }
 
+    var endpoint = objName + "s" + "/remove";
+
+    if(props.removeRequest.customEndpoint) {
+
+      endpoint = props.removeRequest.customEndpoint
+    }
+
+    var reqData = {
+      id: props.removeRequest.item.id
+    }
+
+    if(props.removeRequest.customData) {
+
+      reqData = {...props.removeRequest.customData};
+    }
+
     props.requestService.executePostRequest(
       (err, data) => {
           console.log(err)
@@ -66,7 +81,8 @@ export default function RemoveDialog(props) {
           dispatch(updateRemoveRequest(
             { ...props.removeRequest,
               msg: "",
-              item: null,
+              customEndpoint: null,
+              customData: null,
               state: "complete"
             }
           ))
@@ -89,10 +105,8 @@ export default function RemoveDialog(props) {
           }
 
       },
-      {
-          id: props.removeRequest.item.id,
-      },
-      objName + "s" + "/remove",
+      reqData,
+      endpoint,
       "Failed to remove " + objName,
       "Removed " + objName + " successfully."
   );
@@ -104,7 +118,7 @@ export default function RemoveDialog(props) {
     <div>
       <Dialog
         open={props.open}
-        onClose={handleClose}
+        //onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -113,7 +127,7 @@ export default function RemoveDialog(props) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {props.removeRequest.item && props.removeRequest.msg}
+            {props.removeRequest.state != "complete" && props.removeRequest.msg}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

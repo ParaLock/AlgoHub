@@ -123,7 +123,7 @@ function App() {
     
     <>    
         <RemoveDialog
-          open={removeRequest.item}
+          open={removeRequest.state != "complete" && removeRequest.state != "cancelled"}
           removeRequest={removeRequest}
           requestService={requestService}
           ontologyController={ontologyController}

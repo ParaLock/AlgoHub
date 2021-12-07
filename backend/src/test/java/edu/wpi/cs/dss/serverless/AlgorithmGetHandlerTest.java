@@ -13,8 +13,6 @@ import java.io.IOException;
 
 public class AlgorithmGetHandlerTest extends LambdaTest {
 
-
-
     void testInput(String incoming,String id, String name, String authorId, String description, String classificationId) throws IOException {
         AlgorithmGetHandler handler = new AlgorithmGetHandler();
         AlgorithmGetRequest req = new Gson().fromJson(incoming, AlgorithmGetRequest.class);
@@ -40,15 +38,15 @@ public class AlgorithmGetHandlerTest extends LambdaTest {
     public void testAlgorithmGet(){
         String SAMPLE_INPUT_ID = "{\"id\":\"1\"}";
 
-        String SAMPLE_INPUT_ID2 = "1";
-        String SAMPLE_INPUT_NAME = "test";
-        String SAMPLE_INPUT_DESCRIPTION = "test";
-        String SAMPLE_INPUT_AUTHORRID = "test_user2";
-        String SAMPLE_INPUT_CLASSIFICATIONID = "4b7f7170-50b6-11ec-933c-16c4115dd1ff";
+        String SAMPLE_OUTPUT_ID2 = "1";
+        String SAMPLE_OUTPUT_NAME = "test";
+        String SAMPLE_OUTPUT_DESCRIPTION = "test";
+        String SAMPLE_OUTPUT_AUTHORRID = "test_user2";
+        String SAMPLE_OUTPUT_CLASSIFICATIONID = "4b7f7170-50b6-11ec-933c-16c4115dd1ff";
 
 
         try {
-            testInput(SAMPLE_INPUT_ID,SAMPLE_INPUT_ID2,SAMPLE_INPUT_NAME,SAMPLE_INPUT_AUTHORRID,SAMPLE_INPUT_DESCRIPTION,SAMPLE_INPUT_CLASSIFICATIONID);
+            testInput(SAMPLE_INPUT_ID,SAMPLE_OUTPUT_ID2,SAMPLE_OUTPUT_NAME,SAMPLE_OUTPUT_AUTHORRID,SAMPLE_OUTPUT_DESCRIPTION,SAMPLE_OUTPUT_CLASSIFICATIONID);
         } catch (IOException ioe) {
             Assert.fail("Invalid:" + ioe.getMessage());
         }

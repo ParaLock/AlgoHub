@@ -12,7 +12,7 @@ import lombok.SneakyThrows;
 @NoArgsConstructor
 public class AlgorithmReclassifyRequest {
 
-    private String oldClassificationId;
+    private String algorithmId;
     private String newClassificationId;
 
     @Override

@@ -31,11 +31,11 @@ public class AlgorithmReclassifyHandler implements RequestHandler<AlgorithmRecla
 
     private GenericResponse reclassify(AlgorithmReclassifyRequest request) {
         // extracting new and old classification id from reclassify algorithm request
-        final String oldClassificationId = request.getOldClassificationId();
         final String newClassificationId = request.getNewClassificationId();
+        final String algorithmId = request.getAlgorithmId();
 
         // create sql query
-        final String query = "UPDATE algorithm SET classification_id = ? WHERE classification_id = ?";
+        final String query = "UPDATE algorithm SET classification_id = ? WHERE id = ?";
 
         // execute query
         try (final Connection connection = DataSource.getConnection(logger);
@@ -44,7 +44,7 @@ public class AlgorithmReclassifyHandler implements RequestHandler<AlgorithmRecla
             logger.log("Successfully connected to db!");
 
             preparedStatement.setString(1, newClassificationId);
-            preparedStatement.setString(2, oldClassificationId);
+            preparedStatement.setString(2, algorithmId);
 
             int rowsAffected = preparedStatement.executeUpdate();
             logger.log("Reclassify statement has affected " + rowsAffected + " rows!");

@@ -18,6 +18,7 @@ public class DataSource {
     private static final String AWS_RDS_PASSWORD;
     private static final String AWS_RDS_PORT = ":3306";
     private static final String AWS_RDS_NAME = "/algohub";
+    private static final String AWS_RDS_TESTING= "/test";
     private static final String AWS_RDS_URL_ENV_KEY = "dbHost";
     private static final String AWS_RDS_USERNAME_ENV_KEY = "dbUsername";
     private static final String AWS_RDS_PASSWORD_ENV_KEY = "dbPassword";
@@ -29,9 +30,14 @@ public class DataSource {
         AWS_RDS_URL = System.getenv(AWS_RDS_URL_ENV_KEY);
         AWS_RDS_USERNAME = System.getenv(AWS_RDS_USERNAME_ENV_KEY);
         AWS_RDS_PASSWORD = System.getenv(AWS_RDS_PASSWORD_ENV_KEY);
+
+
+
     }
 
     public static Connection getConnection(LambdaLogger logger) throws SQLException {
+        boolean useTestDB = true;
+
         final long envs = Stream.of(AWS_RDS_URL, AWS_RDS_USERNAME, AWS_RDS_PASSWORD)
                 .filter(Objects::nonNull)
                 .count();
@@ -41,11 +47,23 @@ public class DataSource {
         }
 
         logger.log("Connecting to db ...");
+        if(useTestDB){
+            return DriverManager.getConnection(
+                    JDBC_TAG + AWS_RDS_URL + AWS_RDS_PORT + AWS_RDS_TESTING + JDBC_CONNECTION_PROPERTY,
+                    AWS_RDS_USERNAME,
+                    AWS_RDS_PASSWORD
+            );
 
-        return DriverManager.getConnection(
-                JDBC_TAG + AWS_RDS_URL + AWS_RDS_PORT + AWS_RDS_NAME + JDBC_CONNECTION_PROPERTY,
-                AWS_RDS_USERNAME,
-                AWS_RDS_PASSWORD
-        );
+        }
+        else{
+
+            return DriverManager.getConnection(
+                    JDBC_TAG + AWS_RDS_URL + AWS_RDS_PORT + AWS_RDS_NAME + JDBC_CONNECTION_PROPERTY,
+                    AWS_RDS_USERNAME,
+                    AWS_RDS_PASSWORD
+            );
+
+        }
+
     }
 }

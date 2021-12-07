@@ -20,13 +20,13 @@ export default class RequestService {
         this.addRequestSuccessListeners.push(cb)
     }
 
-    executePostRequest(cb, data, endpoint, errMsg, successMsg) {
+    executePostRequest(cb, data, endpoint, errMsg, successMsg, execListeners = true) {
 
         console.log("Executing post request: ", data)
 
         var model = store.getState().model;
 
-        data.authorId = model.currentUser.username;
+        data.authorId = (model.currentUser) ? model.currentUser.username : null;
 
         axios.post(Config.API_PATH + endpoint,
             data,
@@ -68,9 +68,12 @@ export default class RequestService {
                     }))
                 }
 
-                for (var i in this.addRequestSuccessListeners) {
+                if(execListeners) {
 
-                    this.addRequestSuccessListeners[i](res)
+                    for (var i in this.addRequestSuccessListeners) {
+
+                        this.addRequestSuccessListeners[i](res)
+                    }
                 }
 
                 cb("",res.data)

@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import BenchmarkEntry from '../common/BenchmarkEntry';
 import { Resizable } from "re-resizable";
 import { useSelector, useDispatch } from 'react-redux'
+import { CircularProgress } from '@mui/material';
 const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
     width: 25%;
@@ -38,11 +39,41 @@ const MsgWrapper = styled.h3`
 
 export default function BenchmarkSidebar(props) {
     
-    console.log(props)
-
-    var benchmarks = useSelector(state => state.viewModel.selectedItem["benchmark"] ?? []);
+    var selectedItem = useSelector(state => state.viewModel.selectedOntologyItem);
     var currentUser = useSelector(state => state.model.currentUser);
+    const [benchmarks, setBenchmarks] = useState([]);
+    const [loadingBenchmarks, setLoadingBenchmarks] = useState(false);
+
+    React.useEffect(() => {
+
+        if(selectedItem && selectedItem.typeName == "implementation") {
+
+            setBenchmarks([])
+            setLoadingBenchmarks(true)
+
+            props.requestService.executePostRequest(
+                (err, data) => {
+
+                    setLoadingBenchmarks(false)
+
+                    if (err.length == 0) {
+
+                        setBenchmarks(data.benchmarks)
+                    }
+
+                },
+                {
+                    id: selectedItem.id
+                },
+                "benchmarks/by_implementation",
+                "",
+                "",
+                false
+            );
+        }
     
+    }, [selectedItem]);
+
     return (
 
         <BenchmarkSidebarWrapper open={props.open}>
@@ -53,8 +84,8 @@ export default function BenchmarkSidebar(props) {
                 </IconButton>
             </ButtonWrapper>
 
-            {benchmarks.length == 0 && <MsgWrapper>No Benchmarks</MsgWrapper>}
-
+            {benchmarks.length == 0 && !loadingBenchmarks && <MsgWrapper>No Benchmarks</MsgWrapper>}
+            {loadingBenchmarks && <CircularProgress/>}
             {benchmarks.map((item) => { 
 
                     return <BenchmarkEntry enableRemove={currentUser} benchmark={item}/> 

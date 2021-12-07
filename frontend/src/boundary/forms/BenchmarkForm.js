@@ -17,7 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, useForm } from '../hooks/useForm';
 import Input from "./Input";
 import ListInput from "./ListInput";
-import { isNumeric,powerOfTwo,validateStr, validateNum } from '../common/Common';
+import { isNumeric, powerOfTwo, validateStr, validateNum } from '../common/Common';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
         padding: theme.spacing(2),
@@ -25,7 +25,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogActions-root': {
         padding: theme.spacing(1),
     },
-    "& .MuiPaper-root" : {
+    "& .MuiPaper-root": {
         height: "fit-content"
     }
 }));
@@ -56,12 +56,12 @@ const BootstrapDialogTitle = (props) => {
 
 
 const FieldWrapper = styled('div')(({ theme }) => ({
-    
+
     marginBottom: '50px'
 }));
 
 const GeneralInfo = styled('div')(({ theme }) => ({
-    
+
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -70,7 +70,7 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 }));
 
 const MachineInformation = styled('div')(({ theme }) => ({
-    
+
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -79,7 +79,7 @@ const MachineInformation = styled('div')(({ theme }) => ({
 }));
 
 const ResultsInfomation = styled('div')(({ theme }) => ({
-    
+
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -107,6 +107,8 @@ export default function BenchmarkForm(props) {
     const [loading, setLoading] = React.useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [requestError, setRequestError] = useState("");
+    const [loadingProblemInstances, setLoadingProblemInstances] = useState(false);
+    const [problemInstanceOptions, setProblemInstanceOptions] = useState(null);
 
     const validate = (fieldValues = values) => {
 
@@ -177,24 +179,51 @@ export default function BenchmarkForm(props) {
                     executiontime: values.execTime,
                     memoryUsage: values.memUsage
                 },
-                "benchmarks/add",
+                "benchmark/add",
                 "Failed to create benchmark.",
-                "Created benchmark successfully!"
-                );
+                "Created benchmark successfully!",
+                false
+            );
         }
     }
 
     const implementationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "implementation"));
-    console.log(implementationOptions)
     var algorithms = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm"));
-    var problemInstanceOptions = [];
+    React.useEffect(() => {
 
-    if(values.parentImplementation) {
-        
-        // if(parentAlgorithm.length > 0) {
-        //     //TODO: Get algorithm problem instances...
-        // }
-    }
+        var candidates = algorithms.filter((item) => item.id == values.parentImplementation.parentId)
+
+        if (candidates.length > 0) {
+
+            setLoadingProblemInstances(true)
+
+            props.requestService.executePostRequest(
+                (err, data) => {
+
+                    setLoadingProblemInstances(false)
+
+                    if (err.length == 0) {
+
+                        console.log("TEST!!!", data);
+
+                        setProblemInstanceOptions(data.problemInstances.map((item) =>{
+                            return {...item, name: item.problemType}
+                        } ))
+                    }
+
+                },
+                {
+                    id: candidates[0].id
+                },
+                "problemInstances/by_algorithm",
+                "",
+                "",
+                false
+            );
+        }
+
+    }, [values.parentImplementation]);
+
 
     return (
         <div>
@@ -215,7 +244,7 @@ export default function BenchmarkForm(props) {
                             label="Parent Implementation"
                             name="parentImplementation"
                             value={values.parentImplementation}
-                            sx={{width: "50%", marginRight: "50px" }}
+                            sx={{ width: "50%", marginRight: "50px" }}
                             options={implementationOptions}
                             error={errors.parentImplementation}
                             onChange={handleInputChange}
@@ -226,9 +255,10 @@ export default function BenchmarkForm(props) {
                             label="Problem Instance"
                             name="parentProblemInstance"
                             value={values.parentProblemInstance}
-                            sx={{width: "50%", marginRight: "50px" }}
+                            sx={{ width: "50%", marginRight: "50px" }}
                             options={problemInstanceOptions}
                             error={errors.parentProblemInstance}
+                            loading={loadingProblemInstances}
                             onChange={handleInputChange}
 
                         />
@@ -237,7 +267,7 @@ export default function BenchmarkForm(props) {
                             name="name"
                             value={values.name}
                             error={errors.name}
-                            sx={{ width: "50%"}}
+                            sx={{ width: "50%" }}
                             onChange={handleInputChange}
                         />
                     </GeneralInfo>
@@ -249,7 +279,7 @@ export default function BenchmarkForm(props) {
                             name="cpuName"
                             value={values.cpuName}
                             error={errors.cpuName}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
 
@@ -258,7 +288,7 @@ export default function BenchmarkForm(props) {
                             name="cpuCores"
                             value={values.cpuCores}
                             error={errors.cpuCores}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
 
@@ -267,7 +297,7 @@ export default function BenchmarkForm(props) {
                             name="cpuThreads"
                             value={values.cpuThreads}
                             error={errors.cpuThreads}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
 
@@ -276,7 +306,7 @@ export default function BenchmarkForm(props) {
                             name="memory"
                             value={values.memory}
                             error={errors.memory}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
 
@@ -285,7 +315,7 @@ export default function BenchmarkForm(props) {
                             name="l1Cache"
                             value={values.l1Cache}
                             error={errors.l1Cache}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
                         <Input
@@ -293,7 +323,7 @@ export default function BenchmarkForm(props) {
                             name="l2Cache"
                             value={values.l2Cache}
                             error={errors.l2Cache}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
                         <Input
@@ -301,7 +331,7 @@ export default function BenchmarkForm(props) {
                             name="l3Cache"
                             value={values.l3Cache}
                             error={errors.l3Cache}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
 
@@ -314,7 +344,7 @@ export default function BenchmarkForm(props) {
                             name="execTime"
                             value={values.execTime}
                             error={errors.execTime}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
                         <Input
@@ -322,7 +352,7 @@ export default function BenchmarkForm(props) {
                             name="memUsage"
                             value={values.memUsage}
                             error={errors.memUsage}
-                            sx={{width: "30%"}}
+                            sx={{ width: "30%" }}
                             onChange={handleInputChange}
                         />
 

@@ -160,6 +160,7 @@ export default function MainPage(props) {
                 <BenchmarkSidebar
                     open={openPanels.includes("benchmark_menu")}
                     togglePanel={togglePanel}
+                    requestService={props.requestService}
                 />
 
             </ContentWrapper>

@@ -40,7 +40,10 @@ public class BenchmarkGetByImplementationHandler implements RequestHandler<Bench
         final String implementationId = request.getId();
 
         //create a sql query
-        final String query = "SELECT * FROM benchmark WHERE implementation_id = ?";
+        final String query =
+                "SELECT benchmark.*, problem_instance.problem_type as problemType " +
+                "FROM benchmark INNER JOIN problem_instance ON problem_instance.id = benchmark.problem_instance_id " +
+                "WHERE implementation_id = ?";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)
@@ -70,6 +73,7 @@ public class BenchmarkGetByImplementationHandler implements RequestHandler<Bench
                     final String implId = resultSet.getString(12);
                     final String problemInstanceId = resultSet.getString(13);
                     final String authorId = resultSet.getString(14);
+                    final String problemType = resultSet.getString(15);
 
                     benchmarks.add(new Benchmark(
                             id,
@@ -85,7 +89,8 @@ public class BenchmarkGetByImplementationHandler implements RequestHandler<Bench
                             executionTime,
                             executionDate.toString(),
                             memoryUsage,
-                            authorId
+                            authorId,
+                            problemType
                     ));
 
                 }

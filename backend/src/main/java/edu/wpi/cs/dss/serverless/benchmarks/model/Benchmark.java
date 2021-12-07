@@ -23,4 +23,5 @@ public class Benchmark {
     private String executionDate;
     private int memoryUsage;
     private String authorId;
+    private String problemType;
 }

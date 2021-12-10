@@ -145,6 +145,7 @@ export default function MainPage(props) {
 
                         <ImplementationPanel
                             ontologyController={props.ontologyController}
+                            requestService={props.requestService}
                         />
 
                     }

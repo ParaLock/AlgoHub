@@ -68,17 +68,19 @@ export default function ImplementationPanel(props) {
             if (cache[filename] === undefined) {
 
                 if (implementation.filename) {
-                    axios.get(Config.S3_PATH + "implementations/" + filename)
-                        .then(res => {
-                            if (res.data) {
-                                setSourceCode(res.data)
-                                cache[filename] = res.data
-                                setLoadingFile(false)
-                            }
-                        }).catch(() => {
+                    props.requestService.executeGetRequest((error, res) => {
+
+                        if(error.length == 0) {
+                            setSourceCode(res)
+                            cache[filename] = res
+                            setLoadingFile(false)
+                        } else {
+
                             setSourceCode("-Failed to retrieve implementation file")
                             setLoadingFile(false)
-                        })
+                        }
+                    }, Config.S3_PATH + "implementations/" + filename, true)
+
                 }
             } else {
 

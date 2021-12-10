@@ -110,30 +110,33 @@ export default class OntologyController {
 
         store.dispatch(updateOntology(null));
 
-        axios.get(Config.API_PATH + `classifications/hierarchy`)
-            .then(res => {
+        this.requestService.executeGetRequest((error, res) => {
 
-                console.log(res.data)
+            console.log(res)
 
-                if (res.data && res.data.hierarchy) {
+            if(error.length == 0) {
 
-                    res.data.hierarchy = res.data.hierarchy.map((item) => {
+                if (res && res.hierarchy) {
 
+                    res.hierarchy = res.hierarchy.map((item) => {
+    
                         if (!item.parentId)
                             item.parentId = ""
-
+    
                         return item;
-
+    
                     })
-
-                    store.dispatch(updateOntology(res.data.hierarchy));
-
+    
+                    store.dispatch(updateOntology(res.hierarchy));
+    
                     if (cb) {
-                        cb(res.data.hierarchy)
+                        cb(res.hierarchy)
                     }
-
+    
                 }
-            })
+            }
+
+        }, Config.API_PATH + `classifications/hierarchy`, true)
     }
 
     expandItem(id) {

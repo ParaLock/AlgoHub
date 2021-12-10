@@ -38,7 +38,7 @@ export default class RequestService {
 
         data.authorId = (model.currentUser) ? model.currentUser.username : null;
 
-        axios.post(Config.API_PATH + endpoint,
+        this.axiosClient.post(Config.API_PATH + endpoint,
             data,
             {
                 headers: {
@@ -109,10 +109,16 @@ export default class RequestService {
 
     }
 
-    executeGetRequest(cb, url) {
+    executeGetRequest(cb, url, customUrl = false) {
 
         var model = store.getState().model;
-        axios.get(Config.API_PATH + url, {
+        var finalUrl = url
+
+        if(!customUrl) {
+            finalUrl = Config.API_PATH + finalUrl
+        }   
+
+        this.axiosClient.get( finalUrl, {
             headers: {
                 'Authorization': (model.currentUser) ? (model.currentUser.token) : ""
             }

@@ -81,19 +81,19 @@ export default function BenchmarkEntry(props) {
             <br/>
             <i>CPU Threads</i>: {props.benchmark.cpuThreads}
             <br/>
-            <i>CPU L1 Cache</i>: {props.benchmark.cpuL1Cache}
+            <i>CPU L1 Cache (KB)</i>: {props.benchmark.cpuL1Cache}
             <br/>
-            <i>CPU L2 Cache</i>: {props.benchmark.cpuL2Cache}
+            <i>CPU L2 Cache (KB)</i>: {props.benchmark.cpuL2Cache}
             <br/>
-            <i>CPU L3 Cache</i>: {props.benchmark.cpuL3Cache}
+            <i>CPU L3 Cache (KB)</i>: {props.benchmark.cpuL3Cache}
             <br/>
-            <i>Memory</i>: {props.benchmark.memory}
+            <i>Memory (MB)</i>: {props.benchmark.memory}
           </MachineInfo>
           <Results>
             <h4>Results</h4>
-            <i>Memory Usage: </i>: {props.benchmark.memoryUsage}
+            <i>Memory Usage (KB): </i>: {props.benchmark.memoryUsage}
             <br/>
-            <i>Execution Time: </i>: {props.benchmark.executiontime}
+            <i>Execution Time (ms): </i>: {props.benchmark.executiontime}
             <br/>
             <i>Date: </i>: {props.benchmark.executionDate}
           </Results>

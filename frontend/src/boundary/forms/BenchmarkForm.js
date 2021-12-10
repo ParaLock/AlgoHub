@@ -118,7 +118,6 @@ export default function BenchmarkForm(props) {
 
         let temp = { ...errors }
 
-        validateStr(fieldValues, temp, "name", 100)
         validateStr(fieldValues, temp, "parentImplementation")
         validateStr(fieldValues, temp, "cpuName")
         validateStr(fieldValues, temp, "cpuName")
@@ -279,14 +278,6 @@ export default function BenchmarkForm(props) {
                             onChange={handleInputChange}
 
                         />
-                        <Input
-                            label="Name"
-                            name="name"
-                            value={values.name}
-                            error={errors.name}
-                            sx={{ width: "50%" }}
-                            onChange={handleInputChange}
-                        />
                     </GeneralInfo>
 
                     <MachineInformation>
@@ -319,7 +310,7 @@ export default function BenchmarkForm(props) {
                         />
 
                         <Input
-                            label="Memory"
+                            label="Memory (MB)"
                             name="memory"
                             value={values.memory}
                             error={errors.memory}
@@ -328,7 +319,7 @@ export default function BenchmarkForm(props) {
                         />
 
                         <Input
-                            label="L1 Cache"
+                            label="L1 Cache (KB)"
                             name="l1Cache"
                             value={values.l1Cache}
                             error={errors.l1Cache}
@@ -336,7 +327,7 @@ export default function BenchmarkForm(props) {
                             onChange={handleInputChange}
                         />
                         <Input
-                            label="L2 Cache"
+                            label="L2 Cache (KB)"
                             name="l2Cache"
                             value={values.l2Cache}
                             error={errors.l2Cache}
@@ -344,7 +335,7 @@ export default function BenchmarkForm(props) {
                             onChange={handleInputChange}
                         />
                         <Input
-                            label="L3 Cache"
+                            label="L3 Cache (KB)"
                             name="l3Cache"
                             value={values.l3Cache}
                             error={errors.l3Cache}
@@ -357,7 +348,7 @@ export default function BenchmarkForm(props) {
                     <ResultsInfomation>
 
                         <Input
-                            label="Execution Time"
+                            label="Execution Time (ms)"
                             name="execTime"
                             value={values.execTime}
                             error={errors.execTime}
@@ -365,7 +356,7 @@ export default function BenchmarkForm(props) {
                             onChange={handleInputChange}
                         />
                         <Input
-                            label="Memory Usage"
+                            label="Memory Usage (KB)"
                             name="memUsage"
                             value={values.memUsage}
                             error={errors.memUsage}

@@ -192,6 +192,7 @@ export default function ImplementationForm(props) {
                 (err) => {
                     setRequestError(err)
                     setLoading(false)
+                    setSubmitDisabled(false)
 
                     if (err.length == 0) {
 

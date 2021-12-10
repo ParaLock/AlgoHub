@@ -32,6 +32,7 @@ const AlgorithmDescription = styled.div`
     padding-right: 5px;
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
     
 `;
 

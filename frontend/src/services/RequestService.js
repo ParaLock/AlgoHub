@@ -1,7 +1,8 @@
 import axios from 'axios';
 import awsconfig from '../aws-exports';
-import { Config } from "../boundary/common/Config"
-
+import { Config } from "../boundary/common/Config";
+import http from 'http';
+import https from 'https';
 import store from '../model/ModelProxy';
 import { enqueueNotification } from "../model/ViewModel";
 
@@ -13,6 +14,15 @@ export default class RequestService {
         this.removeRequestSuccessListeners = []
         
         this.getRequestListeners = []
+
+        this.axiosClient = axios.create({
+            timeout: 60000,
+            httpAgent: new http.Agent({ keepAlive: true }),
+            httpsAgent: new https.Agent({ keepAlive: true }),
+            maxRedirects: 10,
+            maxContentLength: 50 * 1000 * 1000
+        });
+          
     }
 
     registerAddRequestSuccessListener(cb) {

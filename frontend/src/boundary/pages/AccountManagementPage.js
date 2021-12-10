@@ -14,6 +14,8 @@ import BasicHeader from '../BasicHeader';
 import GenericListItem from '../common/GenericListItem';
 import { enqueueNotification, updateNotificationStatus, updateLoadingStatus, updateRemoveRequest } from "../../model/ViewModel";
 import CircularProgress from '@mui/material/CircularProgress';
+import { Resizable } from "re-resizable";
+import { ConstructionOutlined } from '@mui/icons-material';
 const Wrapper = styled.div`
       
     display: flex;
@@ -32,13 +34,21 @@ const ContentWrapper = styled.div`
 
 `;
 
+const OuterContentWrapper = styled.div`
+    height: 100%;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+
+`;
+
 const InnerContentWrapper = styled.div`
 
     display: flex;
     width: 100%;
+    height: 100%;
     flex-direction: row;
     align-items: stretch;
-    padding: 10px;
     padding-bottom: 0px;
     padding-top: 0px;
 `;
@@ -53,7 +63,7 @@ const ObjectList = styled.div`
     height: 100%;
     background-color: white;
     transition: transform 250ms ease-in-out, max-width 250ms;
-    border-radius: 0px 10px 10px 5px;
+    border-radius: 10px 10px 10px 10px;
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
     margin-top: 3px;
     overflow-y: ${props => props.scrollEnabled ? "auto" : "hidden"};
@@ -62,20 +72,50 @@ const ObjectList = styled.div`
 `;
 
 
+const SummarySection = styled.div`   
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    border-radius: 5px;
+    border-width: 1px;
+    margin: 5px;
+    margin-right: 0px;
+    width: 99.5%;
+    display: flex;
+    flex-direction: column;
+`;
+
+const SummarySectionTitle = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+`;
+
+const SummarySectionDetails = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+`;
+
+const SummarySectionDetailItem = styled.div`
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+`;
+
 export default function AccountManagementPage(props) {
 
     const dispatch = useDispatch();
     const currentUser = useSelector(state => state.model.currentUser);
-    const removeRequest  = useSelector(state => state.viewModel.removeRequest);
+    const removeRequest = useSelector(state => state.viewModel.removeRequest);
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(false);
     const [userActivity, setUserActivity] = useState(null);
     const [loadingActivity, setLoadingActivity] = useState(false);
-    
+
 
     var removeUser = (user) => {
-        
+
         dispatch(updateRemoveRequest(
             {
                 msg: "Are you sure you want to remove the user " + user + "? Doing so will delete all objects created by said user.",
@@ -95,7 +135,7 @@ export default function AccountManagementPage(props) {
     }
 
     var removeItem = (item) => {
-        
+
         dispatch(updateRemoveRequest(
             {
                 msg: "Are you sure you want to remove " + item.typeName + "?",
@@ -111,26 +151,26 @@ export default function AccountManagementPage(props) {
 
         setUserActivity(null);
 
-        for(var i in data) {
+        for (var i in data) {
 
             var act = data[i];
 
             console.log(act)
-            if(!(act.typeName in Object.keys(activity))) {
-                activity[act.typeName] = {title: act.typeName + "s", items: []}
+            if (!(act.typeName in Object.keys(activity))) {
+                activity[act.typeName] = { title: act.typeName + "s", items: [] }
             }
             activity[act.typeName].items.push(act);
         }
 
         console.log(activity)
 
-        if(data && data.length > 0)
+        if (data && data.length > 0)
             setUserActivity(activity)
 
     }
 
     var selectUser = (user) => {
-        
+
         setSelectedUser(user)
         setLoadingActivity(true);
         updateUserActivity(null)
@@ -151,7 +191,7 @@ export default function AccountManagementPage(props) {
             "",
             ""
         );
-        
+
     }
 
     var updateUsers = () => {
@@ -176,13 +216,13 @@ export default function AccountManagementPage(props) {
 
         console.log("AccountManPage: RemoveRequest changed: ", removeRequest)
 
-        if(removeRequest.initiator == "account_man" && removeRequest.state == "complete") {
-            
+        if (removeRequest.initiator == "account_man" && removeRequest.state == "complete") {
+
             console.log("Did stuff!!!!")
             selectUser(selectedUser)
         }
-    
-        if(removeRequest.initiator == "account_man_user_remove" && removeRequest.state == "complete") {
+
+        if (removeRequest.initiator == "account_man_user_remove" && removeRequest.state == "complete") {
             updateUsers();
             setUserActivity(null);
             setSelectedUser(null)
@@ -190,9 +230,9 @@ export default function AccountManagementPage(props) {
         }
 
     }, [removeRequest]);
-    
 
-    
+
+
 
     React.useEffect(() => {
 
@@ -216,48 +256,84 @@ export default function AccountManagementPage(props) {
             <BasicHeader title="Account Management" />
 
             <ContentWrapper>
-                <UserList
-                    isLoading={loadingUsers}
-                    users={users}
-                    onSelected={(item) => selectUser(item)}
-                    onRemove={removeUser}
-                    selectedUser={selectedUser}
-                    currentUser={currentUser}
-                    enableRemove={currentUser && currentUser.groups.includes("admins")}
-                />
-                <InnerContentWrapper>
-                    {
-                        userActivity && Object.keys(userActivity).map((key) => {
+                <Resizable
+                    enable={{ top: false, right: true, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+                    defaultSize={{
+                        width: "20%",
+                        height: "100%",
+                    }}
+                >
+                    <UserList
+                        isLoading={loadingUsers}
+                        users={users}
+                        onSelected={(item) => selectUser(item)}
+                        onRemove={removeUser}
+                        selectedUser={selectedUser}
+                        currentUser={currentUser}
+                        enableRemove={currentUser && currentUser.groups.includes("admins")}
+                    />
+                </Resizable>
+                <OuterContentWrapper>
+                    <SummarySection>
+                        {
+                            userActivity &&
+                            <>
 
-                            var item = userActivity[key];
+                                <SummarySectionTitle>
+                                    <Typography variant="h6" align="center" component="div" gutterBottom>
+                                        Activity Summary
+                                    </Typography>
+                                </SummarySectionTitle>
+                                <SummarySectionDetails>
 
-                            return <ObjectList>
-                                <Typography variant="h6" align="center" component="div" gutterBottom>
-                                    {item.title}
-                                </Typography>
-                                {
-                                    item.items.map((listItem) => {
-                                        return <GenericListItem
-                                            onSelected={(item) => { }}
-                                            onRemove={removeItem}
-                                            title={listItem.name}
-                                            item={listItem}
-                                            enableRemove={currentUser}
-                                        />
-                                    })
-                                }
-                            </ObjectList>
+                                    {
+                                        Object.keys(userActivity).map((key) => {
 
-                        })
+                                            return <Typography variant="h7" component="div" >
+                                                <SummarySectionDetailItem>{"Number of " + userActivity[key].title + ": " + userActivity[key].items.length}</SummarySectionDetailItem>
+                                            </Typography>
+                                        })
+                                    }
+                                </SummarySectionDetails>
+                            </>
 
-                    }
-                    <Typography variant="h6" align="center" component="div" gutterBottom>
-                                        
-                        {loadingActivity && <CircularProgress/>}
-                        { (!userActivity && !loadingActivity) && <div>None</div>}
-                    </Typography>
-                </InnerContentWrapper>
+                        }
+                    </SummarySection>
+                    <InnerContentWrapper>
+                        {
+                            userActivity && Object.keys(userActivity).map((key) => {
+
+                                var item = userActivity[key];
+
+                                return <ObjectList>
+                                    <Typography variant="h6" align="center" component="div" gutterBottom>
+                                        {item.title}
+                                    </Typography>
+                                    {
+                                        item.items.map((listItem) => {
+                                            return <GenericListItem
+                                                onSelected={(item) => { }}
+                                                onRemove={removeItem}
+                                                title={listItem.name}
+                                                item={listItem}
+                                                enableRemove={currentUser}
+                                            />
+                                        })
+                                    }
+                                </ObjectList>
+
+                            })
+
+                        }
+                        <Typography variant="h6" align="center" component="div" gutterBottom>
+
+                            {loadingActivity && <CircularProgress />}
+                            {(!userActivity && !loadingActivity) && <div>None</div>}
+                        </Typography>
+                    </InnerContentWrapper>
+                </OuterContentWrapper>
             </ContentWrapper>
+
         </Wrapper>
     );
 }

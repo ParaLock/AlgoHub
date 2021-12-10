@@ -13,13 +13,15 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 const Wrapper = styled.div`
 
     border-radius: 5px;
-    margin: 5px;
+    margin-right: 4px;
+    margin-left: 4px;
+    
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     padding: 5px;
     font-size: 10pt;
-    background-color: ${props => props.selected ? "lightgray" : "white"};;
-    width: 95%;
-    height: 30px;    
+    background-color: ${props => props.selected ? "lightgray" : "white"};
+    height: fit-content;
+    min-height: 30px;   
 `;
 
 const ContentWrapper = styled.div`

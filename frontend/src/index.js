@@ -9,9 +9,9 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export const themeOptions = createTheme({
   palette: {
-    type: 'dark',
+    type: 'light',
     primary: {
-      main: '#ac2b37',
+      main: '#b8212f',
     },
     secondary: {
       main: '#f50057',

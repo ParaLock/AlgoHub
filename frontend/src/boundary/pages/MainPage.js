@@ -27,15 +27,15 @@ import { setPanelVisibility, updateRemoveRequest } from "../../model/ViewModel";
 import RemoveDialog from '../forms/RemoveDialog';
 
 const Wrapper = styled.div`
-      
+        
     display: flex;
     width: 100%;
     height: 99%;
     flex-direction: column;
+
 `;
 
 const ContentWrapper = styled.div`
-
     display: flex;
     width: 100%;
     height: 100%;
@@ -45,7 +45,6 @@ const ContentWrapper = styled.div`
 `;
 
 const InnerContentWrapper = styled.div`
-
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -111,6 +110,7 @@ export default function MainPage(props) {
                     ontologyController={props.ontologyController}
                     togglePanel={togglePanel}
                 />
+                
                 <InnerContentWrapper>
                     <PanelTitle>
                         <Typography variant="h6" align="center" component="div" gutterBottom>
@@ -142,7 +142,7 @@ export default function MainPage(props) {
                     </Resizable>}
 
                     {selectedItemType == "implementation" &&
-                    
+
                         <ImplementationPanel
                             ontologyController={props.ontologyController}
                         />
@@ -159,7 +159,7 @@ export default function MainPage(props) {
 
                 </InnerContentWrapper>
                 <BenchmarkSidebar
-                    open={openPanels.includes("benchmark_menu") && (selectedItemType == "implementation")}
+                    open={openPanels.includes("benchmark_menu")}
                     togglePanel={togglePanel}
                     requestService={props.requestService}
                 />

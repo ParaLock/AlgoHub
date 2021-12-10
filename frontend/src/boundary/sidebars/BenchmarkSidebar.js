@@ -7,13 +7,13 @@ import BenchmarkEntry from '../common/BenchmarkEntry';
 import { Resizable } from "re-resizable";
 import { useSelector, useDispatch } from 'react-redux'
 import { CircularProgress } from '@mui/material';
-import {updateCachedSet, updateRemoveRequest} from '../../model/ViewModel'
+import { updateCachedSet, updateRemoveRequest } from '../../model/ViewModel'
 const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
-    width: 25%;
+    width: 35%;
     height: 100%;
     background-color: #f5f7fa;
-    max-width: ${props => props.open ? "25%" : "0%"};
+    max-width: ${props => props.open ? "35%" : "0%"};
     transform: ${props => props.open ? "translateX(0%)" : "translateX(100%)"};
     transition: transform 250ms ease-in-out, max-width 250ms;
     overflow:hidden;
@@ -39,7 +39,7 @@ const MsgWrapper = styled.h3`
 `;
 
 export default function BenchmarkSidebar(props) {
-    
+
     var selectedItem = useSelector(state => state.viewModel.selectedOntologyItem);
     var currentUser = useSelector(state => state.model.currentUser);
     const dispatch = useDispatch();
@@ -48,7 +48,7 @@ export default function BenchmarkSidebar(props) {
     const [loadingBenchmarks, setLoadingBenchmarks] = useState(false);
 
     var updateBenchmarks = () => {
-        
+
         dispatch(updateCachedSet({
             name: "benchmark",
             state: []
@@ -93,9 +93,9 @@ export default function BenchmarkSidebar(props) {
         ))
     }
 
-    if(!benchmarks) {
+    if (!benchmarks) {
 
-        if(selectedItem) {
+        if (selectedItem) {
 
             updateBenchmarks();
         }
@@ -103,7 +103,7 @@ export default function BenchmarkSidebar(props) {
 
     React.useEffect(() => {
 
-        if(selectedItem && selectedItem.typeName == "implementation") {
+        if (selectedItem && selectedItem.typeName == "implementation") {
             updateBenchmarks();
 
         } else {
@@ -112,29 +112,29 @@ export default function BenchmarkSidebar(props) {
                 state: []
             }))
         }
-    
+
     }, [selectedItem]);
 
     return (
 
-        <BenchmarkSidebarWrapper open={props.open}>
+            <BenchmarkSidebarWrapper open={props.open}>
 
-            {currentUser &&
-            <ButtonWrapper>
-                <IconButton color="inherit" size="large" onClick={() => props.togglePanel("benchmark_add_form", true)}>
-                    <AddCircleOutlineIcon />
-                </IconButton>
-            </ButtonWrapper>
-            }
+                {currentUser &&
+                    <ButtonWrapper>
+                        <IconButton color="inherit" size="large" onClick={() => props.togglePanel("benchmark_add_form", true)}>
+                            <AddCircleOutlineIcon />
+                        </IconButton>
+                    </ButtonWrapper>
+                }
 
-            {!benchmarks || benchmarks.length == 0 && !loadingBenchmarks && <MsgWrapper>No Benchmarks</MsgWrapper>}
-            {loadingBenchmarks && <CircularProgress/>}
-            {benchmarks && benchmarks.map((item) => { 
+                {!benchmarks || benchmarks.length == 0 && !loadingBenchmarks && <MsgWrapper>No Benchmarks</MsgWrapper>}
+                {loadingBenchmarks && <CircularProgress />}
+                {benchmarks && benchmarks.map((item) => {
 
-                    return <BenchmarkEntry onClick={() => deleteBenchmark(item)} enableRemove={currentUser} benchmark={item}/> 
+                    return <BenchmarkEntry onClick={() => deleteBenchmark(item)} enableRemove={currentUser} benchmark={item} />
                 })
-            }
-             
-        </BenchmarkSidebarWrapper>
+                }
+
+            </BenchmarkSidebarWrapper>
     )
 }

@@ -1,6 +1,6 @@
 import '../../App.css';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Header from '../Header';
 import OntologySidebar from '../sidebars/OntologySidebar';
@@ -69,8 +69,14 @@ export default function MainPage(props) {
     var selectedItemType = useSelector(state => state.viewModel.selectedOntologyItemType)
     var openPanels = useSelector(state => state.viewModel.openPanels);
     const dispatch = useDispatch();
-    
-    const [topPanelHeight, setTopPanelHeight] = useState(800);
+
+    const [topPanelHeight, setTopPanelHeight] = useState(null);
+    const innerContentElement = useRef(null)
+
+    useEffect(() => {
+        if(topPanelHeight == null)
+            setTopPanelHeight(innerContentElement.current.clientHeight * 0.50)
+    })
 
     
     var togglePanel = (name, state = undefined) => {
@@ -111,7 +117,7 @@ export default function MainPage(props) {
                     togglePanel={togglePanel}
                 />
                 
-                <InnerContentWrapper>
+                <InnerContentWrapper ref={innerContentElement} >
                     <PanelTitle>
                         <Typography variant="h6" align="center" component="div" gutterBottom>
                             {title}
@@ -131,8 +137,9 @@ export default function MainPage(props) {
                             bottomLeft: false,
                             topLeft: false
                         }}
-                        size={{ height: topPanelHeight }}
+                        size={{ height: topPanelHeight}}
                         onResizeStop={(e, direction, ref, d) => {
+
                             setTopPanelHeight(topPanelHeight + d.height)
                         }}
                     >

@@ -99,6 +99,8 @@ export default function ClassificationMergeForm(props) {
                 (err) => {
 
                     setRequestError(err)
+                    setLoading(false)
+                    setSubmitDisabled(false)
 
                     if (err.length == 0) {
 

@@ -19,8 +19,7 @@ export default class RequestService {
             timeout: 60000,
             httpAgent: new http.Agent({ keepAlive: true }),
             httpsAgent: new https.Agent({ keepAlive: true }),
-            maxRedirects: 10,
-            maxContentLength: 50 * 1000 * 1000
+            maxRedirects: 10
         });
           
     }

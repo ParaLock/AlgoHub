@@ -110,7 +110,7 @@ export default function BenchmarkForm(props) {
     const [submitDisabled, setSubmitDisabled] = useState(false);
     const [requestError, setRequestError] = useState("");
     const [loadingProblemInstances, setLoadingProblemInstances] = useState(false);
-    const [problemInstanceOptions, setProblemInstanceOptions] = useState(null);
+    const [problemInstanceOptions, setProblemInstanceOptions] = useState([]);
 
     const dispatch = useDispatch();
 

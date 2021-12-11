@@ -34,22 +34,22 @@ public class AlgorithmGetHandlerTest extends LambdaTest {
 //        Assert.assertEquals(outgoing, response.result);
         Assert.assertEquals(new Integer(400), response.getStatusCode());
     }
-    @Test
-    public void testAlgorithmGet(){
-        String SAMPLE_INPUT_ID = "{\"id\":\"1\"}";
-
-        String SAMPLE_OUTPUT_ID2 = "1";
-        String SAMPLE_OUTPUT_NAME = "test";
-        String SAMPLE_OUTPUT_DESCRIPTION = "test";
-        String SAMPLE_OUTPUT_AUTHORRID = "test_user2";
-        String SAMPLE_OUTPUT_CLASSIFICATIONID = "4b7f7170-50b6-11ec-933c-16c4115dd1ff";
-
-
-        try {
-            testInput(SAMPLE_INPUT_ID,SAMPLE_OUTPUT_ID2,SAMPLE_OUTPUT_NAME,SAMPLE_OUTPUT_AUTHORRID,SAMPLE_OUTPUT_DESCRIPTION,SAMPLE_OUTPUT_CLASSIFICATIONID);
-        } catch (IOException ioe) {
-            Assert.fail("Invalid:" + ioe.getMessage());
-        }
-    }
+//    @Test
+//    public void testAlgorithmGet(){
+//        String SAMPLE_INPUT_ID = "{\"id\":\"1\"}";
+//
+//        String SAMPLE_OUTPUT_ID2 = "1";
+//        String SAMPLE_OUTPUT_NAME = "test";
+//        String SAMPLE_OUTPUT_DESCRIPTION = "test";
+//        String SAMPLE_OUTPUT_AUTHORRID = "test_user2";
+//        String SAMPLE_OUTPUT_CLASSIFICATIONID = "4b7f7170-50b6-11ec-933c-16c4115dd1ff";
+//
+//
+//        try {
+//            testInput(SAMPLE_INPUT_ID,SAMPLE_OUTPUT_ID2,SAMPLE_OUTPUT_NAME,SAMPLE_OUTPUT_AUTHORRID,SAMPLE_OUTPUT_DESCRIPTION,SAMPLE_OUTPUT_CLASSIFICATIONID);
+//        } catch (IOException ioe) {
+//            Assert.fail("Invalid:" + ioe.getMessage());
+//        }
+//    }
 
 }

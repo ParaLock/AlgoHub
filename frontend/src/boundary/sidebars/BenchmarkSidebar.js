@@ -120,13 +120,12 @@ export default function BenchmarkSidebar(props) {
 
             <BenchmarkSidebarWrapper open={props.open}>
 
-                {currentUser &&
-                    <ButtonWrapper>
-                        <IconButton color="inherit" size="large" onClick={() => props.togglePanel("benchmark_add_form", true)}>
-                            <AddCircleOutlineIcon />
-                        </IconButton>
-                    </ButtonWrapper>
-                }
+
+                <ButtonWrapper>
+                    <IconButton color="inherit" size="large" onClick={() => props.togglePanel("benchmark_add_form", true)}>
+                        <AddCircleOutlineIcon />
+                    </IconButton>
+                </ButtonWrapper>
 
                 {!benchmarks || benchmarks.length == 0 && !loadingBenchmarks && <MsgWrapper>No Benchmarks</MsgWrapper>}
                 {loadingBenchmarks && <CircularProgress />}

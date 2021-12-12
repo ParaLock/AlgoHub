@@ -13,10 +13,11 @@ import Amplify, { Auth, API, Storage } from 'aws-amplify';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import awsconfig from '../../aws-exports';
-import {Config} from "../common/Config"
+import { Config } from "../common/Config"
 import axios from 'axios';
 import { saveAs } from "file-saver";
 import fileDownload from 'js-file-download'
+import { useSelector, useDispatch } from 'react-redux'
 
 const Wrapper = styled.div`
 
@@ -28,9 +29,9 @@ const Wrapper = styled.div`
     margin: 5px;
     margin-bottom: 0px;
     display: flex;
-    flex-grow: 1;
-    height: 100%;
     flex-direction: column;
+    height: 100%;
+    overflow: scroll;
 `;
 
 const ButtonWrapper = styled.div`
@@ -48,26 +49,31 @@ export default function ImplementationPanel(props) {
     const [loadingFile, setLoadingFile] = useState(false)
     const [fileCache, setFileCache] = useState({});
 
+    const implementation = useSelector(state => (state.viewModel.selectedItem["implementation"]))
+
     React.useEffect(() => {
 
         setSourceCode("")
         setLoadingFile(true)
 
-        var cache = {...fileCache}
+        var cache = { ...fileCache }
 
-        if(!props.selectedImplementation )
+        if (!implementation)
             return
+
+        var filename = implementation.filename;
 
         try {
 
-            if(cache[props.selectedImplementation.filename] === undefined) {
+            if (cache[filename] === undefined) {
 
-                if(props.selectedImplementation.filename) {
-                    axios.get(Config.S3_PATH + "implementations/" + props.selectedImplementation.filename)
+                if (implementation.filename) {
+                    
+                    axios.get(Config.S3_PATH + "implementations/" + filename)
                     .then(res => {
-                        if(res.data) {
+                        if (res.data) {
                             setSourceCode(res.data)
-                            cache[props.selectedImplementation.filename] = res.data
+                            cache[filename] = res.data
                             setLoadingFile(false)
                         }
                     }).catch(() => {
@@ -77,13 +83,12 @@ export default function ImplementationPanel(props) {
                 }
             } else {
 
-                console.log("using cache: ", cache[props.selectedImplementation.filename])
-                setSourceCode(cache[props.selectedImplementation.filename])
+                setSourceCode(cache[filename])
                 setLoadingFile(false)
 
             }
 
-        } catch(exception) {
+        } catch (exception) {
 
             setSourceCode("-Failed to retrieve implementation file")
             setLoadingFile(false)
@@ -91,46 +96,49 @@ export default function ImplementationPanel(props) {
 
         setFileCache(cache)
 
-    }, [props.selectedImplementation]);
+    }, [implementation]);
 
-    var lang = (props.selectedImplementation) ? props.selectedImplementation.programmingLanguage.toLowerCase() : "text"
+    var lang = (implementation) ? implementation.programmingLanguage.toLowerCase() : "text"
 
-    
     var handleDownload = (url, filename) => {
+
+        const guidRegex = /.*(\{){0,1}[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}(\}){0,1}_/;
+        filename = filename.replace(guidRegex, "");
+
         axios.get(url, {
-        responseType: 'blob',
+            responseType: 'blob',
         })
         .then((res) => {
-        fileDownload(res.data, filename)
+            fileDownload(res.data, filename)
         })
-  }
+    }
 
     return (
 
         <Wrapper>
 
-            { (loadingFile || !props.selectedImplementation) && <CircularProgress /> }
+            {(loadingFile || !implementation) && <CircularProgress />}
 
-                <SyntaxHighlighter language={lang} customStyle={{height: "100%", margin: "0px", display: "flex", backgroundColor: "white"}} style={{ ...docco}}>
-                    {sourceCode}
-                </SyntaxHighlighter>
-            
-                <ButtonWrapper>
-                    <Button 
-                            onClick={() => {
-                                            var filename = Config.S3_PATH + "implementations/" + props.selectedImplementation.filename;
-                                            
-                                            if(filename) {
-                                                handleDownload(filename,filename)
-                                            }
-                                            }} 
-                            size="small" 
-                            variant="contained" 
-                    >DOWNLOAD</Button>
-  
-                </ButtonWrapper>
+            <SyntaxHighlighter language={lang} customStyle={{ height: "100%", margin: "0px", display: "flex", backgroundColor: "white" }} style={{ ...docco }}>
+                {sourceCode}
+            </SyntaxHighlighter>
+
+            <ButtonWrapper>
+                <Button
+                    onClick={() => {
+                        var filename = Config.S3_PATH + "implementations/" + implementation.filename;
+
+                        if (filename) {
+                            handleDownload(filename, implementation.filename)
+                        }
+                    }}
+                    size="small"
+                    variant="contained"
+                >DOWNLOAD</Button>
+
+            </ButtonWrapper>
 
         </Wrapper>
-  );
+    );
 }
 

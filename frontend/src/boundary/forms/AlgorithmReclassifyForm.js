@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -11,9 +11,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Autocomplete from '@mui/material/Autocomplete';
-
-
+import { useSelector, useDispatch } from 'react-redux';
+import ListInput from "./ListInput";
+import { isNumeric,powerOfTwo,validateStr, validateNum } from '../common/Common';
+import { Form, useForm } from '../hooks/useForm';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
         padding: theme.spacing(2),
@@ -65,7 +68,79 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 }));
 
-export default function ClassificationForm(props) {
+const initialFValues = {
+    algorithm: null,
+    parentClassification: null
+
+}
+
+
+export default function AlgorithmReclassifyForm(props) {
+
+    const [loading, setLoading] = React.useState(false);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+    const [requestError, setRequestError] = useState("");
+
+    const algorithmOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm") )
+    const classificationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "classification") )
+
+    const validate = (fieldValues = values) => {
+
+        let temp = { ...errors }
+
+        validateStr(fieldValues, temp, "algorithmName", 100)
+        validateStr(fieldValues, temp, "parentClassification")
+
+        setErrors({
+            ...temp
+        })
+
+        if (fieldValues == values)
+            return Object.values(temp).every(x => x == "")
+    }
+
+    const {
+        values,
+        setValues,
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm
+    } = useForm(initialFValues, true, validate);
+
+    const handleSubmit = e => {
+        e.preventDefault()
+        if (validate()) {
+
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
+
+
+            props.requestService.executePostRequest(
+                (err) => {
+                    setRequestError(err)
+                    setLoading(false)
+                    setSubmitDisabled(false)
+
+                    if (err.length == 0) {
+
+                        props.onClose()
+                    }
+
+                },
+                {
+                    algorithmId: (values.algorithm) ? values.algorithm.id : null,
+                    newClassificationId: (values.parentClassification) ? values.parentClassification.id : null
+                },
+                "algorithms/reclassify",
+                "Failed to reclassify algorithm.",
+                "Reclassified algorithm successfully!"
+                );
+
+            console.log(values)
+        }
+    }
 
     return (
         <div>
@@ -81,30 +156,43 @@ export default function ClassificationForm(props) {
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
                     <GeneralInfo>
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "algorithm")}
-                        renderInput={(params) => <TextField {...params} label="Algorithm Name" />}
+
+                        <ListInput
+
+                            label="Algorithm Name"
+                            name="algorithm"
+                            value={values.algorithm}
+                            sx={{width: "30%"}}
+                            options={algorithmOptions}
+                            error={errors.algorithm}
+                            onChange={handleInputChange}
+
                         />
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
-                        renderInput={(params) => <TextField {...params} label="New Parent Classification" />}
+                        <ListInput
+
+                            label="New Classification"
+                            name="parentClassification"
+                            value={values.parentClassification}
+                            sx={{width: "30%"}}
+                            options={classificationOptions}
+                            error={errors.parentClassification}
+                            onChange={handleInputChange}
+
                         />
                     </GeneralInfo>
 
 
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={() => props.onClose()}>
+                    <LoadingButton
+                        onClick={handleSubmit}
+                        loading={loading}
+                        disabled={submitDisabled}
+                        loadingPosition="center"
+                        variant="contained"
+                    >
                         Reclassify
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </BootstrapDialog>
         </div>

@@ -13,8 +13,10 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import LoadingButton from '@mui/lab/LoadingButton';
-
-import useInput from "../hooks/useInput";
+import { useSelector, useDispatch } from 'react-redux';
+import { Form, useForm } from '../hooks/useForm';
+import Input from "./Input";
+import ListInput from "./ListInput";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -23,7 +25,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogActions-root': {
         padding: theme.spacing(1),
     },
-    "& .MuiPaper-root" : {
+    "& .MuiPaper-root": {
         height: "fit-content"
     }
 }));
@@ -54,85 +56,107 @@ const BootstrapDialogTitle = (props) => {
 
 
 const FieldWrapper = styled('div')(({ theme }) => ({
-    
+
     marginBottom: '50px'
 }));
 
-const GeneralInfo = styled('div')(({ theme }) => ({
-    
+
+const SectionA = styled('div')(({ theme }) => ({
+
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: "50px"
+    marginBottom: "50px",
+    width: "100%"
 
 }));
 
+const initialFValues = {
+    name: "",
+    id: null,
+    description: ""
+}
+
 export default function AlgorithmForm(props) {
 
-    const [parentClassification, setParentClassification] = useState(null);
-    const algorithmName = useInput("");
-    const algorithmDescription = useInput("");
     const [loading, setLoading] = React.useState(false);
     const [submitDisabled, setSubmitDisabled] = useState(false);
 
+    const validate = (fieldValues = values) => {
+
+        let temp = { ...errors }
+
+        if ('name' in fieldValues) {
+
+            temp.name = fieldValues.name ? "" : "This field is required. ";
+            temp.name += !(fieldValues.name.length > 100) ? "" : "Algorithm name must be less then 100 characters.";
+
+        }
+
+        if('description' in fieldValues) {
+            
+            temp.description = fieldValues.description ? "" : "Please provide algorithm description.";
+            temp.description += !(fieldValues.description.length > 500) ? "" : "Algorithm description must not be greater then 500 characters. Current size: " + fieldValues.description.length;
+        }
+
+        if('id' in fieldValues) {
+
+            temp.id = fieldValues.id ? "" : "This field is required. ";
+        }
+
+        setErrors({
+            ...temp
+        })
+
+        if (fieldValues == values)
+            return Object.values(temp).every(x => x == "")
+    }
+
+    const {
+        values,
+        setValues,
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm
+    } = useForm(initialFValues, true, validate);
+
     const [requestError, setRequestError] = useState("");
-    const [algorithmDescriptionError, setAlgorithmDescriptionError] = useState("");
-    const [algorithmNameError, setAlgorithmNameError] = useState("");
-    const [parentClassificationIdError, setParentClassificationIdError] = useState("");
+    const ontologyHierarchy = useSelector(state => state.model.ontologyHierarchy)
 
-    const [parentClassificationId, setParentClassificationId] = useState("");
+    const handleSubmit = e => {
+        e.preventDefault()
+        if (validate()) {
 
-    var handleSubmit = () => {
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
 
-        setLoading(true)
-
-        var errors = false;
-
-        if(algorithmDescription.value.length == 0) {
-
-            setAlgorithmDescriptionError("Please provide algorithm description.");
-            errors = true;
-        }
-
-        if(algorithmName.value.length == 0) {
-
-            setAlgorithmNameError("Please provide algorithm name.");
-            errors = true;
-        }
-
-        if(parentClassificationId.length == 0) {
-            setParentClassificationIdError("Please provide algorithm classification.");
-            errors = true;
-        }
-
-        if(errors) {
-
-            setLoading(false)
-        }
-        
-        if(!errors) {
-
-            props.onSubmit(
-                {
-                    parentClassificationId: parentClassificationId,
-                    algorithmName: algorithmName.value,
-                    algorithmDescription: algorithmDescription.value
-                }, 
+            props.requestService.executePostRequest(
                 (err) => {
-
                     setRequestError(err)
                     setLoading(false)
+                    setSubmitDisabled(false)
 
-                    if(err.length == 0) {
+                    if (err.length == 0) {
 
                         props.onClose()
                     }
 
-                }
-            )
+                },
+                {
+                    classificationId: (values.id) ? values.id.id : null,
+                    name: values.name,
+                    description: values.description
+                },
+                "algorithms/add",
+                "Failed to create algorithm.",
+                "Created algorithm successfully!"
+            );
         }
-
     }
+
+    var classificationOptions = (ontologyHierarchy) ? ontologyHierarchy.filter((item) => item.typeName == "classification") : [];
 
     return (
         <div>
@@ -147,58 +171,48 @@ export default function AlgorithmForm(props) {
                     Algorithm Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
-                    <GeneralInfo>
-                        <Autocomplete
-                            sx={{width: "30%"}}
-                            disablePortal
-                            id="combo-box-demo"
-                            getOptionLabel={(item) => item.name}
-                            options={props.ontologyData.filter((item) => item.typeName == "classification")}
-                            renderInput={(params) => <TextField 
-                                                                {...params} 
-                                                                label="Parent Classification" 
-                                                                onKeyUp={() => setParentClassificationIdError("")}
-                                                                helperText={parentClassificationIdError}
-                                                                error={parentClassificationIdError.length > 0}
+                    <Form onSubmit={handleSubmit}>
 
-                                                    />
-                                        }
-                            onChange={(e, item) => {
-                                                        setParentClassificationIdError("")
-                                                        if(item)
-                                                            setParentClassificationId(item.id);
-                                                        else
-                                                            setParentClassificationId("")
-                                                        setParentClassification(item);
-                                                    }}
-                            value={parentClassification}
-      
-                            
-                        />
-                        <TextField label="Algorithm Name"  
-                            sx={{width: "30%"}}
-                            {...algorithmName}
-                            helperText={algorithmNameError}
-                            error={algorithmNameError.length > 0}
-                            onKeyUp={() => setAlgorithmNameError("")}
+                        <SectionA>
 
-                        />
-         
-                    </GeneralInfo>
-                    <TextField
-                            placeholder="Please enter algorithm description"
+                            <ListInput
+                                label="Parent Classification"
+                                name="id"
+                                sx={{width: "50%", marginRight: "50px"}}
+                                value={values.id}
+                                options={classificationOptions}
+                                error={errors.id}
+                                onChange={handleInputChange}
+
+                            />
+
+
+                            <Input
+                                label="Algorithm Name"
+                                name="name"
+                                sx={{width: "50%"}}
+                                value={values.name}
+                                error={errors.name}
+                                onChange={handleInputChange}
+                            />
+
+                        </SectionA>
+                        <Input
+                            label="Algorithm Description"
+                            name="description"
                             multiline
-                            rows={4}
-                            rowsMax={4}
-                            sx={{width: "30%"}}
-                            {...algorithmDescription}
-                            helperText={algorithmDescriptionError}
-                            error={algorithmDescriptionError.length > 0}
-                            onKeyUp={() => setAlgorithmDescriptionError("")}
+                            rows={5}
+                            sx={{width: "100%"}}
+                            value={values.description}
+                            error={errors.description}
+                            onChange={handleInputChange}
                         />
+                    </Form>
+
+    
 
                 </DialogContent>
-                <font color="red">{ requestError.length > 0 && requestError}</font>
+                <font color="red">{requestError.length > 0 && requestError}</font>
                 <DialogActions>
 
                     <LoadingButton

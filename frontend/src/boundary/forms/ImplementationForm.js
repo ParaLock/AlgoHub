@@ -17,6 +17,10 @@ import {decode as base64_decode, encode as base64_encode} from 'base-64';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
 import SendIcon from '@mui/icons-material/Send';
+import { useSelector, useDispatch } from 'react-redux';
+import { Form, useForm } from '../hooks/useForm';
+import Input from "./Input";
+import ListInput from "./ListInput";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -78,31 +82,74 @@ const SourceCodeUpload = styled('div')(({ theme }) => ({
 
 }));
 
+const initialFValues = {
+    parent: null,
+    language: ""
+}
+
 export default function ImplementationForm(props) {
 
     const [fileUploadMsg, setFileUploadMsg] = useState("") 
     const [fileContents, setFileContents] = useState("")
     const [requestError, setRequestError] = useState("")
     const [submitDisabled, setSubmitDisabled] = useState(false);
-    const [implementationParentAlgorithmId, setImplementationParentAlgorithmId] = useState("");
-    const [implementationParentAlgorithmName, setImplementationParentAlgorithmName] = useState("");
     const [loading, setLoading] = React.useState(false);
-    const implementationLanguageName = useInput("");
-    const [implementationParentAlgorithm, setImplementationParentAlgorithm] = useState(null);
-
-    const [fileContentsError, setFileContentsError] = useState("")
-    const [implementationLanguageNameError, setImplementationLanguageNameError] = useState("")
-    const [implementationParentError, setImplementationParentError] = useState("")
     const [filename, setFilename] = useState("");
+
+
+    const validate = (fieldValues = values) => {
+
+        let temp = { ...errors }
+
+        if ('language' in fieldValues) {
+
+            temp.language = fieldValues.language ? "" : "This field is required. ";
+            temp.language += !(fieldValues.language.length > 100) ? "" : "Programming language name must be less then 100 characters.";
+        }
+
+        if ('parent' in fieldValues) {
+
+            temp.parent = (fieldValues.parent) ? "" : "Implementation must have parent algorithm.";
+        }
+
+        setErrors({
+            ...temp
+        })
+
+        if (fieldValues == values)
+            return Object.values(temp).every(x => x == "")
+    }
+
+    const {
+        values,
+        setValues,
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm
+    } = useForm(initialFValues, true, validate);
+
+
+    function cleanString(input) {
+        var output = "";
+        for (var i=0; i<input.length; i++) {
+            if (input.charCodeAt(i) <= 127) {
+                output += input.charAt(i);
+            }
+        }
+        return output;
+    }
 
     var processFileUpload = async (e) => {
         e.preventDefault()
         const reader = new FileReader()
         reader.onload = async (e) => { 
           
-            const text = (e.target.result)
+            var text = (e.target.result)
 
             try {
+
+                text = cleanString(text)
 
                 setFileContents(base64_encode(text))
                 setSubmitDisabled(false)
@@ -110,72 +157,64 @@ export default function ImplementationForm(props) {
 
             } catch(e) {
 
-                setFileUploadMsg("Failed to upload file")
+                setFileUploadMsg("Failed to upload file. " + e)
                 setSubmitDisabled(true)
                 setRequestError("Please upload a valid file")
             }
         };
 
-        setFileUploadMsg(e.target.files[0].name)
-        setFilename(e.target.files[0].name)
-        reader.readAsText(e.target.files[0])
+        if(e.target.files[0]) {
+
+            setFileUploadMsg(e.target.files[0].name)
+            setFilename(e.target.files[0].name)
+            reader.readAsText(e.target.files[0])
+        }
     }
 
-    var handleSubmit = () => {
+    const handleSubmit = e => {
 
-        setLoading(true)
+        e.preventDefault()
 
-        var errors = false;
-
-        if(implementationLanguageName.value.length == 0) {
-
-            setImplementationLanguageNameError("Please specify language name.");
-            errors = true;
+        if(fileContents == "") {
+            setFileUploadMsg("Please upload file.")
+            setSubmitDisabled(true)
         }
 
-        if(implementationParentAlgorithmId.length == 0) {
-            setImplementationParentError("Please specify implementation parent");
-            errors = true;
-        }
+        if (validate() && fileContents !="") {
 
-        if(fileContents.length == 0) {
-            setRequestError("Please upload valid code file.");
-            errors = true;
-        }
-
-        if(errors) {
-
-            setLoading(false)
-        }
-        
-        if(!errors) {
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
 
             var fileExt = filename.split('.').pop();
 
-            props.onSubmit(
-                {
-                    implementationCode: fileContents,
-                    name: implementationLanguageName.value,
-                    parentId: implementationParentAlgorithmId,
-                    parentName: implementationParentAlgorithmName,
-                    fileExtension: fileExt
-    
-                }, 
+            props.requestService.executePostRequest(
                 (err) => {
-    
                     setRequestError(err)
                     setLoading(false)
-    
-                    if(err.length == 0) {
-    
+                    setSubmitDisabled(false)
+
+                    if (err.length == 0) {
+
                         props.onClose()
                     }
-    
-                }
-            )
-        }
 
+                },
+                {
+                    sourceCodeBase64: fileContents,
+                    name: values.language,
+                    algorithmId: values.parent.id,
+                    algorithmName: values.parent.name,
+                    extension: fileExt
+                },
+                "implementations/add",
+                "Failed to create algorithm.",
+                "Created algorithm successfully!"
+            );
+        }
     }
+
+    var algorithmOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "algorithm"));
 
     return (
         <div>
@@ -192,45 +231,24 @@ export default function ImplementationForm(props) {
                 <DialogContent dividers>
                     <GeneralInfo>
  
-                        <Autocomplete
-                            sx={{width: "30%"}}
-                            disablePortal
-                            id="combo-box-demo"
-                            getOptionLabel={(item) => item.name}
-                            options={props.ontologyData.filter((item) => item.typeName == "algorithm")}
-                            renderInput={(params) => {return <TextField 
-                                {...params} 
-                                label="Parent Algorithm"
+                        <ListInput
 
-                                helperText={implementationParentError}
-                                error={implementationParentError.length > 0}
-                                onKeyUp={() => setImplementationParentError("")}
-                            />}}
-                            onChange={(e, item) => {
-                                                        setImplementationParentError(""); 
-                                                        setImplementationParentAlgorithm(item);  
-                                                        
-                                                        if(item) {
-                                                            setImplementationParentAlgorithmId(item.id)
-                                                            setImplementationParentAlgorithmName(item.name)
+                            label="Parent Algorithm"
+                            name="parent"
+                            value={values.parent}
+                            sx={{width: "50%", marginRight: "50px" }}
+                            options={algorithmOptions}
+                            error={errors.parent}
+                            onChange={handleInputChange}
 
-                                                        }
-                                                        else {
-                                                            setImplementationParentAlgorithmId("")
-                                                            setImplementationParentAlgorithmName("")
-                                                        }
-                                                    }}
-                            value={implementationParentAlgorithm}
-                            
                         />
-                        <TextField 
+                        <Input
                             label="Language"
-                            required  
-                            sx={{width: "30%"}}
-                            {...implementationLanguageName}
-                            helperText={implementationLanguageNameError}
-                            error={implementationLanguageNameError.length > 0}
-                            onKeyUp={() => setImplementationLanguageNameError("")}
+                            name="language"
+                            value={values.language}
+                            error={errors.language}
+                            sx={{ width: "50%"}}
+                            onChange={handleInputChange}
                         />
                     </GeneralInfo>
 

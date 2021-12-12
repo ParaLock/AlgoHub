@@ -1,8 +1,11 @@
 package edu.wpi.cs.dss.serverless.problemInstances;
 
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddRequest;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddResponse;
@@ -13,12 +16,18 @@ import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
 public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInstanceRemoveRequest, GenericResponse> {
 
     private LambdaLogger logger;
+
+    private static final String AMAZON_S3_BUCKET_NAME = "cs509-algohub-storage";
+    private static final String AMAZON_S3_FOLDER_NAME = "datasets/";
+
+    private final AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
     @Override
     public GenericResponse handleRequest(ProblemInstanceRemoveRequest request, Context context) {
@@ -36,17 +45,37 @@ public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInsta
 
         final String id = request.getId();
 
+        final String getQuery = "SELECT * FROM problem_instance WHERE id = ?";
         final String query = "DELETE FROM problem_instance WHERE id = ?";
 
         try (final Connection connection = DataSource.getConnection(logger);
+             final PreparedStatement getPreparedStatement = connection.prepareStatement(getQuery);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             logger.log("Successfully connected to db!");
 
+            getPreparedStatement.setString(1, id);
             preparedStatement.setString(1, id);
+
+            String datasetFileName = null;
+            try (final ResultSet resultSet = getPreparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    datasetFileName = resultSet.getString(2);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                logger.log(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue());
+                return GenericResponse.builder()
+                        .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                        .error(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue())
+                        .build();
+            }
 
             final int rowsAffected = preparedStatement.executeUpdate();
             logger.log("Delete from problem instance table statement has affected " + rowsAffected + " rows!");
+
+            // delete from S3 Bucket
+            if (rowsAffected == 1) deleteFromS3(datasetFileName);
 
             return ProblemInstanceAddResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())
@@ -59,6 +88,19 @@ public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInsta
                     .statusCode(HttpStatus.BAD_REQUEST.getValue())
                     .error(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue())
                     .build();
+        }
+    }
+
+
+    private void deleteFromS3(String filename) {
+        logger.log("Deleting an uploaded problem instance dataset from AWS S3 ...\n");
+
+        try {
+            amazonS3.deleteObject(AMAZON_S3_BUCKET_NAME, AMAZON_S3_FOLDER_NAME + filename);
+            logger.log("Successfully delete an uploaded problem instance dataset from AWS S3 ...\n");
+        } catch (Exception e) {
+            logger.log(ErrorMessage.AWS_S3_DELETE_EXCEPTION.getValue());
+            e.printStackTrace();
         }
     }
 }

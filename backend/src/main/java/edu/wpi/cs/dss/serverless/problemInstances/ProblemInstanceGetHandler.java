@@ -50,7 +50,7 @@ public class ProblemInstanceGetHandler implements RequestHandler<ProblemInstance
                     final String datasetFileName = resultSet.getString(2);
                     final String datasetSize = resultSet.getString(3);
                     final String problemType = resultSet.getString(4);
-                    final String implementationId = resultSet.getString(5);
+                    final String algorithmId= resultSet.getString(5);
                     final String authorId = resultSet.getString(6);
 
                     return ProblemInstanceGetResponse.builder()
@@ -58,7 +58,7 @@ public class ProblemInstanceGetHandler implements RequestHandler<ProblemInstance
                             .datasetFilename(datasetFileName)
                             .datasetSize(datasetSize)
                             .problemType(problemType)
-                            .implementationId(implementationId)
+                            .algorithmId(algorithmId)
                             .authorId(authorId)
                             .build();
                 }

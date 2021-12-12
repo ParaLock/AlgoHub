@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import { useSelector, useDispatch } from 'react-redux'
 const Wrapper = styled.div`
     height: 100%;
     border-radius: 5px;
@@ -31,25 +31,26 @@ const AlgorithmDescription = styled.div`
     padding-left: 5px;
     padding-right: 5px;
     display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
     
 `;
 
 export default function AlgorithmPanel(props) {
 
-    React.useEffect(() => {
-
-        console.log(props.selectedAlgorithm)
-
-
-    }, [props.selectedAlgorithm]);
+    const algorithm = useSelector(state => state.viewModel.selectedItem["algorithm"]);
 
     return (
 
         <Wrapper>
+            
 
-
-
-            <AlgorithmDescription>            {!props.selectedAlgorithm && <CircularProgress/>}{props.selectedAlgorithm && props.selectedAlgorithm.description}</AlgorithmDescription>
+            <AlgorithmDescription>   
+            <Typography variant="h6" align="center" component="div" gutterBottom>
+                Algorithm Description
+            </Typography>
+                {!algorithm && <CircularProgress/>}{algorithm && algorithm.description}
+            </AlgorithmDescription>
             
         </Wrapper>
     );

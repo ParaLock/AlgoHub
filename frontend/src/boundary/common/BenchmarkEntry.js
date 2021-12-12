@@ -62,34 +62,40 @@ export default function BenchmarkEntry(props) {
           <ContentWrapper>
 
             <InputSize>
-                        <i>Input Size</i>: {props.benchmark.inputSize} 
+                        <i>Input Size</i>: {props.benchmark.datasetSize} 
                         <br/>
-                        <i>Problem Instance</i>: {props.benchmark.problemInstance}</InputSize>
+                        <i>Problem Instance</i>: {props.benchmark.problemType}</InputSize>
             
             { props.enableRemove &&
               <IconButton color="inherit" size="small">
-                  <HighlightOffIcon />
+                  <HighlightOffIcon onClick={props.onClick} />
               </IconButton>
             }
             
           </ContentWrapper>
           <MachineInfo>
             <h4>Machine Information</h4>
-            <i>CPU</i>: {props.benchmark.machine.CPU}
+            <i>CPU</i>: {props.benchmark.cpuName}
             <br/>
-            <i>L1</i>: {props.benchmark.machine.L1}
+            <i>CPU Cores</i>: {props.benchmark.cpuCores}
             <br/>
-            <i>L2</i>: {props.benchmark.machine.L2}
+            <i>CPU Threads</i>: {props.benchmark.cpuThreads}
             <br/>
-            <i>L3</i>: {props.benchmark.machine.L3}
+            <i>CPU L1 Cache (KB)</i>: {props.benchmark.cpuL1Cache}
             <br/>
-            <i>Memory</i>: {props.benchmark.machine.Memory}
+            <i>CPU L2 Cache (KB)</i>: {props.benchmark.cpuL2Cache}
+            <br/>
+            <i>CPU L3 Cache (KB)</i>: {props.benchmark.cpuL3Cache}
+            <br/>
+            <i>Memory (MB)</i>: {props.benchmark.memory}
           </MachineInfo>
           <Results>
             <h4>Results</h4>
-            <i>Memory Usage: </i>: {props.benchmark.memoryUsage}
+            <i>Memory Usage (KB): </i>: {props.benchmark.memoryUsage}
             <br/>
-            <i>Execution Time: </i>: {props.benchmark.executionTime}
+            <i>Execution Time (ms): </i>: {props.benchmark.executiontime}
+            <br/>
+            <i>Date: </i>: {props.benchmark.executionDate}
           </Results>
       </Wrapper>
   );

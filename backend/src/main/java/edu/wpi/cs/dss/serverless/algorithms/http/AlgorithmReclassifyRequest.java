@@ -1,4 +1,4 @@
-package edu.wpi.cs.dss.serverless.classifications.http;
+package edu.wpi.cs.dss.serverless.algorithms.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -10,10 +10,10 @@ import lombok.SneakyThrows;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ClassificationMergeRequest {
+public class AlgorithmReclassifyRequest {
 
-    private String sourceId;
-    private String targetId;
+    private String algorithmId;
+    private String newClassificationId;
 
     @Override
     @SneakyThrows

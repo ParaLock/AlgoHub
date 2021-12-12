@@ -32,6 +32,8 @@ const Wrapper = styled.div`
     display:flex;
     flex-grow: 1;
     overflow-y: auto;
+
+    margin-top: 15px;
 `;
 
 const Title = styled.h4`

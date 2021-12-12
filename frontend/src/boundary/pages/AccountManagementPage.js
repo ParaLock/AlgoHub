@@ -22,6 +22,8 @@ const Wrapper = styled.div`
     width: 100%;
     height: 99%;
     flex-direction: column;
+    min-width: 0;
+    max-width: 100% !important;
 `;
 
 const ContentWrapper = styled.div`

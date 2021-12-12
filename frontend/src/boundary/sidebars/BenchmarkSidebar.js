@@ -10,12 +10,13 @@ import { CircularProgress } from '@mui/material';
 import { updateCachedSet, updateRemoveRequest } from '../../model/ViewModel'
 const BenchmarkSidebarWrapper = styled.div`
     user-select: none;
-    width: 35%;
+    width: 20%;
     height: 100%;
     background-color: #f5f7fa;
-    max-width: ${props => props.open ? "35%" : "0%"};
+    max-width: ${props => props.open ? "20%" : "0%"};
+    min-width: ${props => props.open ? "20%" : "0%"};
     transform: ${props => props.open ? "translateX(0%)" : "translateX(100%)"};
-    transition: transform 250ms ease-in-out, max-width 250ms;
+    transition: transform 250ms ease-in-out, max-width 250ms, min-width 250ms;
     overflow:hidden;
     border-radius: 10px 5px 10px 5px;
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);

@@ -32,6 +32,7 @@ const Wrapper = styled.div`
     width: 100%;
     height: 99%;
     flex-direction: column;
+    min-width: 0;
 
 `;
 
@@ -49,6 +50,7 @@ const InnerContentWrapper = styled.div`
     width: 100%;
     flex-direction: column;
     align-items: stretch;
+    min-width: 0;
 `;
 
 const PanelTitle = styled.div`   
@@ -137,7 +139,7 @@ export default function MainPage(props) {
                             bottomLeft: false,
                             topLeft: false
                         }}
-                        size={{ height: topPanelHeight}}
+                        size={{ height: (topPanelHeight == null) ? "0" : topPanelHeight}}
                         onResizeStop={(e, direction, ref, d) => {
 
                             setTopPanelHeight(topPanelHeight + d.height)

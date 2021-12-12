@@ -15,6 +15,8 @@ const Wrapper = styled.div`
     border-radius: 5px;
     margin-right: 4px;
     margin-left: 4px;
+    margin-bottom: 4px;
+    
     
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     padding: 5px;

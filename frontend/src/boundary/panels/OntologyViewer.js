@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React, { useState, useReducer } from 'react';
 import Tree from '../../lib/tree-view/index';
-
-import IconButton from '@mui/material/IconButton';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useSelector, useDispatch } from 'react-redux';
+import {selectOntologyItem, toggleOntologyItem, updateRemoveRequest} from "../../model/ViewModel";
+import store from '../../model/ModelProxy';
 
 const treeStyles = {
 
@@ -17,18 +17,27 @@ const treeStyles = {
 //Credit for recursion: https://betterprogramming.pub/recursive-rendering-with-react-components-10fa07c45456 
 
 function getOntology(ontologyData) {
-return ontologyData.map((item) => ({
-    ...item,
-    hasChildren: ontologyData.filter((i) => i.parentId === item.id).length > 0,
-}));
+
+    if(ontologyData) {
+
+        return ontologyData.map((item) => ({
+            ...item,
+            hasChildren: ontologyData.filter((i) => i.parentId === item.id).length > 0,
+        }));
+    } else {
+
+        return []
+    }
+
 }
 
 
-function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, treeData, parentId = 0, level = 0 }) {
+function TreeWrapper({ onRemove, toggleExpanded, enableRemove, expandedOntologyItems, onSelect, selected, treeData, parentId = 0, level = 0 }) {
 
     const items = treeData
     .filter((item) => item.parentId == parentId)
     .sort((a, b) => (a.name > b.name ? 1 : -1));
+
 
     if (!items.length) return null;
 
@@ -48,11 +57,13 @@ function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, 
                                 selected={selected} 
                                 enableRemove={enableRemove}
                                 content={item.name} 
-                                style={{...style, color:"#6652ff"}} 
+                                style={{...style, color:"#ac2b37"}} 
                                 key={key}
                                 item={item}
                                 onSelect={(i) => onSelect(i)}
                                 expandedOntologyItems={expandedOntologyItems} 
+                                toggleExpanded={toggleExpanded}
+                                onRemove={onRemove}
                             >
                                 <TreeWrapper 
                                                 enableRemove={enableRemove}
@@ -62,6 +73,8 @@ function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, 
                                                 treeData={treeData} 
                                                 parentId={item.id} 
                                                 level={level + 1} 
+                                                toggleExpanded={toggleExpanded}
+                                                onRemove={onRemove}
                                 />
                         </Tree>
 
@@ -76,6 +89,8 @@ function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, 
                                     style={style} 
                                     key={key}
                                     expandedOntologyItems={expandedOntologyItems} 
+                                    toggleExpanded={toggleExpanded}
+                                    onRemove={onRemove}
                             />
                 }
             })}
@@ -86,16 +101,27 @@ function TreeWrapper({ enableRemove, expandedOntologyItems, onSelect, selected, 
 
 export default function OntologyViewer(props) {
 
-    console.log(getOntology(props.ontologyData))
+    const ontologyHierarchy = useSelector(state =>  state.model.ontologyHierarchy);
+    var expandedOntologyItems = useSelector(state =>  state.viewModel.expandedOntologyItems);
+    const selectedOntologyItem = useSelector(state => state.viewModel.selectedOntologyItem);
+
+    const dispatch = useDispatch();
+
+    var expandItem = (id) => {
+
+        dispatch(toggleOntologyItem(id));
+    }
 
     return (
         <div>
             <TreeWrapper 
-                        expandedOntologyItems={props.expandedOntologyItems} 
-                        onSelect={(item) => props.onSelect(item)} 
-                        enableRemove={props.enableRemove}
-                        selected={props.selected} 
-                        treeData={getOntology(props.ontologyData)}
+                expandedOntologyItems={expandedOntologyItems} 
+                onSelect={(item) => props.onSelect(item)} 
+                enableRemove={props.enableRemove}
+                selected={selectedOntologyItem} 
+                treeData={getOntology(ontologyHierarchy)}
+                toggleExpanded={expandItem}
+                onRemove={props.onRemove}
             />
         </div>
     );

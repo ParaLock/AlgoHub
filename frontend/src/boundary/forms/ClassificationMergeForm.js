@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -12,7 +12,12 @@ import Typography from '@mui/material/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import { useSelector, useDispatch } from 'react-redux'
+import { Form, useForm } from '../hooks/useForm';
+import Input from "./Input";
+import ListInput from "./ListInput";
+import LoadingButton from '@mui/lab/LoadingButton';
+import { isNumeric, powerOfTwo, validateStr, validateNum } from '../common/Common';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -21,10 +26,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogActions-root': {
         padding: theme.spacing(1),
     },
-    "& .MuiPaper-root" : {
+    "& .MuiPaper-root": {
         height: "fit-content"
     }
 }));
+
+
 
 const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
@@ -52,12 +59,12 @@ const BootstrapDialogTitle = (props) => {
 
 
 const FieldWrapper = styled('div')(({ theme }) => ({
-    
+
     marginBottom: '50px'
 }));
 
 const GeneralInfo = styled('div')(({ theme }) => ({
-    
+
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -65,7 +72,88 @@ const GeneralInfo = styled('div')(({ theme }) => ({
 
 }));
 
+const initialFValues = {
+    classificationA: null,
+    classificationB: null
+}
+
 export default function ClassificationMergeForm(props) {
+
+    const [loading, setLoading] = React.useState(false);
+    const [submitDisabled, setSubmitDisabled] = useState(false);
+    const [requestError, setRequestError] = useState("");
+
+    var classificationOptions = useSelector(state => (state.model.ontologyHierarchy || []).filter((item) => item.typeName == "classification"));
+
+    const handleSubmit = e => {
+        e.preventDefault()
+        if (validate()) {
+
+            setLoading(true)
+            setSubmitDisabled(true)
+            setRequestError("")
+
+            console.log(values)
+
+            props.requestService.executePostRequest(
+                (err) => {
+
+                    setRequestError(err)
+                    setLoading(false)
+                    setSubmitDisabled(false)
+
+                    if (err.length == 0) {
+
+                        props.onClose();
+
+                    } else {
+
+                        setRequestError(err)
+                        setLoading(false)
+                        setSubmitDisabled(false)
+                    }
+
+                },
+                {
+                    sourceId: values.classificationA.id,
+                    targetId: values.classificationB.id
+
+                },
+                "classifications/merge",
+                "Failed to merge classifications.",
+                ""
+            );
+        }
+    }
+
+
+    const validate = (fieldValues = values) => {
+
+        let temp = { ...errors }
+
+        validateStr(fieldValues, temp, "classificationA");
+        validateStr(fieldValues, temp, "classificationB");
+
+        setRequestError("")
+
+        setErrors({
+            ...temp
+        })
+
+        if (fieldValues == values)
+            return Object.values(temp).every(x => x == "")
+    }
+
+
+    const {
+        values,
+        setValues,
+        errors,
+        setErrors,
+        handleInputChange,
+        resetForm
+    } = useForm(initialFValues, true, validate);
+
 
     return (
         <div>
@@ -77,35 +165,51 @@ export default function ClassificationMergeForm(props) {
                 fullWidth="true"
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={() => props.onClose()}>
-                   Classification Merge Form
+                    Classification Merge Form
                 </BootstrapDialogTitle>
                 <DialogContent dividers>
+
                     <GeneralInfo>
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
-                        renderInput={(params) => <TextField {...params} label="Classification A" />}
+                        Merge
+                        <ListInput
+
+                            label="Classification A"
+                            name="classificationA"
+                            value={values.classificationA}
+                            sx={{ width: "50%", marginRight: "10px", marginLeft: "10px" }}
+                            options={classificationOptions}
+                            error={errors.classificationA}
+                            onChange={handleInputChange}
+
                         />
-                        <Autocomplete
-                        sx={{width: "30%"}}
-                        disablePortal
-                        id="combo-box-demo"
-                        getOptionLabel={(item) => item.content}
-                        options={props.ontologyData.filter((item) => item.type == "classification")}
-                        renderInput={(params) => <TextField {...params} label="Classification B" />}
+                        Into
+                        <ListInput
+
+                            label="Classification B"
+                            name="classificationB"
+                            value={values.classificationB}
+                            sx={{ width: "50%", marginRight: "50px", marginLeft: "10px" }}
+                            options={classificationOptions}
+                            error={errors.classificationB}
+                            onChange={handleInputChange}
+
                         />
-                        <TextField label="New Classification" />
                     </GeneralInfo>
 
 
                 </DialogContent>
+                <font color="red">{requestError.length > 0 && requestError}</font>
                 <DialogActions>
-                    <Button autoFocus onClick={() => props.onClose()}>
+
+                    <LoadingButton
+                        onClick={handleSubmit}
+                        loading={loading}
+                        disabled={submitDisabled}
+                        loadingPosition="center"
+                        variant="contained"
+                    >
                         Merge
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </BootstrapDialog>
         </div>

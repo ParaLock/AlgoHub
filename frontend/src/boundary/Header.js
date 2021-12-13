@@ -22,59 +22,55 @@ import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 
 import { useHistory } from 'react-router-dom';
 import Amplify, { Auth } from 'aws-amplify';
-
+import { useSelector, useDispatch } from 'react-redux';
 
 const Wrapper = styled.div`
 
     color: rgba(0, 0, 0, 0.87);
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
-    background-color: #1976d2;
+    background-color: #b8212f;
     color: #fff;
 
 `;
 
-const CustomToolbar = material_styled(Toolbar)(({ theme }) => ({
-
-}));
-
-
 export default function Header(props) {
 
   const history = useHistory();
+  const currentUser = useSelector(state => state.model.currentUser);
 
   return (
       <Wrapper>
-      <CustomToolbar variant="dense">
+      <Toolbar variant="dense">
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             AlgoHub 
-            {props.currentUser && " - " + props.currentUser.username} 
-            {props.currentUser && props.currentUser.groups && props.currentUser.groups.length > 0 && "(" + props.currentUser.groups.join(",") + ")"}
+            {currentUser && " - " + currentUser.username} 
+            {currentUser && currentUser.groups && currentUser.groups.length > 0 && "(" + currentUser.groups.join(",") + ")"}
           </Typography>
           <IconButton onClick={props.onClickBenchmarkMenu} color="inherit">
            <AccessTimeIcon/>
           </IconButton>
-          { props.currentUser && 
+          { currentUser && 
             <IconButton onClick={() => history.push('/accounts')} color="inherit">
             <VisibilityIcon/>
             </IconButton>
           }
 
-          { !props.currentUser && 
-              <Button onClick={() => props.onLogin()}  color="inherit">
+          { !currentUser && 
+              <Button onClick={() => props.authController.login()}  color="inherit">
                 Login
               </Button>
           }
 
-          { props.currentUser && 
-              <Button onClick={() => props.onLogout()}  color="inherit">
+          { currentUser && 
+              <Button onClick={() => props.authController.logout()}  color="inherit">
                 Logout
               </Button>
           }
 
           
           
-        </CustomToolbar>
+        </Toolbar>
       </Wrapper>
 
   );

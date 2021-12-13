@@ -4,534 +4,154 @@ import React, { useState } from 'react';
 import MainPage from './boundary/pages/MainPage'
 import AccountManagementPage from './boundary/pages/AccountManagementPage';
 import SignInPage from './boundary/pages/SignInPage';
-
 import Amplify, { Auth, API, Storage } from 'aws-amplify';
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components';
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import axios from 'axios';
 import awsconfig from './aws-exports';
-import {Config} from "./boundary/common/Config"
-
+import { Config } from "./boundary/common/Config"
 import { useSnackbar } from 'notistack';
-
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
+import OntologyController from './controllers/OntologyController';
+import RequestService from './services/RequestService';
+import AuthController from "./controllers/AuthController";
+import store from './model/ModelProxy';
+import { updateNotificationQueue, updateSelectedOntologyItem,updateRemoveRequest } from "./model/ViewModel";
+import { useSelector, useDispatch } from 'react-redux';
+import RemoveDialog from "./boundary/forms/RemoveDialog"
 
 Amplify.configure(awsconfig);
 
-const problemInstanceData = [
-
-  {
-    parent: "i1",
-    name: "Worst case",
-    inputSize: 128
-  },
-  {
-    parent: "i1",
-    name: "Average case",
-    inputSize: 32
-  },
-  {
-    parent: "i2",
-    name: "Best case",
-    inputSize: 16
-  }
-
-]
-
-const algorithmData = [
-
-  {
-    id: "a1",
-    description: "This algorithm is awesome"
-  },
-  {
-    id: "a2",
-    description: "This algorithm is also awesome"
-  },
-
-]
-
-
-const implementationData = [
-
-  {
-    id: "i1",
-    parent: "a1",
-    sourceCodeFilename: "https://cs509-algohub-storage.s3.amazonaws.com/implementations/dfs_haskell.txt",
-    name: "C++" 
-  },
-  {
-    id: "i2",
-    parent: "a2",
-    sourceCodeFilename: "https://cs509-algohub-storage.s3.amazonaws.com/implementations/dfs_haskell.txt",
-    name: "Java" 
-  }
-]
-
-const benchmarkData = [
-  {
-    parent: "i1",
-    id: 1,
-    machine: {
-      CPU: "Intel core i7",
-      Memory: "8GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "10mb",
-    executionTime: "5min",
-    inputSize: 32,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i1",
-    id: 2,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "15mb",
-    executionTime: "3min",
-    inputSize: 32,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i1",
-    id: 3,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "15mb",
-    executionTime: "3min",
-    inputSize: 128,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i2",
-    id: 4,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "150mb",
-    executionTime: "20min",
-    inputSize: 256,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i2",
-    id: 5,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "150mb",
-    executionTime: "20min",
-    inputSize: 256,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i2",
-    id: 6,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "150mb",
-    executionTime: "20min",
-    inputSize: 256,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i2",
-    id: 7,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "150mb",
-    executionTime: "20min",
-    inputSize: 256,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i2",
-    id: 8,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "150mb",
-    executionTime: "20min",
-    inputSize: 256,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i2",
-    id: 9,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "150mb",
-    executionTime: "20min",
-    inputSize: 256,
-    problemInstance: "Worst Case"
-  },
-  {
-    parent: "i2",
-    id: 10,
-    machine: {
-      CPU: "Intel core i9",
-      Memory: "16GB",
-      L1: "1kb",
-      L2: "5kb",
-      L3: "10kb"
-    },
-    memoryUsage: "150mb",
-    executionTime: "20min",
-    inputSize: 256,
-    problemInstance: "Worst Case"
-  }
-]
-
-
 function App() {
 
-  const [toggleableItems, setToggleableItems] = useState([]);
-  const [selectedOntologyItem, setSelectedOntologyItem] = useState({});
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState({});
-  const [selectedImplementation, setSelectedImplementation] = useState(null);
-  const [selectedProblemInstances, setSelectedProblemInstances] = useState([]);
-  const [selectedBenchmarks, setSelectedBenchmarks] = useState([]);
-  const [expandedOntologyItems, setExpandedOntologyItems] = useState({});
-  const [classificationHierarchy, setClassificationHierarchy] = useState([]);
-  const [showAuthForm, setShowAuthForm] = React.useState(false);
-  const [currentUser, setCurrentUser] = React.useState(null);
-  const [authToken, setAuthToken] = React.useState(null);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
+  var requestService = new RequestService();
+  var authController = new AuthController();
+  var ontologyController = new OntologyController(requestService);
 
-  var updateHierarchy = () => {
+  var authFormOpen = useSelector((state) => state.viewModel.openPanels.includes("auth_form"));
+  var notificationQueue = useSelector((state) => state.viewModel.notificationQueue);
+  var removeRequest = useSelector(state => state.viewModel.removeRequest)
 
-    axios.get(Config.API_PATH + `classifications/hierarchy`)
-    .then(res => {
+  requestService.registerAddRequestSuccessListener((res) => {
 
-      if(res.data && res.data.hierarchy) {
-
-        res.data.hierarchy = res.data.hierarchy.map((item) => {
-
-          if(!item.parentId)
-            item.parentId = ""
-
-          return item;
-
-        })
-
-        setClassificationHierarchy(res.data.hierarchy)
-
-      }
-    })
-  }
+    ontologyController.expandItem(res.data.id);
+  });
 
   React.useEffect(() => {
 
-    updateHierarchy();
+    var temp = JSON.parse(JSON.stringify(notificationQueue));
+    var notificationsToRemove = [];
 
-  }, []);
+    for (var i = 0; i < temp.length; i++) {
 
-  React.useEffect(() => {
-      return onAuthUIStateChange((nextAuthState, authData) => {
+      var notification = temp[i];
 
-        console.log(authData)
-        console.log(nextAuthState)
-        
-          if(authData && nextAuthState == "signedin") {
+      if (notification.status == "request_complete") {
 
-            console.log(authData.signInUserSession.idToken.jwtToken )
-
-            setAuthToken(authData.signInUserSession.idToken.jwtToken)
-
-            var groups = authData.signInUserSession.idToken.payload["cognito:groups"]
-            var userId = authData.attributes.sub
-  
-            setCurrentUser({userId: authData.username, username: authData.username, groups: groups});
-          }
-      });
-  }, []);
-
-  var executeAddRequest = (cb, data, object, endpoint) => {
-
-
-    axios.post(Config.API_PATH + object + "/" + endpoint,
-    data, 
-      {
-          headers: {
-              'Authorization': authToken
-          }
-      }
-      ).then(res => {
-
-
-        if(res.data.statusCode == "400" || res.data.statusCode == 400) {
-          enqueueSnackbar("Failed to create " + object + "\n" + "error: " + res.data.error, 
+        enqueueSnackbar(notification.msg,
           {
-              anchorOrigin: {
-                  vertical: 'bottom',
-                  horizontal: 'right',
-              },
-              variant: 'error'
-          });
-
-          cb(res.data.error)
-
-        } else {
-
-          enqueueSnackbar("Created " + object + " successfully!", 
-          {
-              anchorOrigin: {
-                  vertical: 'bottom',
-                  horizontal: 'right',
-              },
-              variant: 'success'
-          });
-
-          updateHierarchy()
-
-          console.log("success", res)
-          cb("")
-        }
-
-              
-      }).catch((err) => {
-
-        enqueueSnackbar("Failed to create " + object + " :(", 
-        {
             anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'right',
+              vertical: 'bottom',
+              horizontal: 'right',
             },
-            variant: 'error'
-        });
+            variant: notification.type
+          });
 
-        console.log("error", err)
-        
-        cb("error")
-      })
-
-  } 
-
-  var executeGetRequest = (cb, url) => {
-
-    axios.get(Config.API_PATH + url, {
-      headers: {
-        'Authorization': authToken
+          notificationsToRemove.push(i);
       }
-    })
-    .then(res => {
 
-      console.log("executeGetRequest: ", res)
+      if(notification.status == "loading_started" && notification.widgetKey == "") {
 
-      if(res.data && res.data.statusCode !== 400 || res.data.statusCode !== "400") {
+        var key = enqueueSnackbar(notification.msg,
+          {
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'right',
+            },
+            variant: notification.type,
+            persist: true
+          });
 
-        cb("", res.data)
-      
-      } else {
+        notification.widgetKey = key;
 
-        cb(res.data.error ?? "error", null)
+
+        dispatch(updateNotificationQueue(temp))
+
       }
-    }).catch(res => {
 
-      cb("error", null)
-    })
-  }
-
-  var addAlgorithm = (data, cb) => {
-    console.log("add algorithm data: ", data)
-    executeAddRequest(cb,  {
-        name: data.algorithmName,
-        description: data.algorithmDescription,
-        classificationId: data.parentClassificationId,
-        authorId: currentUser.userId
-      
-    }, "algorithms", "add")
-  }
-
-  var addClassification = (data, cb) => {
-
-    if(data.parentClassificationId == "")
-      data.parentClassificationId = null
-
-      executeAddRequest(cb,  {
-        classificationInfo: {
-          name: data.classificationName,
-          parentClassificationId: data.parentClassificationId,
-          authorId: currentUser.userId
-
-        }
-    
-    }, "classifications", "add")
-
-  }
-
-  var addImplementation = (data, cb) => {
-
-    executeAddRequest(cb,  {
-      name: data.name,
-      algorithmId: data.parentId,
-      extension: data.fileExtension,
-      algorithmName: data.parentName,
-      authorId: currentUser.userId,
-      sourceCodeBase64: data.implementationCode
-    }, "implementations", "add")
-  }
-
-  var removeItemFromArray = (array, item) => {
-    var index = array.indexOf(item);
-    if (index !== -1) {
-      array.splice(index, 1);
-    }
-  }
-
-  var toggleItem = (item, state = null) => {
-
-    var copy = [...toggleableItems];
-
-    if (state != null) {
-
-      if (state) {
-
-        copy.push(item);
-
-      } else {
-
-        removeItemFromArray(copy, item);
-      }
-    }  else {
-
-      var index = copy.indexOf(item);
-
-      if(index == -1) {
-
-        copy.push(item);
-
-      } else {
-
-        removeItemFromArray(copy, item);
+      if (notification.status == "loading_complete") {
+        console.log("LOADING COMPLETE!!!");
+        closeSnackbar(notification.widgetKey);
+        notificationsToRemove.push(i);
       }
 
     }
 
-    setToggleableItems(copy);
-  }
+    if(notificationsToRemove.length > 0) {
 
-  var onLogin = ()=> {
+      for(var i = 0; i < notificationsToRemove.length; i++) {
 
-    setShowAuthForm(true)
+        temp.splice(notificationsToRemove[i], 1)
+      }
 
-  }
-
-  var onLogout = () => {
-
-    setShowAuthForm(false)
-    Auth.signOut()
-    setCurrentUser(null)
-  }
-
-  var onOntologySelect = (item) => {
-
-    setSelectedOntologyItem(item)
-    console.log("selected ontology item: ", item)
-
-
-    if(item.typeName == "algorithm") {
-      setSelectedAlgorithm(null)
-      executeGetRequest((err, data) => {
-        if(err.length == 0)
-          setSelectedAlgorithm(data)
-      }, "algorithms/" + item.id)  
+      dispatch(updateNotificationQueue(temp))
     }
 
-    if(item.typeName == "implementation") {
-      executeGetRequest((err, data) => {
-        if(err.length == 0) {
+  }, [notificationQueue]);
 
-          setSelectedImplementation(data)
-        }
-      }, "implementations/" + item.id)  
-    }
+  React.useEffect(() => {
 
-    var benchmarks = benchmarkData.filter((candidate) => candidate.parent == item.id);
-    setSelectedBenchmarks(benchmarks)
-  }
+    ontologyController.updateOntology(() => {
+      var initiallySelected = ontologyController.getInitiallySelected()
+
+      if(initiallySelected) {
+        ontologyController.selectOntologyItem(initiallySelected);
+      }
+    });
+
+  }, []);
 
   return (
+    
+    <>    
+        <RemoveDialog
+          open={removeRequest.state != "complete" && removeRequest.state != "cancelled"}
+          removeRequest={removeRequest}
+          requestService={requestService}
+          ontologyController={ontologyController}
+        />
 
-      <Router>
-            
-            <Switch>
-              <Route path="/signin">
-                <SignInPage />
-              </Route>
-              <Route path="/accounts">
-                <AccountManagementPage />
-              </Route>
-              <Route path="/">
-      
-                {showAuthForm && <AmplifyAuthenticator/>}
-                <MainPage
-                  currentUser={currentUser}
-                  onLogin={onLogin}
-                  onLogout={onLogout}
-                  ontologyData={classificationHierarchy}
-                  selectedBenchmarks={benchmarkData}
-                  selectedProblemInstances={selectedProblemInstances}
-                  selectedImplementation={selectedImplementation}
-                  selectedAlgorithm={selectedAlgorithm}
-                  setSelectedOntologyItem={onOntologySelect}
-                  selectedOntologyItem={selectedOntologyItem}
-                  toggleableItems={toggleableItems}
-                  addAlgorithm={addAlgorithm}
-                  addClassification={addClassification}
-                  addImplementation={addImplementation}
-                  toggleItem={(item, state) => toggleItem(item, state)}
-                  expandedOntologyItems={expandedOntologyItems}
-                >
-                </MainPage>
-              </Route>
-            </Switch>
-          </Router>
+        <Router>
+          <Switch>
+            <Route path="/signin">
+              <SignInPage />
+            </Route>
+            <Route path="/accounts">
+              <AccountManagementPage 
+                requestService={requestService}
+               />
+            </Route>
+            <Route path="/">
+
+              {authFormOpen && <AmplifyAuthenticator />}
+              <MainPage
+                authController={authController}
+                ontologyController={ontologyController}
+                requestService={requestService}
+              >
+              </MainPage>
+            </Route>
+          </Switch>
+        </Router>
+      </>
 
 
   );

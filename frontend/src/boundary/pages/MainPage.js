@@ -1,6 +1,6 @@
 import '../../App.css';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Header from '../Header';
 import OntologySidebar from '../sidebars/OntologySidebar';
@@ -21,31 +21,36 @@ import ProblemInstanceForm from '../forms/ProblemInstanceForm';
 import { useSnackbar } from 'notistack';
 import Typography from '@mui/material/Typography';
 import { Resizable } from "re-resizable";
+import { HeadphonesBatteryOutlined } from '@mui/icons-material';
+import { useSelector,useDispatch } from 'react-redux';
+import { setPanelVisibility, updateRemoveRequest } from "../../model/ViewModel";
+import RemoveDialog from '../forms/RemoveDialog';
 
 const Wrapper = styled.div`
-      
+        
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 99%;
     flex-direction: column;
+    min-width: 0;
+
 `;
 
 const ContentWrapper = styled.div`
-
     display: flex;
     width: 100%;
     height: 100%;
     flex-direction: row;
+    min-height: 0; 
 
 `;
 
 const InnerContentWrapper = styled.div`
-
     display: flex;
     width: 100%;
     flex-direction: column;
     align-items: stretch;
-    margin-bottom: 10px;
+    min-width: 0;
 `;
 
 const PanelTitle = styled.div`   
@@ -59,179 +64,168 @@ const PanelTitle = styled.div`
     
 `;
 
-const Seperator = styled.div`
-
-    margin-top: 10px;
-
-`;
-
 export default function MainPage(props) {
 
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-    const [topPanelHeight, setTopPanelHeight ] = useState(800);
-    const [bottomPanelHeight, setBottomPanelHeight ] = useState(100);
 
-    var parent = props.ontologyData.filter((item) => item.id == props.selectedOntologyItem.parentId)[0];
-    var title = "";
+    var title = useSelector(state => state.viewModel.headerTitle);
+    var selectedItemType = useSelector(state => state.viewModel.selectedOntologyItemType)
+    var openPanels = useSelector(state => state.viewModel.openPanels);
+    const dispatch = useDispatch();
 
-    if(parent) {
-        title = parent.name;
+    const [topPanelHeight, setTopPanelHeight] = useState(null);
+    const innerContentElement = useRef(null)
+
+    useEffect(() => {
+        if(topPanelHeight == null)
+            setTopPanelHeight(innerContentElement.current.clientHeight * 0.50)
+    })
+
+    
+    var togglePanel = (name, state = undefined) => {
+
+        if(state != undefined) {
+
+            dispatch(setPanelVisibility(
+                {
+                    name: name,
+                    state: state
+                }
+            ))
+        } else {
+
+            dispatch(setPanelVisibility(
+                {
+                    name: name,
+                    state: !openPanels.includes(name)
+                }
+            ))
+        }
     }
-
-    if(props.selectedOntologyItem && props.selectedOntologyItem.name) {
-        title += "." + props.selectedOntologyItem.name;
-    } else {
-        title = "Welcome to Algohub"   
-    }
-
 
     return (
 
         <Wrapper>
 
             <Header
-                onClickBenchmarkMenu={() => { props.toggleItem("benchmark_menu") }}
-                currentUser={props.currentUser}
-                onLogin={props.onLogin}
-                onLogout={props.onLogout}
+                authController={props.authController}
+                onClickBenchmarkMenu={() => togglePanel("benchmark_menu")}
             />
 
             <ContentWrapper>
 
                 <OntologySidebar
                     open={true}
-                    currentUser={props.currentUser}
-                    onClassificationAdd={() => props.toggleItem("classification_form")}
-                    onOntologyMerge={() => props.toggleItem("classification_merge")}
-                    onAlgorithmAdd={() => props.toggleItem("algorithm_form")}
-                    onImplementationAdd={() => props.toggleItem("implementation_form")}
-                    onOntologyReport={() => props.toggleItem("algorithm_ranking_panel")}
-                    onAlgorithmReclassify={() => props.toggleItem("algorithm_reclassify_form")}
-                    selectedOntologyItem={props.selectedOntologyItem}
-                    onOntologyItemSelected={(item) => props.setSelectedOntologyItem(item)}
-                    ontologyData={props.ontologyData}
-                    expandedOntologyItems={props.expandedOntologyItems}
+                    ontologyController={props.ontologyController}
+                    togglePanel={togglePanel}
                 />
-                <InnerContentWrapper>
+                
+                <InnerContentWrapper ref={innerContentElement} >
                     <PanelTitle>
-
-                    <Typography variant="h6" align="center" component="div" gutterBottom>
-                    {title}
-                    </Typography>
+                        <Typography variant="h6" align="center" component="div" gutterBottom>
+                            {title}
+                        </Typography>
                     </PanelTitle>
 
-                    
 
-                    { props.selectedOntologyItem.typeName == "algorithm" && <Resizable
-                                                                                    enable={{ 
-                                                                                                top:false, 
-                                                                                                right:false, 
-                                                                                                bottom:true, 
-                                                                                                left:false, 
-                                                                                                topRight:false, 
-                                                                                                bottomRight:false, 
-                                                                                                bottomLeft:false, 
-                                                                                                topLeft:false 
-                                                                                            }}
-                                                                                        size={{ height: topPanelHeight}}
-                                                                                        onResizeStop={(e, direction, ref, d) => {
-                                                                                            setTopPanelHeight(topPanelHeight + d.height)
-                                                                                        }}
-                                                                                 >
-                                                                                     <AlgorithmPanel 
-                                                                                    selectedAlgorithm={props.selectedAlgorithm} 
-                                                                                    />
-                                                                            </Resizable> }
 
-                    { props.selectedOntologyItem.typeName == "implementation" && <Resizable
-                                                                                    enable={{ 
-                                                                                                top:false, 
-                                                                                                right:false, 
-                                                                                                bottom:true, 
-                                                                                                left:false, 
-                                                                                                topRight:false, 
-                                                                                                bottomRight:false, 
-                                                                                                bottomLeft:false, 
-                                                                                                topLeft:false 
-                                                                                            }}
-                                                                                    size={{ height: topPanelHeight}}
-                                                                                    onResizeStop={(e, direction, ref, d) => {
-                                                                                        setTopPanelHeight(topPanelHeight + d.height)
-                                                                                    }}
-                                                                                 >
-                                                                                    <ImplementationPanel selectedImplementation={props.selectedImplementation} />
-                                                                                    
-                                                                                 </Resizable> }
-                    <Seperator/>
-                    { props.selectedOntologyItem.typeName && props.selectedOntologyItem.typeName == "implementation" &&
-                        <ProblemInstancePanel 
-                            selectedProblemInstances={props.selectedProblemInstances}
-                            onProblemInstanceAdd={() => props.toggleItem("problem_instance_form")}
-                            currentUser={props.currentUser}
+                    {selectedItemType == "algorithm" && <Resizable
+                        enable={{
+                            top: false,
+                            right: false,
+                            bottom: true,
+                            left: false,
+                            topRight: false,
+                            bottomRight: false,
+                            bottomLeft: false,
+                            topLeft: false
+                        }}
+                        size={{ height: (topPanelHeight == null) ? "0" : topPanelHeight}}
+                        onResizeStop={(e, direction, ref, d) => {
+
+                            setTopPanelHeight(topPanelHeight + d.height)
+                        }}
+                    >
+                        <AlgorithmPanel
+                            ontologyController={props.ontologyController}
+                        />
+                    </Resizable>}
+
+                    {selectedItemType == "implementation" &&
+
+                        <ImplementationPanel
+                            ontologyController={props.ontologyController}
+                            requestService={props.requestService}
+                        />
+
+                    }
+                    {(selectedItemType == "algorithm" ) &&
+                        <ProblemInstancePanel
+                            ontologyController={props.ontologyController}
+                            togglePanel={togglePanel}
+                            requestService={props.requestService}
                         />
                     }
 
 
                 </InnerContentWrapper>
                 <BenchmarkSidebar
-                    currentUser={props.currentUser}
-                    open={props.toggleableItems.includes("benchmark_menu")}
-                    onBenchmarkAdd={() => props.toggleItem("benchmark_add_form", true)}
-                    selectedBenchmarks={props.selectedBenchmarks}
+                    open={openPanels.includes("benchmark_menu")}
+                    togglePanel={togglePanel}
+                    requestService={props.requestService}
                 />
 
             </ContentWrapper>
+    
 
             <ClassificationForm
-                open={props.toggleableItems.includes("classification_form")}
-                onClose={() => props.toggleItem("classification_form", false)}
-                ontologyData={props.ontologyData}
+                open={openPanels.includes("classification_add_form")}
+                onClose={() => togglePanel("classification_add_form", false)}
+                requestService={props.requestService}
                 onSubmit={props.addClassification}
             />
 
             <ProblemInstanceForm
-                open={props.toggleableItems.includes("problem_instance_form")}
-                onClose={() => props.toggleItem("problem_instance_form", false)}
-                ontologyData={props.ontologyData}
+                open={openPanels.includes("problem_instance_add_form")}
+                onClose={() => togglePanel("problem_instance_add_form", false)}
+                requestService={props.requestService}
             />
 
             <ClassificationMergeForm
-                open={props.toggleableItems.includes("classification_merge")}
-                onClose={() => props.toggleItem("classification_merge", false)}
-                ontologyData={props.ontologyData}
+                open={openPanels.includes("classification_merge_form")}
+                onClose={() => togglePanel("classification_merge_form", false)}
+                requestService={props.requestService}
             />
 
             <AlgorithmRankingPanel
-                open={props.toggleableItems.includes("algorithm_ranking_panel")}
-                onClose={() => props.toggleItem("algorithm_ranking_panel", false)}
-                ontologyData={props.ontologyData}
+                open={openPanels.includes("algorithm_ranking_panel")}
+                onClose={() => togglePanel("algorithm_ranking_panel", false)}
+                requestService={props.requestService}
             />
 
             <BenchmarkForm
-                open={props.toggleableItems.includes("benchmark_add_form")}
-                onClose={() => props.toggleItem("benchmark_add_form", false)}
-                ontologyData={props.ontologyData}
-                selectedBenchmarks={props.selectedBenchmarks}
+                open={openPanels.includes("benchmark_add_form")}
+                onClose={() => togglePanel("benchmark_add_form", false)}
+                requestService={props.requestService}
             />
 
             <AlgorithmForm
-                open={props.toggleableItems.includes("algorithm_form")}
-                onClose={() => props.toggleItem("algorithm_form", false)}
-                ontologyData={props.ontologyData}
-                onSubmit={props.addAlgorithm}
+                open={openPanels.includes("algorithm_add_form")}
+                onClose={() => togglePanel("algorithm_add_form", false)}
+                requestService={props.requestService}
             />
 
             <ImplementationForm
-                open={props.toggleableItems.includes("implementation_form")}
-                onClose={() => props.toggleItem("implementation_form", false)}
-                ontologyData={props.ontologyData}
-                onSubmit={props.addImplementation}
+
+                open={openPanels.includes("implementation_add_form")}
+                onClose={() => togglePanel("implementation_add_form", false)}
+                requestService={props.requestService}
             />
 
             <AlgorithmReclassifyForm
-                open={props.toggleableItems.includes("algorithm_reclassify_form")}
-                onClose={() => props.toggleItem("algorithm_reclassify_form", false)}
-                ontologyData={props.ontologyData}
+
+                open={openPanels.includes("algorithm_reclassify_form")}
+                onClose={() => togglePanel("algorithm_reclassify_form", false)}
+                requestService={props.requestService}
             />
 
         </Wrapper>

@@ -150,21 +150,17 @@ export default function AccountManagementPage(props) {
     var updateUserActivity = (data) => {
 
         var activity = {};
-
+        console.log(data)
         setUserActivity(null);
 
         for (var i in data) {
 
             var act = data[i];
-
-            console.log(act)
-            if (!(act.typeName in Object.keys(activity))) {
+            if (!(act.typeName in activity)) {
                 activity[act.typeName] = { title: act.typeName + "s", items: [] }
             }
             activity[act.typeName].items.push(act);
         }
-
-        console.log(activity)
 
         if (data && data.length > 0)
             setUserActivity(activity)
@@ -306,6 +302,7 @@ export default function AccountManagementPage(props) {
                             userActivity && Object.keys(userActivity).map((key) => {
 
                                 var item = userActivity[key];
+                                console.log(item)
 
                                 return <ObjectList>
                                     <Typography variant="h6" align="center" component="div" gutterBottom>

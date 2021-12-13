@@ -35,7 +35,7 @@ public class AlgorithmReclassifyHandlerTest extends LambdaTest{
     void testFailInput(String incoming) throws IOException {
         AlgorithmAddHandler handler = new AlgorithmAddHandler();
         AlgorithmAddRequest req = new Gson().fromJson(incoming, AlgorithmAddRequest.class);
-        GenericResponse response = handler.handleRequest(req, createContext("add"));
+        GenericResponse response = handler.handleRequest(req, createContext("reclassify"));
 
 
         Assert.assertEquals(new Integer(400), response.getStatusCode());

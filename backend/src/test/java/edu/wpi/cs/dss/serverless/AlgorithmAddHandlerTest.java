@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.algorithms.AlgorithmAddHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddRequest;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddResponse;
-import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import org.junit.Assert;
 import org.junit.Test;

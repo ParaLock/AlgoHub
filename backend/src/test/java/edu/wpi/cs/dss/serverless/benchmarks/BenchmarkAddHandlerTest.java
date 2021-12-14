@@ -51,7 +51,6 @@ public class BenchmarkAddHandlerTest extends LambdaTest {
                 incoming, createContext("add benchmark fail")
         );
 
-//        Assert.assertTrue(response.getId().length() > 0);
         Assert.assertEquals(new Integer(400), response.getStatusCode());
     }
 

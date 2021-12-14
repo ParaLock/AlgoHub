@@ -4,9 +4,6 @@ import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkGetByImplementationRequest;
 import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkGetByImplementationResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceGetByAlgorithmHandler;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetByAlgorithmRequest;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetByAlgorithmResponse;
 import org.junit.Assert;
 import org.junit.Test;
 

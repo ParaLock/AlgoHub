@@ -15,7 +15,6 @@ import java.io.IOException;
 public class BenchmarkRemoveHandlerTest extends LambdaTest {
 
     void testInput(String incoming, GenericResponse outgoing) throws IOException {
-        // remove
         BenchmarkRemoveHandler handler = new BenchmarkRemoveHandler();
         BenchmarkRemoveRequest request = new Gson().fromJson(incoming, BenchmarkRemoveRequest.class);
         GenericResponse response = handler.handleRequest(

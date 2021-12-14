@@ -1,4 +1,4 @@
-package edu.wpi.cs.dss.serverless;
+package edu.wpi.cs.dss.serverless.problemInstances;
 
 import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;

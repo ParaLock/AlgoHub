@@ -17,8 +17,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateCachedSet } from '../../model/ViewModel';
 import { Form, useForm } from '../hooks/useForm';
 import Input from "./Input";
+
 import ListInput from "./ListInput";
-import { isNumeric, powerOfTwo, validateStr, validateNum } from '../common/Common';
+import { isNumeric, powerOfTwo, validateStr, validateNum,validateInt } from '../common/Common';
 import { CircularProgress } from '@mui/material';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -120,7 +121,6 @@ export default function BenchmarkForm(props) {
 
         validateStr(fieldValues, temp, "parentImplementation")
         validateStr(fieldValues, temp, "cpuName")
-        validateStr(fieldValues, temp, "cpuName")
         validateNum(fieldValues, temp, "cpuCores")
         validateNum(fieldValues, temp, "cpuThreads")
         validateNum(fieldValues, temp, "memory")
@@ -129,6 +129,15 @@ export default function BenchmarkForm(props) {
         validateNum(fieldValues, temp, "l3Cache")
         validateNum(fieldValues, temp, "execTime")
         validateNum(fieldValues, temp, "memUsage")
+
+        validateInt(fieldValues, temp, "cpuCores")
+        validateInt(fieldValues, temp, "cpuThreads")
+        validateInt(fieldValues, temp, "memory")
+        validateInt(fieldValues, temp, "l1Cache")
+        validateInt(fieldValues, temp, "l2Cache")
+        validateInt(fieldValues, temp, "l3Cache")
+        validateInt(fieldValues, temp, "execTime")
+        validateInt(fieldValues, temp, "memUsage")
 
         setErrors({
             ...temp

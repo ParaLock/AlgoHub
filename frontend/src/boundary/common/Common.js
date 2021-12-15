@@ -32,7 +32,26 @@ export function validateNum(vals, errors, name) {
         var num = parseInt(vals[name]);
         if(isNaN(num)) {
     
-            err = "Size must be a number";
+            err = "must be a number";
+    
+        }
+    
+        errors[name] = err
+    } 
+}
+
+export function validateInt(vals, errors, name) {
+
+    if(name in vals) {
+
+        var val = vals[name]
+        var err = "";
+        err = val ? "" : "This field is required. ";
+
+        var isInt = function(n) { return parseInt(n) == n };
+        if(!isInt(vals[name])) {
+    
+            err = "Must be an integer";
     
         }
     

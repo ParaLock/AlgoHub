@@ -91,11 +91,11 @@ export default function BenchmarkEntry(props) {
           </MachineInfo>
           <Results>
             <h4>Results</h4>
-            <i>Memory Usage (KB): </i>: {props.benchmark.memoryUsage}
+            <i>Memory Usage (KB) </i>: {props.benchmark.memoryUsage}
             <br/>
-            <i>Execution Time (ms): </i>: {props.benchmark.executiontime}
+            <i>Execution Time (ms) </i>: {props.benchmark.executiontime}
             <br/>
-            <i>Date: </i>: {props.benchmark.executionDate}
+            <i>Upload Date</i>: {props.benchmark.executionDate}
           </Results>
       </Wrapper>
   );

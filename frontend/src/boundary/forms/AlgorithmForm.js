@@ -96,7 +96,7 @@ export default function AlgorithmForm(props) {
         if('description' in fieldValues) {
             
             temp.description = fieldValues.description ? "" : "Please provide algorithm description.";
-            temp.description += !(fieldValues.description.length > 500) ? "" : "Algorithm description must not be greater then 500 characters. Current size: " + fieldValues.description.length;
+            temp.description += !(fieldValues.description.length > 250) ? "" : "Algorithm description must not be greater then 250 characters. Current size: " + fieldValues.description.length;
         }
 
         if('id' in fieldValues) {

@@ -202,9 +202,11 @@ export default function AccountManagementPage(props) {
             console.log(res)
 
             if (err.length == 0) {
+                
+                var temp = res.users.filter((item) => item !== null);
 
                 setLoadingUsers(false)
-                setUsers(res.users);
+                setUsers(temp);
 
             }
         }, "users/all_registered");

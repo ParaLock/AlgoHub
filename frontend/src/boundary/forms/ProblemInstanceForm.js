@@ -22,7 +22,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Form, useForm } from '../hooks/useForm';
 import Input from "./Input";
 import ListInput from "./ListInput";
-import { isNumeric,powerOfTwo } from '../common/Common';
+import { isNumeric,powerOfTwo, validateInt} from '../common/Common';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuDialogContent-root': {
@@ -116,6 +116,7 @@ export default function ProblemInstanceForm(props) {
             temp.parent = (fieldValues.parent) ? "" : "Problem instance must have parent algorithm.";
         }
 
+        validateInt(fieldValues, temp, "datasetSize")
         if ('datasetSize' in fieldValues) {
 
             temp.datasetSize = (fieldValues.datasetSize) ? "" : "Problem instance must have valid size.";
@@ -134,6 +135,7 @@ export default function ProblemInstanceForm(props) {
                 }
             }
         }
+
 
         setErrors({
             ...temp

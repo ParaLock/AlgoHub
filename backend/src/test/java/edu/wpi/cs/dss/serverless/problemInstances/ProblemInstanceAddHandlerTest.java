@@ -1,12 +1,9 @@
 package edu.wpi.cs.dss.serverless.problemInstances;
 
-import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceAddHandler;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddRequest;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +13,7 @@ public class ProblemInstanceAddHandlerTest extends LambdaTest {
     void testInput(ProblemInstanceAddRequest incoming, ProblemInstanceAddResponse outgoing) throws IOException {
         ProblemInstanceAddHandler handler = new ProblemInstanceAddHandler();
         ProblemInstanceAddResponse response = (ProblemInstanceAddResponse) handler.handleRequest(
-                incoming, createContext("add")
+                incoming, createContext("add problem instance")
         );
 
         Assert.assertTrue(response.getId().length() > 0);

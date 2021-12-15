@@ -4,11 +4,8 @@ import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceAddHandler;
-import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceRemoveHandler;
 import edu.wpi.cs.dss.serverless.problemInstances.http.*;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
-import net.bytebuddy.description.type.TypeList;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +19,7 @@ public class ProblemInstanceRemoveHandlerTest extends LambdaTest {
         ProblemInstanceRemoveHandler handler = new ProblemInstanceRemoveHandler();
         GenericRemoveRequest request = new Gson().fromJson(incoming, GenericRemoveRequest.class);
         GenericResponse response = handler.handleRequest(
-                request, createContext("remove")
+                request, createContext("remove problem instance")
         );
 
 //        Assert.assertEquals(outgoing.toString(), response.toString());
@@ -64,7 +61,7 @@ public class ProblemInstanceRemoveHandlerTest extends LambdaTest {
         ProblemInstanceRemoveHandler handler = new ProblemInstanceRemoveHandler();
         GenericRemoveRequest request = new Gson().fromJson(incoming, GenericRemoveRequest.class);
         GenericResponse response = handler.handleRequest(
-                request, createContext("remove")
+                request, createContext("remove problem instance")
         );
 
         // affected 0 rows but return 200

@@ -4,17 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @SuperBuilder
 public class UserGetAllResponse extends GenericResponse {
 
-    ArrayList<String> users;
+    private List<String> users;
 
     @Override
     @SneakyThrows

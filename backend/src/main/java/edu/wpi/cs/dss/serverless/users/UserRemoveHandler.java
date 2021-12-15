@@ -5,13 +5,10 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.users.http.UserGetAllResponse;
 import edu.wpi.cs.dss.serverless.users.http.UserRemoveRequest;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 
-
-import edu.wpi.cs.dss.serverless.util.ErrorMessage;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 public class UserRemoveHandler implements RequestHandler<UserRemoveRequest, GenericResponse> {
@@ -31,17 +28,16 @@ public class UserRemoveHandler implements RequestHandler<UserRemoveRequest, Gene
     }
 
     private GenericResponse deleteUser(UserRemoveRequest request) {
-
         final String username = request.getUsername();
-        AWSCognitoIdentityProvider provider = AWSCognitoIdentityProviderClientBuilder.defaultClient();
+        final String poolId = System.getenv("USER_POOL_ID");
+
+        final AdminDeleteUserRequest adminDeleteUserRequest = new AdminDeleteUserRequest();
+        adminDeleteUserRequest.setUsername(username);
+        adminDeleteUserRequest.setUserPoolId(poolId);
 
         try {
-            String poolId = System.getenv("USER_POOL_ID");
-            AdminDeleteUserRequest req = new AdminDeleteUserRequest();
-            req.setUsername(username);
-            req.setUserPoolId(poolId);
-
-            provider.adminDeleteUser(req);
+            final AWSCognitoIdentityProvider provider = AWSCognitoIdentityProviderClientBuilder.defaultClient();
+            provider.adminDeleteUser(adminDeleteUserRequest);
 
             return GenericResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())
@@ -50,11 +46,10 @@ public class UserRemoveHandler implements RequestHandler<UserRemoveRequest, Gene
 
         } catch (Exception e){
             e.printStackTrace();
+            return GenericResponse.builder()
+                    .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                    .error("Failed to delete user.")
+                    .build();
         }
-        return GenericResponse.builder()
-                .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                .error("Failed to delete user.")
-                .build();
-
     }
 }

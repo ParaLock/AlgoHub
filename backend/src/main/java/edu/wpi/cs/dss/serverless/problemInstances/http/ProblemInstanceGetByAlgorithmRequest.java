@@ -2,13 +2,14 @@ package edu.wpi.cs.dss.serverless.problemInstances.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.SneakyThrows;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@SuperBuilder
 public class ProblemInstanceGetByAlgorithmRequest {
 
     private String id;

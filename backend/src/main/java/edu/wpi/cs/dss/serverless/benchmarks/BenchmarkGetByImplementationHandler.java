@@ -8,8 +8,6 @@ import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkGetByImplementationRes
 import edu.wpi.cs.dss.serverless.benchmarks.model.Benchmark;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
-import edu.wpi.cs.dss.serverless.implementation.http.ImplementationGetRequest;
-import edu.wpi.cs.dss.serverless.implementation.http.ImplementationGetResponse;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
@@ -18,31 +16,32 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
-public class BenchmarkGetByImplementationHandler implements RequestHandler<BenchmarkGetByImplementationRequest, BenchmarkGetByImplementationResponse> {
+public class BenchmarkGetByImplementationHandler implements RequestHandler<BenchmarkGetByImplementationRequest, GenericResponse> {
 
     private LambdaLogger logger;
 
     @Override
-    public BenchmarkGetByImplementationResponse handleRequest(BenchmarkGetByImplementationRequest request, Context context) {
+    public GenericResponse handleRequest(BenchmarkGetByImplementationRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received a get benchmark request from AWS Lambda: \n" + request);
 
         // find algorithm by id
-        final BenchmarkGetByImplementationResponse response = findById(request);
+        final GenericResponse response = findById(request);
         logger.log("Sent a get benchmark response to AWS Lambda:\n" + response);
 
         return response;
     }
 
-    private BenchmarkGetByImplementationResponse findById(BenchmarkGetByImplementationRequest request) {
-        // extracting implementation id from get implementation request
+    private GenericResponse findById(BenchmarkGetByImplementationRequest request) {
         final String implementationId = request.getId();
 
         //create a sql query
         final String query =
                 "SELECT benchmark.*, problem_instance.problem_type as problemType, problem_instance.dataset_size as datasetSize " +
-                "FROM benchmark INNER JOIN problem_instance ON problem_instance.id = benchmark.problem_instance_id " +
+                "FROM benchmark " +
+                "INNER JOIN problem_instance ON problem_instance.id = benchmark.problem_instance_id " +
                 "WHERE implementation_id = ?";
 
         try (final Connection connection = DataSource.getConnection(logger);
@@ -52,13 +51,9 @@ public class BenchmarkGetByImplementationHandler implements RequestHandler<Bench
 
             preparedStatement.setString(1, implementationId);
 
-            ArrayList<Benchmark> benchmarks = new ArrayList<Benchmark>();
-
+            final List<Benchmark> benchmarks = new ArrayList<>();
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-
-
                 while (resultSet.next()) {
-
                     final String id = resultSet.getString(1);
                     final int memory = resultSet.getInt(2);
                     final String cpuName = resultSet.getString(3);
@@ -88,20 +83,18 @@ public class BenchmarkGetByImplementationHandler implements RequestHandler<Bench
                             cpuL2Cache,
                             cpuL3Cache,
                             executionTime,
-                            executionDate.toString(),
+                            executionDate,
                             memoryUsage,
                             authorId,
                             problemType,
                             datasetSize
                     ));
-
                 }
 
                 return BenchmarkGetByImplementationResponse.builder()
                         .statusCode(HttpStatus.SUCCESS.getValue())
                         .benchmarks(benchmarks)
                         .build();
-
             }
 
         } catch (SQLException e) {

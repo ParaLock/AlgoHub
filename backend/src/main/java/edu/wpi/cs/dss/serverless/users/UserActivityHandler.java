@@ -35,7 +35,6 @@ public class UserActivityHandler implements RequestHandler<UserActivityRequest, 
     }
 
     private GenericResponse getActivity(UserActivityRequest request) {
-
         final String username = request.getUsername();
         final String activityQuery = "SELECT id, name, 'classification' AS type FROM classification WHERE author_id=?" +
                 " UNION " +
@@ -65,12 +64,7 @@ public class UserActivityHandler implements RequestHandler<UserActivityRequest, 
                     final String name = resultSet.getString(2);
                     final String typeName = resultSet.getString(3);
 
-                    activity.add(UserActivity.builder()
-                            .id(id)
-                            .name(name)
-                            .typeName(typeName)
-                            .build()
-                    );
+                    activity.add(new UserActivity(id, name, typeName));
                 }
             }
 

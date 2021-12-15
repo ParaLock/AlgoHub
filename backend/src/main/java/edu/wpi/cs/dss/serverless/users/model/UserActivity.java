@@ -1,10 +1,10 @@
 package edu.wpi.cs.dss.serverless.users.model;
 
-import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 @Value
-@Builder
+@EqualsAndHashCode(of = "id")
 public class UserActivity {
     String id;
     String name;

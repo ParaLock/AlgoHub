@@ -6,10 +6,9 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddRequest;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceRemoveRequest;
 import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
@@ -18,9 +17,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
-public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInstanceRemoveRequest, GenericResponse> {
+public class ProblemInstanceRemoveHandler implements RequestHandler<GenericRemoveRequest, GenericResponse> {
 
     private LambdaLogger logger;
 
@@ -30,7 +28,7 @@ public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInsta
     private final AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
     @Override
-    public GenericResponse handleRequest(ProblemInstanceRemoveRequest request, Context context) {
+    public GenericResponse handleRequest(GenericRemoveRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received an add problem instance request from AWS Lambda:\n" + request);
 
@@ -41,41 +39,34 @@ public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInsta
         return response;
     }
 
-    private GenericResponse deleteProblemInstanceFromDB(ProblemInstanceRemoveRequest request) {
-
+    private GenericResponse deleteProblemInstanceFromDB(GenericRemoveRequest request) {
         final String id = request.getId();
-
-        final String getQuery = "SELECT * FROM problem_instance WHERE id = ?";
-        final String query = "DELETE FROM problem_instance WHERE id = ?";
+        final String deleteQuery = "DELETE FROM problem_instance WHERE id = ?";
+        final String findQuery = "SELECT * FROM problem_instance WHERE id = ?";
 
         try (final Connection connection = DataSource.getConnection(logger);
-             final PreparedStatement getPreparedStatement = connection.prepareStatement(getQuery);
-             final PreparedStatement preparedStatement = connection.prepareStatement(query)
+             final PreparedStatement findPreparedStatement = connection.prepareStatement(findQuery);
+             final PreparedStatement deletePreparedStatement = connection.prepareStatement(deleteQuery)
         ) {
             logger.log("Successfully connected to db!");
 
-            getPreparedStatement.setString(1, id);
-            preparedStatement.setString(1, id);
+            findPreparedStatement.setString(1, id);
 
             String datasetFileName = null;
-            try (final ResultSet resultSet = getPreparedStatement.executeQuery()) {
+            try (final ResultSet resultSet = findPreparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     datasetFileName = resultSet.getString(2);
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                logger.log(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue());
-                return GenericResponse.builder()
-                        .statusCode(HttpStatus.BAD_REQUEST.getValue())
-                        .error(ErrorMessage.SQL_EXECUTION_EXCEPTION.getValue())
-                        .build();
             }
 
-            final int rowsAffected = preparedStatement.executeUpdate();
+            deletePreparedStatement.setString(1, id);
+            final int rowsAffected = deletePreparedStatement.executeUpdate();
             logger.log("Delete from problem instance table statement has affected " + rowsAffected + " rows!");
 
             // delete from S3 Bucket
-            if (rowsAffected == 1) deleteFromS3(datasetFileName);
+            if (rowsAffected == 1) {
+                deleteFromS3(datasetFileName);
+            }
 
             return ProblemInstanceAddResponse.builder()
                     .statusCode(HttpStatus.SUCCESS.getValue())

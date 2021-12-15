@@ -14,15 +14,15 @@ public class BenchmarkAddRequest {
 
     private String implementationId;
     private String problemInstanceId;
-    private int memory;
+    private Integer memory;
     private String cpuName;
-    private int cpuThreads;
-    private int cpuCores;
-    private int cpuL1Cache;
-    private int cpuL2Cache;
-    private int cpuL3Cache;
-    private int executiontime;
-    private int memoryUsage;
+    private Integer cpuThreads;
+    private Integer cpuCores;
+    private Integer cpuL1Cache;
+    private Integer cpuL2Cache;
+    private Integer cpuL3Cache;
+    private Integer executiontime;
+    private Integer memoryUsage;
     private String authorId;
 
     @Override

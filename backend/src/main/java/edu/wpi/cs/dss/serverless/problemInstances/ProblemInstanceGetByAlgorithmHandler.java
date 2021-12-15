@@ -54,19 +54,11 @@ public class ProblemInstanceGetByAlgorithmHandler implements RequestHandler<Prob
                 while(resultSet.next()) {
                     final String id = resultSet.getString(1);
                     final String datasetFileName = resultSet.getString(2);
-                    final int datasetSize = resultSet.getInt(3);
+                    final Integer datasetSize = resultSet.getInt(3);
                     final String problemType = resultSet.getString(4);
-                    final String algoId = resultSet.getString(5);
                     final String authorId = resultSet.getString(6);
 
-                    problemInstances.add(new ProblemInstance(
-                            id,
-                            datasetFileName,
-                            datasetSize,
-                            problemType,
-                            algoId,
-                            authorId
-                    ));
+                    problemInstances.add(new ProblemInstance(id, authorId, problemType, algorithmId, datasetSize, datasetFileName));
                 }
 
                 return ProblemInstanceGetByAlgorithmResponse.builder()

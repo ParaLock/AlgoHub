@@ -13,7 +13,7 @@ public class ClassificationAddHandlerTest extends LambdaTest {
     void testInput(ClassificationAddRequest incoming, ClassificationAddResponse outgoing) throws IOException {
         ClassificationAddHandler handler = new ClassificationAddHandler();
         GenericResponse response = handler.handleRequest(
-                incoming, createContext("add problem instance")
+                incoming, createContext("add classification")
         );
 
         Assert.assertEquals(new Integer(200), response.getStatusCode());

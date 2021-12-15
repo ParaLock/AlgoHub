@@ -55,7 +55,7 @@ public class ClassificationRemoveHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, expected_output);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("Invalid remove classification:" + ioe.getMessage());
         }
     }
 }

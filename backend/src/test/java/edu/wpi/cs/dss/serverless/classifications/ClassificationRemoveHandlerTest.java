@@ -30,6 +30,16 @@ public class ClassificationRemoveHandlerTest extends LambdaTest {
         Assert.assertEquals(new Integer(200), response.getStatusCode());
     }
 
+    void testFailInput(String incoming, GenericResponse outgoing) throws IOException {
+        ClassificationRemoveHandler handler = new ClassificationRemoveHandler();
+        GenericRemoveRequest request = new Gson().fromJson(incoming, GenericRemoveRequest.class);
+        GenericResponse response = handler.handleRequest(
+                request, createContext("remove classification")
+        );
+
+        Assert.assertEquals(new Integer(400), response.getStatusCode());
+    }
+
     @Test
     public void testValidClassificationRemove() {
         // add before remove
@@ -54,6 +64,21 @@ public class ClassificationRemoveHandlerTest extends LambdaTest {
 
         try {
             testInput(sample_input, expected_output);
+        } catch (IOException ioe) {
+            Assert.fail("Invalid remove classification:" + ioe.getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidClassificationRemove() {
+
+        String sample_input = String.format("{\"id\": \"%s\"}", "this-is-a-bogus-id-that-should");
+        GenericResponse expected_output = GenericResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.getValue())
+                .build();
+
+        try {
+            testFailInput(sample_input, expected_output);
         } catch (IOException ioe) {
             Assert.fail("Invalid remove classification:" + ioe.getMessage());
         }

@@ -71,19 +71,4 @@ public class ClassificationMergeHandler implements RequestHandler<Classification
                     .build();
         }
     }
-
-    private long countRelated(String id, PreparedStatement preparedStatement) throws SQLException {
-        preparedStatement.setString(1, id);
-
-        final long result;
-        try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-            if (resultSet.next()) {
-                result = resultSet.getLong(1);
-            } else {
-                result = 0L;
-            }
-        }
-
-        return result;
-    }
 }

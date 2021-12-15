@@ -17,6 +17,13 @@ public class AlgorithmAddRequest {
     private String description;
     private String classificationId;
 
+    public AlgorithmAddRequest(String name, String description, String classification_id, String author_id) {
+        this.name = name;
+        this.authorId = author_id;
+        this.classificationId = classification_id;
+        this.description = description;
+    }
+
     @Override
     @SneakyThrows
     public String toString() {

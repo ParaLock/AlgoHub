@@ -40,8 +40,6 @@ public class AlgorithmRemoveHandlerTest extends LambdaTest {
         String author_id = "john_smith_sr";
 
         AlgorithmAddRequest req = new AlgorithmAddRequest(sample_name, description, classification_id, author_id);
-        String input = new Gson().toJson(req);
-
         AlgorithmAddHandler handler = new AlgorithmAddHandler();
         AlgorithmAddResponse response = (AlgorithmAddResponse) handler.handleRequest(req, createContext("add"));
 

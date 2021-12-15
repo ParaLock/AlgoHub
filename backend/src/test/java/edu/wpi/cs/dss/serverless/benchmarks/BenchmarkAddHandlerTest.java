@@ -35,7 +35,7 @@ public class BenchmarkAddHandlerTest extends LambdaTest {
         sample_input.setMemory(512);
         sample_input.setMemoryUsage(256);
         sample_input.setProblemInstanceId("1");
-        sample_input.setImplementationId("1");
+        sample_input.setImplementationId("04697bc1-c7fa-4f86-aa87-003cd7eb8a08");
 
         try {
             testInput(sample_input, null);

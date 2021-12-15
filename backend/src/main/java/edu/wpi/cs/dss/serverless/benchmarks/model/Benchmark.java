@@ -1,28 +1,35 @@
 package edu.wpi.cs.dss.serverless.benchmarks.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import lombok.EqualsAndHashCode;
+import lombok.SneakyThrows;
+import lombok.Value;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Value
+@EqualsAndHashCode(of = "id")
 public class Benchmark {
-    private String id;
-    private String implementationId;
-    private String problemInstanceId;
-    private int memory;
-    private String cpuName;
-    private int cpuThreads;
-    private int cpuCores;
-    private int cpuL1Cache;
-    private int cpuL2Cache;
-    private int cpuL3Cache;
-    private int executiontime;
-    private String executionDate;
-    private int memoryUsage;
-    private String authorId;
-    private String problemType;
-    private int datasetSize;
+    String id;
+    String implementationId;
+    String problemInstanceId;
+    Integer memory;
+    String cpuName;
+    Integer cpuThreads;
+    Integer cpuCores;
+    Integer cpuL1Cache;
+    Integer cpuL2Cache;
+    Integer cpuL3Cache;
+    Integer executionTime;
+    String executionDate;
+    Integer memoryUsage;
+    String authorId;
+    String problemType;
+    Integer datasetSize;
+
+    @Override
+    @SneakyThrows
+    public String toString() {
+        final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
+        return objectWriter.writeValueAsString(this);
+    }
 }

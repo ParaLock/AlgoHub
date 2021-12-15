@@ -2,12 +2,8 @@ package edu.wpi.cs.dss.serverless.problemInstances;
 
 import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;
-import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceGetByAlgorithmHandler;
-import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceGetHandler;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetByAlgorithmRequest;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetByAlgorithmResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -19,7 +15,7 @@ public class ProblemInstanceGetByAlgorithmHandlerTest extends LambdaTest {
         ProblemInstanceGetByAlgorithmHandler handler = new ProblemInstanceGetByAlgorithmHandler();
         ProblemInstanceGetByAlgorithmRequest request = new Gson().fromJson(incoming, ProblemInstanceGetByAlgorithmRequest.class);
         ProblemInstanceGetByAlgorithmResponse response = (ProblemInstanceGetByAlgorithmResponse) handler.handleRequest(
-                request, createContext("get by algorithm")
+                request, createContext("get problem instance by algorithm")
         );
 
         Assert.assertTrue(response.getProblemInstances().size() > 0);
@@ -41,7 +37,7 @@ public class ProblemInstanceGetByAlgorithmHandlerTest extends LambdaTest {
         ProblemInstanceGetByAlgorithmHandler handler = new ProblemInstanceGetByAlgorithmHandler();
         ProblemInstanceGetByAlgorithmRequest request = new Gson().fromJson(incoming, ProblemInstanceGetByAlgorithmRequest.class);
         ProblemInstanceGetByAlgorithmResponse response = (ProblemInstanceGetByAlgorithmResponse) handler.handleRequest(
-                request, createContext("get by algorithm")
+                request, createContext("get problem instance by algorithm")
         );
 
         Assert.assertTrue(response.getProblemInstances().size() == 0);

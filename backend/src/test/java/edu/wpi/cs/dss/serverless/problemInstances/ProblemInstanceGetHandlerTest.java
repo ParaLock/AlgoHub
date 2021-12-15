@@ -16,7 +16,7 @@ public class ProblemInstanceGetHandlerTest extends LambdaTest {
         ProblemInstanceGetHandler handler = new ProblemInstanceGetHandler();
         ProblemInstanceGetRequest request = new Gson().fromJson(incoming, ProblemInstanceGetRequest.class);
         ProblemInstanceGetResponse response = (ProblemInstanceGetResponse) handler.handleRequest(
-                request, createContext("get")
+                request, createContext("get problem instance")
         );
 
         Assert.assertEquals(outgoing.toString(), response.toString());
@@ -27,7 +27,7 @@ public class ProblemInstanceGetHandlerTest extends LambdaTest {
         ProblemInstanceGetHandler handler = new ProblemInstanceGetHandler();
         ProblemInstanceGetRequest request = new Gson().fromJson(incoming, ProblemInstanceGetRequest.class);
         GenericResponse response = handler.handleRequest(
-                request, createContext("get")
+                request, createContext("get problem instance")
         );
 
 //        System.out.printf("bad input response: {}", response);

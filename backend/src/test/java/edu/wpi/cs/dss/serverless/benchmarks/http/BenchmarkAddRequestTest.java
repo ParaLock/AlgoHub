@@ -36,7 +36,7 @@ public class BenchmarkAddRequestTest {
         benchmarkAddRequest.setCpuL2Cache(CPU_L2_CACHE_PARAM);
         benchmarkAddRequest.setCpuL3Cache(CPU_L3_CACHE_PARAM);
         benchmarkAddRequest.setMemoryUsage(MEMORY_USAGE_PARAM);
-        benchmarkAddRequest.setExecutionTime(EXECUTION_TIME_PARAM);
+        benchmarkAddRequest.setExecutiontime(EXECUTION_TIME_PARAM);
         benchmarkAddRequest.setCpuName(CPU_NAME_PARAM);
         benchmarkAddRequest.setAuthorId(AUTHOR_ID_PARAM);
         benchmarkAddRequest.setImplementationId(IMPLEMENTATION_ID_PARAM);
@@ -52,7 +52,7 @@ public class BenchmarkAddRequestTest {
         assertEquals(CPU_L2_CACHE_PARAM, benchmarkAddRequest.getCpuL2Cache());
         assertEquals(CPU_L3_CACHE_PARAM, benchmarkAddRequest.getCpuL3Cache());
         assertEquals(MEMORY_USAGE_PARAM, benchmarkAddRequest.getMemoryUsage());
-        assertEquals(EXECUTION_TIME_PARAM, benchmarkAddRequest.getExecutionTime());
+        assertEquals(EXECUTION_TIME_PARAM, benchmarkAddRequest.getExecutiontime());
         assertEquals(CPU_NAME_PARAM, benchmarkAddRequest.getCpuName());
         assertEquals(AUTHOR_ID_PARAM, benchmarkAddRequest.getAuthorId());
         assertEquals(IMPLEMENTATION_ID_PARAM, benchmarkAddRequest.getImplementationId());

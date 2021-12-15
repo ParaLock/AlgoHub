@@ -36,7 +36,8 @@ public class ImplementationGetHandlerTest extends LambdaTest {
     public void testImplementationGet(){
         String id = "232e7599-fc29-4e55-b54d-e835555f3df8";
 
-        ImplementationGetRequest req = new ImplementationGetRequest(id);
+        ImplementationGetRequest req = new ImplementationGetRequest();
+        req.setId(id);
         String input_id = new Gson().toJson(req);
 
         String file_name = "232e7599-fc29-4e55-b54d-e835555f3df8_insertion sort_java.java";
@@ -57,7 +58,8 @@ public class ImplementationGetHandlerTest extends LambdaTest {
     public void testFailInput(){
         String id = "16ac8e25-4";
 
-        ImplementationGetRequest req = new ImplementationGetRequest(id);
+        ImplementationGetRequest req = new ImplementationGetRequest();
+        req.setId(id);
         String input_id = new Gson().toJson(req);
 
         try {

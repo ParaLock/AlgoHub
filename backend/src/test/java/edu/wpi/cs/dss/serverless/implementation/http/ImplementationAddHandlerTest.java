@@ -21,7 +21,8 @@ public class ImplementationAddHandlerTest extends LambdaTest {
         ImplementationAddResponse response = (ImplementationAddResponse) handler.handleRequest(req, createContext("add"));
 
         ImplementationGetHandler handler2 = new ImplementationGetHandler();
-        ImplementationGetRequest req2 = new ImplementationGetRequest(response.getId());
+        ImplementationGetRequest req2 = new ImplementationGetRequest();
+        req2.setId(response.getId());
 
         ImplementationGetResponse response2 = (ImplementationGetResponse) handler2.handleRequest(req2, createContext("get"));
 
@@ -49,7 +50,13 @@ public class ImplementationAddHandlerTest extends LambdaTest {
         String algo_name = "quick_sort";
         String source_code  = "testBase64";
 
-        ImplementationAddRequest req = new ImplementationAddRequest(name,author_id,extension,algorithm_id,algo_name,source_code);
+        ImplementationAddRequest req = new ImplementationAddRequest();
+        req.setName(name);
+        req.setAuthorId(author_id);
+        req.setExtension(extension);
+        req.setAlgorithmId(algorithm_id);
+        req.setAlgorithmName(algo_name);
+        req.setSourceCodeBase64(source_code);
         String input = new Gson().toJson(req);
 
         try {
@@ -69,8 +76,15 @@ public class ImplementationAddHandlerTest extends LambdaTest {
         String algo_name = "quick_sort";
         String source_code  = "testBase64";
 
-        ImplementationAddRequest req = new ImplementationAddRequest(name,author_id,extension,algorithm_id,algo_name,source_code);
+        ImplementationAddRequest req = new ImplementationAddRequest();
+        req.setName(name);
+        req.setAuthorId(author_id);
+        req.setExtension(extension);
+        req.setAlgorithmId(algorithm_id);
+        req.setAlgorithmName(algo_name);
+        req.setSourceCodeBase64(source_code);
         String input = new Gson().toJson(req);
+
 
         try {
             testFailInput(input);

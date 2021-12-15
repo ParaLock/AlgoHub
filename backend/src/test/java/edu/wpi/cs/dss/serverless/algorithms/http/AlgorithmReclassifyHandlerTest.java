@@ -44,10 +44,13 @@ public class AlgorithmReclassifyHandlerTest extends LambdaTest {
 
     @Test
     public void testSuccessInput(){
-        String id = "52cac455-5bb3-11ec-933c-16c4115dd1ff";
-        String classification_id = "1b53c044-5bb3-11ec-933c-16c4115dd1ff";
+        String algorithmId = "52cac455-5bb3-11ec-933c-16c4115dd1ff";
+        String classificationId = "1b53c044-5bb3-11ec-933c-16c4115dd1ff";
 
-        AlgorithmReclassifyRequest req = new AlgorithmReclassifyRequest(id,classification_id);
+        AlgorithmReclassifyRequest req = new AlgorithmReclassifyRequest();
+        req.setAlgorithmId(algorithmId);
+        req.setNewClassificationId(classificationId);
+
         String input = new Gson().toJson(req);
 
         try {
@@ -60,10 +63,13 @@ public class AlgorithmReclassifyHandlerTest extends LambdaTest {
 
     @Test
     public void testFailInput() {
-        String id = "52cac455-5bb3-11ec-933c-16c4115dd1ff";
-        String classification_id = "1b53c044-5bb3-11ec-933c-16c4115dd134ff";
+        String algorithmId = "52cac455-5bb3-11ec-933c-16c4115dd1ff";
+        String classificationId = "1b53c044-5bb3-11ec-933c-16c4115dd134ff";
 
-        AlgorithmReclassifyRequest req = new AlgorithmReclassifyRequest(id,classification_id);
+        AlgorithmReclassifyRequest req = new AlgorithmReclassifyRequest();
+        req.setAlgorithmId(algorithmId);
+        req.setNewClassificationId(classificationId);
+
         String input = new Gson().toJson(req);
 
         try {

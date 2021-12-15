@@ -41,10 +41,17 @@ public class ImplementationRemoveHandlerTest extends LambdaTest {
 
 
         ImplementationAddHandler handler = new ImplementationAddHandler();
-        ImplementationAddRequest req = new ImplementationAddRequest(name,author_id,extension,algorithm_id,algo_name,source_code);
+        ImplementationAddRequest req = new ImplementationAddRequest();
+        req.setName(name);
+        req.setAuthorId(author_id);
+        req.setExtension(extension);
+        req.setAlgorithmId(algorithm_id);
+        req.setAlgorithmName(algo_name);
+        req.setSourceCodeBase64(source_code);
         ImplementationAddResponse response = (ImplementationAddResponse) handler.handleRequest(req, createContext("add"));
 
-        ImplementationRemoveRequest req2 = new ImplementationRemoveRequest(response.getId());
+        ImplementationRemoveRequest req2 = new ImplementationRemoveRequest();
+        req2.setId(response.getId());
         String input = new Gson().toJson(req2);
 
         try {
@@ -58,7 +65,8 @@ public class ImplementationRemoveHandlerTest extends LambdaTest {
     @Test
     public void FailInput(){
         String id = "164dfed4-cf56-4124-a23232323237";
-        ImplementationRemoveRequest req = new ImplementationRemoveRequest(id);
+        ImplementationRemoveRequest req = new ImplementationRemoveRequest();
+        req.setId(id);
         String input = new Gson().toJson(req);
 
         try {

@@ -4,8 +4,6 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetRequest;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetResponse;
 import edu.wpi.cs.dss.serverless.users.http.UserGetAllRequest;
 import edu.wpi.cs.dss.serverless.users.http.UserGetAllResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
@@ -17,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserGetAllHandler implements RequestHandler<UserGetAllRequest, GenericResponse> {
 
@@ -35,28 +34,22 @@ public class UserGetAllHandler implements RequestHandler<UserGetAllRequest, Gene
     }
 
     private GenericResponse getAllUsers() {
-
-        //create a sql query
-        final String query =
-                "SELECT author_id FROM classification" +
-                        " UNION " +
-                        "SELECT author_id FROM algorithm" +
-                        " UNION " +
-                        "SELECT author_id FROM implementation" +
-                        " UNION " +
-                        "SELECT author_id FROM benchmark";
+        final String query = "SELECT author_id FROM classification" +
+                " UNION " +
+                "SELECT author_id FROM algorithm" +
+                " UNION " +
+                "SELECT author_id FROM implementation" +
+                " UNION " +
+                "SELECT author_id FROM benchmark";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)
         ) {
             logger.log("Successfully connected to db!");
 
-            ArrayList<String> users = new ArrayList<String>();
-
+            final List<String> users = new ArrayList<>();
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-
                 while(resultSet.next()) {
-
                     final String authorId = resultSet.getString(1);
                     users.add(authorId);
                 }

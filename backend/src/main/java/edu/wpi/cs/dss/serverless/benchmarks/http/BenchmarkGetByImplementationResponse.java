@@ -5,18 +5,16 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import edu.wpi.cs.dss.serverless.benchmarks.model.Benchmark;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import lombok.Getter;
-import java.util.ArrayList;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
-@Setter
 @SuperBuilder
 public class BenchmarkGetByImplementationResponse extends GenericResponse {
 
-    private ArrayList<Benchmark> benchmarks;
+    private List<Benchmark> benchmarks;
 
     @Override
     @SneakyThrows

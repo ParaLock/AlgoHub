@@ -5,13 +5,13 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkAddRequest;
 import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkAddResponse;
-import edu.wpi.cs.dss.serverless.classifications.http.ClassificationAddResponse;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -33,42 +33,23 @@ public class BenchmarkAddHandler implements RequestHandler<BenchmarkAddRequest, 
     }
 
     private GenericResponse save(BenchmarkAddRequest request) {
-
         final String implementationId = request.getImplementationId();
         final String problemInstanceId = request.getProblemInstanceId();
         final String authorId = request.getAuthorId();
-        final int memory = request.getMemory();
+        final Integer memory = request.getMemory();
         final String cpuName = request.getCpuName();
-        final int cpuThreads = request.getCpuThreads();
-        final int cpuCores = request.getCpuCores();
-        final int cpuL1Cache = request.getCpuL1Cache();
-        final int cpuL2Cache = request.getCpuL2Cache();
-        final int cpuL3Cache = request.getCpuL3Cache();
-        final int executionTime = request.getExecutiontime();
-        final int memoryUsage = request.getMemoryUsage();
+        final Integer cpuThreads = request.getCpuThreads();
+        final Integer cpuCores = request.getCpuCores();
+        final Integer cpuL1Cache = request.getCpuL1Cache();
+        final Integer cpuL2Cache = request.getCpuL2Cache();
+        final Integer cpuL3Cache = request.getCpuL3Cache();
+        final Integer executionTime = request.getExecutiontime();
+        final Integer memoryUsage = request.getMemoryUsage();
 
         final String id = UUID.randomUUID().toString();
-
-        long millis = System.currentTimeMillis();
-        java.sql.Date date = new java.sql.Date(millis);
-
-        // creating a sql query
-        final String query = "INSERT INTO benchmark (" +
-                "                                   id, " +
-                "                                   memory, " +
-                "                                   cpu_name, " +
-                "                                   cpu_threads, " +
-                "                                   cpu_cores, " +
-                "                                   cpu_l1_cache, " +
-                "                                   cpu_l2_cache, " +
-                "                                   cpu_l3_cache, " +
-                "                                   execution_date, " +
-                "                                   execution_time, " +
-                "                                   memory_usage, " +
-                "                                   implementation_id, " +
-                "                                   problem_instance_id, " +
-                "                                   author_id" +
-                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        final Date date = new Date(System.currentTimeMillis());
+        final String query = "INSERT INTO benchmark (id, memory, cpu_name, cpu_threads, cpu_cores, cpu_l1_cache, cpu_l2_cache, cpu_l3_cache, execution_date, execution_time, memory_usage, implementation_id, problem_instance_id, author_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (final Connection connection = DataSource.getConnection(logger);
              final PreparedStatement preparedStatement = connection.prepareStatement(query)

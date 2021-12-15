@@ -29,7 +29,7 @@ public class UserGetAllHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, "");
         } catch (IOException ioe) {
-            Assert.fail("Valid get users:" + ioe.getMessage());
+            Assert.fail("Valid get all users:" + ioe.getMessage());
         }
     }
 }

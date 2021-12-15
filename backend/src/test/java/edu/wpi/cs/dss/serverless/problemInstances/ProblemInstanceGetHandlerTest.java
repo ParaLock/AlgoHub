@@ -52,7 +52,7 @@ public class ProblemInstanceGetHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, expected_output);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("valid get problem instance:" + ioe.getMessage());
         }
     }
 

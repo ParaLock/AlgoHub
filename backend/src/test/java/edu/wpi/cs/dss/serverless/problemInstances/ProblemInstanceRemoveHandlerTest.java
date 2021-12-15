@@ -22,7 +22,6 @@ public class ProblemInstanceRemoveHandlerTest extends LambdaTest {
                 request, createContext("remove problem instance")
         );
 
-//        Assert.assertEquals(outgoing.toString(), response.toString());
         Assert.assertEquals(new Integer(200), response.getStatusCode());
     }
 
@@ -53,7 +52,7 @@ public class ProblemInstanceRemoveHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, expected_output);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("valid remove problem instance:" + ioe.getMessage());
         }
     }
 
@@ -75,7 +74,7 @@ public class ProblemInstanceRemoveHandlerTest extends LambdaTest {
         try {
             testFailInput(sample_input, "");
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("Invalid remove problem instance:" + ioe.getMessage());
         }
     }
 }

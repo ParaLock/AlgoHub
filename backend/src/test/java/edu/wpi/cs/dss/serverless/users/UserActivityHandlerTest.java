@@ -2,12 +2,6 @@ package edu.wpi.cs.dss.serverless.users;
 
 import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;
-import edu.wpi.cs.dss.serverless.benchmarks.BenchmarkGetByImplementationHandler;
-import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkGetByImplementationRequest;
-import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkGetByImplementationResponse;
-import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceGetHandler;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceGetRequest;
 import edu.wpi.cs.dss.serverless.users.http.UserActivityRequest;
 import edu.wpi.cs.dss.serverless.users.http.UserActivityResponse;
 import org.junit.Assert;
@@ -16,7 +10,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 public class UserActivityHandlerTest extends LambdaTest {
-
 
     void testInput(String incoming, String outgoing) throws IOException {
         UserActivityHandler handler = new UserActivityHandler();
@@ -36,7 +29,7 @@ public class UserActivityHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, "");
         } catch (IOException ioe) {
-            Assert.fail("Invalid get user activities:" + ioe.getMessage());
+            Assert.fail("Valid get user activities:" + ioe.getMessage());
         }
     }
 

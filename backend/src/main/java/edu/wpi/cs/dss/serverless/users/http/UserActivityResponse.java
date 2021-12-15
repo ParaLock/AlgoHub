@@ -1,18 +1,20 @@
-package edu.wpi.cs.dss.serverless.problemInstances.http;
+package edu.wpi.cs.dss.serverless.users.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import edu.wpi.cs.dss.serverless.generic.GenericResponse;
+import edu.wpi.cs.dss.serverless.users.model.UserActivity;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.SneakyThrows;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
-public class ProblemInstanceGetByAlgorithmRequest {
+@SuperBuilder
+public class UserActivityResponse extends GenericResponse {
 
-    private String id;
+    private final List<UserActivity> activity;
 
     @Override
     @SneakyThrows

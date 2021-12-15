@@ -1,18 +1,20 @@
-package edu.wpi.cs.dss.serverless.classifications.model;
+package edu.wpi.cs.dss.serverless.implementation.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
-@Value
-@EqualsAndHashCode(of = "id")
-public class HierarchyEntry {
-    String id;
-    String name;
-    String parentId;
-    String typeName;
+@Getter
+@Setter
+@NoArgsConstructor
+@SuperBuilder
+public class ImplementationRemoveRequest {
+
+    private String id;
 
     @Override
     @SneakyThrows

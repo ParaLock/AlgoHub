@@ -2,6 +2,7 @@ package edu.wpi.cs.dss.serverless.problemInstances;
 
 import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;
+import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceAddHandler;
 import edu.wpi.cs.dss.serverless.problemInstances.ProblemInstanceRemoveHandler;
@@ -19,7 +20,7 @@ public class ProblemInstanceRemoveHandlerTest extends LambdaTest {
     void testInput(String incoming, GenericResponse outgoing) throws IOException {
         // remove
         ProblemInstanceRemoveHandler handler = new ProblemInstanceRemoveHandler();
-        ProblemInstanceRemoveRequest request = new Gson().fromJson(incoming, ProblemInstanceRemoveRequest.class);
+        GenericRemoveRequest request = new Gson().fromJson(incoming, GenericRemoveRequest.class);
         GenericResponse response = handler.handleRequest(
                 request, createContext("remove")
         );
@@ -61,7 +62,7 @@ public class ProblemInstanceRemoveHandlerTest extends LambdaTest {
 
     void testFailInput(String incoming, String outgoing) throws IOException {
         ProblemInstanceRemoveHandler handler = new ProblemInstanceRemoveHandler();
-        ProblemInstanceRemoveRequest request = new Gson().fromJson(incoming, ProblemInstanceRemoveRequest.class);
+        GenericRemoveRequest request = new Gson().fromJson(incoming, GenericRemoveRequest.class);
         GenericResponse response = handler.handleRequest(
                 request, createContext("remove")
         );

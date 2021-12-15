@@ -3,7 +3,7 @@ package edu.wpi.cs.dss.serverless.benchmarks;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkRemoveRequest;
+import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
@@ -12,14 +12,13 @@ import edu.wpi.cs.dss.serverless.util.HttpStatus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
 
-public class BenchmarkRemoveHandler implements RequestHandler<BenchmarkRemoveRequest, GenericResponse> {
+public class BenchmarkRemoveHandler implements RequestHandler<GenericRemoveRequest, GenericResponse> {
 
     private LambdaLogger logger;
 
     @Override
-    public GenericResponse handleRequest(BenchmarkRemoveRequest request, Context context) {
+    public GenericResponse handleRequest(GenericRemoveRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received a remove benchmark request from client:\n" + request);
 
@@ -30,10 +29,8 @@ public class BenchmarkRemoveHandler implements RequestHandler<BenchmarkRemoveReq
         return response;
     }
 
-    private GenericResponse deleteBenchmarkFromDB(BenchmarkRemoveRequest request) {
-
+    private GenericResponse deleteBenchmarkFromDB(GenericRemoveRequest request) {
         final String id = request.getId();
-
         final String query = "DELETE FROM benchmark WHERE id = ?";
 
         try (final Connection connection = DataSource.getConnection(logger);

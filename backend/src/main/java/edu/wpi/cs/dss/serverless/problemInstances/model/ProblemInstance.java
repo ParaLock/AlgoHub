@@ -2,22 +2,19 @@ package edu.wpi.cs.dss.serverless.problemInstances.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
+import lombok.Value;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Value
+@EqualsAndHashCode(of = "id")
 public class ProblemInstance {
-
-    private String id;
-    private String datasetFilename;
-    private int datasetSize;
-    private String problemType;
-    private String algorithmId;
-    private String authorId;
+    String id;
+    String authorId;
+    String problemType;
+    String algorithmId;
+    Integer datasetSize;
+    String datasetFilename;
 
     @Override
     @SneakyThrows

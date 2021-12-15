@@ -26,7 +26,6 @@ public class ProblemInstanceAddHandlerTest extends LambdaTest {
                 incoming, createContext("add")
         );
 
-//        Assert.assertTrue(response.getId().length() > 0);
         Assert.assertEquals(new Integer(400), response.getStatusCode());
     }
 
@@ -43,7 +42,7 @@ public class ProblemInstanceAddHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, null);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("Valid add problem instance:" + ioe.getMessage());
         }
     }
 
@@ -60,7 +59,7 @@ public class ProblemInstanceAddHandlerTest extends LambdaTest {
         try {
             testFailInput(sample_input, null);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("Invalid add problem instance:" + ioe.getMessage());
         }
     }
 }

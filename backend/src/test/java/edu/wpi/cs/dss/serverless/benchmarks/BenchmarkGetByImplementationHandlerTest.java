@@ -29,7 +29,7 @@ public class BenchmarkGetByImplementationHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, "");
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("valid get benchmark by implementation:" + ioe.getMessage());
         }
     }
 }

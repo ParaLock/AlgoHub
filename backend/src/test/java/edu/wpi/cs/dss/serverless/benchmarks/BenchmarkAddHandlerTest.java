@@ -40,7 +40,7 @@ public class BenchmarkAddHandlerTest extends LambdaTest {
         try {
             testInput(sample_input, null);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("valid get problem instance:" + ioe.getMessage());
         }
     }
 
@@ -91,13 +91,13 @@ public class BenchmarkAddHandlerTest extends LambdaTest {
         try {
             testFailInput(bad_input_1, null);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("Invalid add benchmark:" + ioe.getMessage());
         }
 
         try {
             testFailInput(bad_input_2, null);
         } catch (IOException ioe) {
-            Assert.fail("Invalid get problem instance:" + ioe.getMessage());
+            Assert.fail("Invalid add benchmark:" + ioe.getMessage());
         }
     }
 }

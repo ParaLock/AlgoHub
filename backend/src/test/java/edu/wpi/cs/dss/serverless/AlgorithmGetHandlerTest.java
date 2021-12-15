@@ -36,15 +36,15 @@ public class AlgorithmGetHandlerTest extends LambdaTest {
     }
     @Test
     public void testAlgorithmGet(){
-        String SAMPLE_INPUT_ID = "16ac8e25-4a75-462f-a12e-f0d5395df9de";
+        String SAMPLE_INPUT_ID = "52cac455-5bb3-11ec-933c-16c4115dd1ff";
 
         AlgorithmGetRequest req = new AlgorithmGetRequest(SAMPLE_INPUT_ID);
         String input_id = new Gson().toJson(req);
 
-        String SAMPLE_OUTPUT_NAME = "DFS";
-        String SAMPLE_OUTPUT_DESCRIPTION = "An awesome search algorithm";
-        String SAMPLE_OUTPUT_AUTHORRID = "john_smith";
-        String SAMPLE_OUTPUT_CLASSIFICATIONID = "96f489af-0b25-4661-af88-935c8c166a73";
+        String SAMPLE_OUTPUT_NAME = "BFS";
+        String SAMPLE_OUTPUT_DESCRIPTION = "Breadth-First Search";
+        String SAMPLE_OUTPUT_AUTHORRID = "1b53c068-5bb3-11ec-933c-16c4115dd1ff";
+        String SAMPLE_OUTPUT_CLASSIFICATIONID = "1b53c044-5bb3-11ec-933c-16c4115dd1ff";
 
 
         try {

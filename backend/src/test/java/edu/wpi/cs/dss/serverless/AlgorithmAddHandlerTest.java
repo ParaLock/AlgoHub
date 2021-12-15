@@ -39,7 +39,7 @@ public class AlgorithmAddHandlerTest extends LambdaTest  {
     public void testSuccessInput(){
         String sample_name = "Quick Sort";
         String description = "Cool sorting algorithm";
-        String classification_id = "96f489af-0b25-4661-af88-935c8c166a73";
+        String classification_id = "1b53c044-5bb3-11ec-933c-16c4115dd1ff";
         String author_id = "john_smith_sr";
 
         AlgorithmAddRequest req = new AlgorithmAddRequest(sample_name,description,classification_id,author_id);

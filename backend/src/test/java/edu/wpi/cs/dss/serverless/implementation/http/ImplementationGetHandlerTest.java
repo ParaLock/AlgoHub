@@ -2,9 +2,7 @@ package edu.wpi.cs.dss.serverless.implementation.http;
 
 import com.google.gson.Gson;
 import edu.wpi.cs.dss.serverless.LambdaTest;
-import edu.wpi.cs.dss.serverless.algorithms.AlgorithmGetHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetRequest;
-import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetResponse;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.implementation.ImplementationGetHandler;
 import org.junit.Assert;
@@ -35,16 +33,16 @@ public class ImplementationGetHandlerTest extends LambdaTest {
         Assert.assertEquals(new Integer(400), response.getStatusCode());
     }
     @Test
-    public void testAlgorithmGet(){
+    public void testImplementationGet(){
         String id = "232e7599-fc29-4e55-b54d-e835555f3df8";
 
-        AlgorithmGetRequest req = new AlgorithmGetRequest(id);
+        ImplementationGetRequest req = new ImplementationGetRequest(id);
         String input_id = new Gson().toJson(req);
 
         String file_name = "232e7599-fc29-4e55-b54d-e835555f3df8_insertion sort_java.java";
-        String name = "java";
+        String name = "Java";
         String algorithm_id = "1bedd00f-68e5-48c2-8bca-624fc2fc425f";
-        String author_id = "graderh";
+        String author_id = "Irakli";
 
 
 
@@ -59,7 +57,7 @@ public class ImplementationGetHandlerTest extends LambdaTest {
     public void testFailInput(){
         String id = "16ac8e25-4";
 
-        AlgorithmGetRequest req = new AlgorithmGetRequest(id);
+        ImplementationGetRequest req = new ImplementationGetRequest(id);
         String input_id = new Gson().toJson(req);
 
         try {

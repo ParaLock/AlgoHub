@@ -19,6 +19,15 @@ public class ImplementationAddRequest {
     private String algorithmName;
     private String sourceCodeBase64;
 
+    public ImplementationAddRequest(String name, String authorId, String extension, String algorithmId, String algoName, String sourceCode) {
+        this.name = name;
+        this.authorId = authorId;
+        this.extension = extension;
+        this.algorithmId = algorithmId;
+        this.algorithmName = algoName;
+        this.sourceCodeBase64 = sourceCode;
+    }
+
     @Override
     @SneakyThrows
     public String toString() {

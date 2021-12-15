@@ -16,6 +16,10 @@ public class ImplementationRemoveRequest {
 
     private String id;
 
+    public ImplementationRemoveRequest(String id) {
+        this.id = id;
+    }
+
     @Override
     @SneakyThrows
     public String toString() {

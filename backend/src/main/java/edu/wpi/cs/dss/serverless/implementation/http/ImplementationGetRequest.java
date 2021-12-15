@@ -14,6 +14,10 @@ public class ImplementationGetRequest {
 
     private String id;
 
+    ImplementationGetRequest(String id){
+        this.id = id;
+    }
+
     @Override
     @SneakyThrows
     public String toString() {

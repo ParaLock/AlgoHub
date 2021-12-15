@@ -34,14 +34,23 @@ public class AlgorithmRemoveHandlerTest extends LambdaTest {
 
     @Test
     public void testSuccessInput(){
-        String id = "16ac8e25-4a75-462f-a12e-f0d5395df9de";
+        String sample_name = "test algo";
+        String description = "test algo desc";
+        String classification_id = "1b53c044-5bb3-11ec-933c-16c4115dd1ff";
+        String author_id = "john_smith_sr";
 
-
-        GenericRemoveRequest req = new GenericRemoveRequest(id);
+        AlgorithmAddRequest req = new AlgorithmAddRequest(sample_name, description, classification_id, author_id);
         String input = new Gson().toJson(req);
 
+        AlgorithmAddHandler handler = new AlgorithmAddHandler();
+        AlgorithmAddResponse response = (AlgorithmAddResponse) handler.handleRequest(req, createContext("add"));
+
+
+        GenericRemoveRequest req2 = new GenericRemoveRequest(response.getId());
+        String inp = new Gson().toJson(req2);
+
         try {
-            testSuccessInput(input);
+            testSuccessInput(inp);
         } catch (IOException ioe) {
             Assert.fail("Invalid:" + ioe.getMessage());
         }

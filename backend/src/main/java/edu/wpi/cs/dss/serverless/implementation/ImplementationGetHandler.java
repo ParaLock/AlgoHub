@@ -28,12 +28,14 @@ public class ImplementationGetHandler implements RequestHandler<ImplementationGe
         final GenericResponse response = findById(request);
         logger.log("Sent a get implementation response to AWS Lambda:\n" + response);
 
+
         return response;
     }
 
     private GenericResponse findById(ImplementationGetRequest request) {
         // extracting implementation id from get implementation request
         final String id = request.getId();
+
 
         //create a sql query
         final String query = "SELECT * FROM implementation WHERE id = ?";
@@ -47,6 +49,7 @@ public class ImplementationGetHandler implements RequestHandler<ImplementationGe
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
+
                     final String programmingLanguage = resultSet.getString(2);
                     final String filename = resultSet.getString(3);
                     final String algorithmId = resultSet.getString(4);
@@ -58,6 +61,7 @@ public class ImplementationGetHandler implements RequestHandler<ImplementationGe
                             .filename(filename)
                             .algorithmId(algorithmId)
                             .authorId(authorId)
+                            .id(id)
                             .build();
                 }
             }

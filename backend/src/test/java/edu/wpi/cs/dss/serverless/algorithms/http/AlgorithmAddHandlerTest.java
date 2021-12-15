@@ -1,6 +1,7 @@
-package edu.wpi.cs.dss.serverless;
+package edu.wpi.cs.dss.serverless.algorithms.http;
 
 import com.google.gson.Gson;
+import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.algorithms.AlgorithmAddHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddRequest;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddResponse;
@@ -10,7 +11,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class AlgorithmAddHandlerTest extends LambdaTest  {
+public class AlgorithmAddHandlerTest extends LambdaTest {
 
     void testSuccessInput(String incoming) throws IOException {
         AlgorithmAddHandler handler = new AlgorithmAddHandler();
@@ -42,7 +43,11 @@ public class AlgorithmAddHandlerTest extends LambdaTest  {
         String classification_id = "1b53c044-5bb3-11ec-933c-16c4115dd1ff";
         String author_id = "john_smith_sr";
 
-        AlgorithmAddRequest req = new AlgorithmAddRequest(sample_name,description,classification_id,author_id);
+        AlgorithmAddRequest req = new AlgorithmAddRequest();
+        req.setDescription(description);
+        req.setName(sample_name);
+        req.setClassificationId(classification_id);
+        req.setAuthorId(author_id);
         String input = new Gson().toJson(req);
 
         try {
@@ -60,8 +65,14 @@ public class AlgorithmAddHandlerTest extends LambdaTest  {
         String classification_id = "60";
         String author_id = "john_smith_sr";
 
-        AlgorithmAddRequest req = new AlgorithmAddRequest(sample_name, description, classification_id, author_id);
+        AlgorithmAddRequest req = new AlgorithmAddRequest();
+        req.setDescription(description);
+        req.setName(sample_name);
+        req.setClassificationId(classification_id);
+        req.setAuthorId(author_id);
         String input = new Gson().toJson(req);
+
+
 
         try {
             testFailInput(input);

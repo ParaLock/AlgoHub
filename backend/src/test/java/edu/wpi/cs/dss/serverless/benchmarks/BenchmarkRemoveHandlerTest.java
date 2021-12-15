@@ -43,7 +43,7 @@ public class BenchmarkRemoveHandlerTest extends LambdaTest {
         addRequest.setMemory(512);
         addRequest.setMemoryUsage(256);
         addRequest.setProblemInstanceId("1");
-        addRequest.setImplementationId("1");
+        addRequest.setImplementationId("04697bc1-c7fa-4f86-aa87-003cd7eb8a08");
 
         BenchmarkAddResponse addResponse = (BenchmarkAddResponse) addHandler.handleRequest(
                 addRequest, createContext("add")

@@ -24,7 +24,7 @@ public class BenchmarkGetByImplementationHandlerTest extends LambdaTest {
 
     @Test
     public void testValidGetBenchmarkByImplementation() {
-        String sample_input = "{\"id\": \"1\"}";
+        String sample_input = "{\"id\": \"04697bc1-c7fa-4f86-aa87-003cd7eb8a08\"}";
 
         try {
             testInput(sample_input, "");

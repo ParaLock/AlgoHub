@@ -15,6 +15,11 @@ public class AlgorithmReclassifyRequest {
     private String algorithmId;
     private String newClassificationId;
 
+    public AlgorithmReclassifyRequest(String id, String classification_id) {
+        this.algorithmId = id;
+        this.newClassificationId = classification_id;
+    }
+
     @Override
     @SneakyThrows
     public String toString() {

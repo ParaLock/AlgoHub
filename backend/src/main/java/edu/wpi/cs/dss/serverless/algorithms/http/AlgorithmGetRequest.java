@@ -20,4 +20,8 @@ public class AlgorithmGetRequest {
         final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
         return objectWriter.writeValueAsString(this);
     }
+
+    public AlgorithmGetRequest(String id){
+        this.id =id;
+    }
 }

@@ -5,6 +5,7 @@ import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkAddRequest;
 import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkAddResponse;
 import edu.wpi.cs.dss.serverless.benchmarks.http.BenchmarkRemoveRequest;
+import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
 import org.junit.Assert;
@@ -16,7 +17,7 @@ public class BenchmarkRemoveHandlerTest extends LambdaTest {
 
     void testInput(String incoming, GenericResponse outgoing) throws IOException {
         BenchmarkRemoveHandler handler = new BenchmarkRemoveHandler();
-        BenchmarkRemoveRequest request = new Gson().fromJson(incoming, BenchmarkRemoveRequest.class);
+        GenericRemoveRequest request = new Gson().fromJson(incoming, GenericRemoveRequest.class);
         GenericResponse response = handler.handleRequest(
                 request, createContext("remove benchmark")
         );

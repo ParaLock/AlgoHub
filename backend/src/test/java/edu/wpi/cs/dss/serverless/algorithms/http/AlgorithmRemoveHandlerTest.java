@@ -1,6 +1,7 @@
-package edu.wpi.cs.dss.serverless;
+package edu.wpi.cs.dss.serverless.algorithms.http;
 
 import com.google.gson.Gson;
+import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.algorithms.AlgorithmAddHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmAddRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
@@ -12,7 +13,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class AlgorithmRemoveHandlerTest extends  LambdaTest {
+public class AlgorithmRemoveHandlerTest extends LambdaTest {
 
     void testSuccessInput(String incoming) throws IOException {
         AlgorithmRemoveHandler handler = new AlgorithmRemoveHandler();

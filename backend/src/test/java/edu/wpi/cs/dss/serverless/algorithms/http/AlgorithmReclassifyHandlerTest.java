@@ -1,6 +1,7 @@
-package edu.wpi.cs.dss.serverless;
+package edu.wpi.cs.dss.serverless.algorithms.http;
 
 import com.google.gson.Gson;
+import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.algorithms.AlgorithmAddHandler;
 import edu.wpi.cs.dss.serverless.algorithms.AlgorithmGetHandler;
 import edu.wpi.cs.dss.serverless.algorithms.AlgorithmReclassifyHandler;
@@ -14,7 +15,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class AlgorithmReclassifyHandlerTest extends LambdaTest{
+public class AlgorithmReclassifyHandlerTest extends LambdaTest {
 
     void testSuccessInput(String incoming) throws IOException {
         AlgorithmReclassifyHandler handler = new AlgorithmReclassifyHandler ();

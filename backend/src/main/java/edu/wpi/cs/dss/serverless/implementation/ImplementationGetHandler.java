@@ -28,12 +28,14 @@ public class ImplementationGetHandler implements RequestHandler<ImplementationGe
         final GenericResponse response = findById(request);
         logger.log("Sent a get implementation response to AWS Lambda:\n" + response);
 
+
         return response;
     }
 
     private GenericResponse findById(ImplementationGetRequest request) {
         // extracting implementation id from get implementation request
         final String id = request.getId();
+        System.out.println();
 
         //create a sql query
         final String query = "SELECT * FROM implementation WHERE id = ?";

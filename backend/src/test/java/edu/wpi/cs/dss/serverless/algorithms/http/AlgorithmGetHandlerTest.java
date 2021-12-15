@@ -1,6 +1,7 @@
-package edu.wpi.cs.dss.serverless;
+package edu.wpi.cs.dss.serverless.algorithms.http;
 
 
+import edu.wpi.cs.dss.serverless.LambdaTest;
 import edu.wpi.cs.dss.serverless.algorithms.AlgorithmGetHandler;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetRequest;
 import edu.wpi.cs.dss.serverless.algorithms.http.AlgorithmGetResponse;

@@ -17,10 +17,14 @@ public class ImplementationGetResponse extends GenericResponse {
     private final String algorithmId;
     private final String programmingLanguage;
 
+
+
     @Override
     @SneakyThrows
     public String toString() {
         final ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
         return objectWriter.writeValueAsString(this);
     }
+
+
 }

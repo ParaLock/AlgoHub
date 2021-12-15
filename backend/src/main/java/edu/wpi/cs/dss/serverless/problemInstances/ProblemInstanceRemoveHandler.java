@@ -6,10 +6,9 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import edu.wpi.cs.dss.serverless.generic.GenericRemoveRequest;
 import edu.wpi.cs.dss.serverless.generic.GenericResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddRequest;
 import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceAddResponse;
-import edu.wpi.cs.dss.serverless.problemInstances.http.ProblemInstanceRemoveRequest;
 import edu.wpi.cs.dss.serverless.util.DataSource;
 import edu.wpi.cs.dss.serverless.util.ErrorMessage;
 import edu.wpi.cs.dss.serverless.util.HttpStatus;
@@ -18,9 +17,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
-public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInstanceRemoveRequest, GenericResponse> {
+public class ProblemInstanceRemoveHandler implements RequestHandler<GenericRemoveRequest, GenericResponse> {
 
     private LambdaLogger logger;
 
@@ -30,7 +28,7 @@ public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInsta
     private final AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
     @Override
-    public GenericResponse handleRequest(ProblemInstanceRemoveRequest request, Context context) {
+    public GenericResponse handleRequest(GenericRemoveRequest request, Context context) {
         logger = context.getLogger();
         logger.log("Received an add problem instance request from AWS Lambda:\n" + request);
 
@@ -41,7 +39,7 @@ public class ProblemInstanceRemoveHandler implements RequestHandler<ProblemInsta
         return response;
     }
 
-    private GenericResponse deleteProblemInstanceFromDB(ProblemInstanceRemoveRequest request) {
+    private GenericResponse deleteProblemInstanceFromDB(GenericRemoveRequest request) {
 
         final String id = request.getId();
 

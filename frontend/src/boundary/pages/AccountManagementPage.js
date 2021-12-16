@@ -129,7 +129,7 @@ export default function AccountManagementPage(props) {
                 customData: {
                     username: user
                 },
-                customEndpoint: "users/delete_user_data",
+                customEndpoint: "users/delete_account",
                 initiator: "account_man_user_remove"
             }
         ))
@@ -209,7 +209,7 @@ export default function AccountManagementPage(props) {
                 setUsers(temp);
 
             }
-        }, "users/all_registered");
+        }, "users/all_registered_cognito");
     }
 
     React.useEffect(() => {
@@ -223,10 +223,28 @@ export default function AccountManagementPage(props) {
         }
 
         if (removeRequest.initiator == "account_man_user_remove" && removeRequest.state == "complete") {
-            updateUsers();
-            setUserActivity(null);
-            setSelectedUser(null)
+            console.log("User remove request: ", removeRequest);
+            props.requestService.executePostRequest(
+                (err, data) => {
+                    
 
+                    updateUsers();
+                    setUserActivity(null);
+                    setSelectedUser(null);
+
+                    if (err.length == 0) {
+                        setLoadingActivity(false)
+                        updateUserActivity(data.activity)
+                    }
+    
+                },
+                {
+                    username: removeRequest.item.id
+                },
+                "users/delete_user_data",
+                "",
+                ""
+            );
         }
 
     }, [removeRequest]);
